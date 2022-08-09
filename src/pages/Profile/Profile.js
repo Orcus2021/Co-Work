@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useEffect, useState } from "react";
+import styled from "styled-components";
 
-import api from '../../utils/api';
-import getJwtToken from '../../utils/getJwtToken';
+import api from "../../utils/api";
+import getJwtToken from "../../utils/getJwtToken";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -36,7 +36,7 @@ function Profile() {
 
   useEffect(() => {
     async function getProfile() {
-      let jwtToken = window.localStorage.getItem('jwtToken');
+      let jwtToken = window.localStorage.getItem("jwtToken");
 
       if (!jwtToken) {
         try {
@@ -46,7 +46,7 @@ function Profile() {
           return;
         }
       }
-      window.localStorage.setItem('jwtToken', jwtToken);
+      window.localStorage.setItem("jwtToken", jwtToken);
 
       const { data } = await api.getProfile(jwtToken);
       setProfile(data);
@@ -57,13 +57,14 @@ function Profile() {
   return (
     <Wrapper>
       <Title>會員基本資訊</Title>
+      <p>test</p>
       {profile && (
         <>
           <Photo src={profile.picture} />
           <Content>{profile.name}</Content>
           <Content>{profile.email}</Content>
           <LogoutButton
-            onClick={() => window.localStorage.removeItem('jwtToken')}
+            onClick={() => window.localStorage.removeItem("jwtToken")}
           >
             登出
           </LogoutButton>
