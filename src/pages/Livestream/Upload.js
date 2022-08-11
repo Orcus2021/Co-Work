@@ -30,6 +30,7 @@ const Form = styled.div`
 `;
 const FormLeft = styled.div`
   display: flex;
+  width: 300px;
 `;
 const FormRight = styled.div`
   display: flex;
@@ -54,7 +55,7 @@ const UploadCardStyled = styled.label`
 const UploadCardButton = styled.span`
   background-color: #fff;
   border: solid 2px #e6e6e6;
-  padding: 16px 25px;
+  padding: 10px 10px;
   border-radius: 30px;
   font-size: 17px;
   line-height: 1.24;
@@ -81,10 +82,10 @@ const ClearBtn = styled.button`
   border: 1px solid white;
   position: absolute;
   border-radius: 30px;
-  top: 95%;
+  top: 92%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 16px 25px;
+  padding: 5px;
   cursor: pointer;
 `;
 
@@ -251,16 +252,6 @@ function Upload() {
       <form>
         <Form>
           <FormLeft>
-            <FormFieldSet>
-              {uploadFormGroups.map(({ label, key, textarea, options }) => (
-                <FormGroup key={key}>
-                  <FormLabel>{label}</FormLabel>
-                  {inputCheck(label, key, textarea, options)}
-                </FormGroup>
-              ))}
-            </FormFieldSet>
-          </FormLeft>
-          <FormRight>
             <UploadCardStyled>
               {fileSrc ? (
                 <>
@@ -270,7 +261,7 @@ function Upload() {
                   </UploadPreview>
                 </>
               ) : (
-                <UploadCardButton>上傳</UploadCardButton>
+                <UploadCardButton>商品照片上傳</UploadCardButton>
               )}
               <UploadCardInput onChange={handleUploadFile} />
             </UploadCardStyled>
@@ -286,6 +277,16 @@ function Upload() {
               ref={imgUpload}
               // id
             /> */}
+          </FormLeft>
+          <FormRight>
+            <FormFieldSet>
+              {uploadFormGroups.map(({ label, key, textarea, options }) => (
+                <FormGroup key={key}>
+                  <FormLabel>{label}</FormLabel>
+                  {inputCheck(label, key, textarea, options)}
+                </FormGroup>
+              ))}
+            </FormFieldSet>
           </FormRight>
         </Form>
       </form>
