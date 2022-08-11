@@ -19,6 +19,9 @@ const Form = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 50px;
+  @media screen and (max-width: 1279px) {
+    width: 100%;
+  }
 `;
 const InputLabel = styled.label`
   width: 110px;
@@ -26,7 +29,7 @@ const InputLabel = styled.label`
   font-size: 16px;
   color: #3f3a3a;
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   @media screen and (max-width: 1279px) {
     width: 100%;
   }
@@ -36,7 +39,7 @@ const InputControl = styled.input`
   height: 30px;
   border-radius: 8px;
   border: solid 1px #979797;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   @media screen and (max-width: 1279px) {
     margin-top: 10px;
     width: 100%;
@@ -57,10 +60,21 @@ const InputGroup = styled.div`
 `;
 
 const SignUpButton = styled.button`
+  background-color: #fff;
+  border: solid 2px #e6e6e6;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 17px;
+  line-height: 1.24;
   margin-top: 24px;
+  cursor: pointer;
+  &:hover {
+    background-color: gray;
+    color: #fff;
+  }
 `;
 
-function Profile() {
+function SignUp() {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -76,13 +90,13 @@ function Profile() {
       setPassword(value);
     }
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = {
       name: name,
       email: email,
       password: password,
     };
-    console.log(data);
+    // console.log(data);
     signUp(data);
     setName("");
     setEmail("");
@@ -96,7 +110,11 @@ function Profile() {
       }),
       method: "POST",
     });
-    return await response.json();
+    console.log(response);
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error("error message");
   }
 
   return (
@@ -134,4 +152,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default SignUp;
