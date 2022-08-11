@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import ThankYou from "./pages/ThankYou/ThankYou";
 import Product from "./pages/Product/Product";
 import SignUp from "./pages/Profile/SignUp";
+import User from "./pages/User/User";
 import Upload from "./pages/User/Upload";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -20,6 +21,7 @@ root.render(
         <Route path="checkout" element={<Checkout />} />
         <Route path="thankyou" element={<ThankYou />} />
         <Route path="profile/signup" element={<SignUp />} />
+        <Route path="user" element={<User />} />
         <Route path="user/upload" element={<Upload />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
