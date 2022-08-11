@@ -22,7 +22,18 @@ const Content = styled.div`
 `;
 
 const BackButton = styled.button`
+  background-color: #fff;
+  border: solid 2px #e6e6e6;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 17px;
+  line-height: 1.24;
   margin-top: 24px;
+  cursor: pointer;
+  &:hover {
+    background-color: gray;
+    color: #fff;
+  }
 `;
 const Form = styled.div`
   display: flex;
@@ -60,6 +71,11 @@ const UploadCardButton = styled.span`
   font-size: 17px;
   line-height: 1.24;
   margin-bottom: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: gray;
+    color: #fff;
+  }
 `;
 const UploadCardInput = styled.input.attrs({
   type: "file",
