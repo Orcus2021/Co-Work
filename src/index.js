@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
 import App from "./App";
 import Checkout from "./pages/Checkout/Checkout";
 import Home from "./pages/Home/Home";
@@ -28,9 +27,11 @@ root.render(
         <Route path="profile/signup" element={<SignUp />} />
         <Route path="user" element={<User />} />
         <Route path="user/upload" element={<Upload />} />
+
         <Route path="streamer" element={<Streamer />} />
         <Route path="liveStream" element={<LiveStream />} />
         <Route path="test" element={<Test />} />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

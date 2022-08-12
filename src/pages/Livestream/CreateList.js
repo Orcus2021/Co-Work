@@ -60,10 +60,12 @@ const AddProduct = styled(Btn)`
   background-color: black;
   color: white;
 `;
+
 const UploadBtn = styled(Btn)`
   background-color: black;
   color: white;
 `;
+
 const ProductList = styled.div`
 flex-grow: 1;
 overflow-y: scroll;
@@ -98,6 +100,7 @@ const CreateList = () => {
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [searchProducts, setSearchProducts] = useState([]);
+
   const [uploadImg, setUploadImg] = useState("");
 
   const nextPagingRef = useRef();
@@ -111,6 +114,7 @@ const CreateList = () => {
   };
   const addProductHandler = (id) => {
     addProductArr.current.push(id);
+
     console.log(addProductArr.current);
   };
 
@@ -119,6 +123,7 @@ const CreateList = () => {
       return productId !== id;
     });
     addProductArr.current = newArr;
+
     console.log(addProductArr.current);
   };
   const categoryHandler = (e) => {
@@ -127,6 +132,7 @@ const CreateList = () => {
   const searchValueHandler = (e) => {
     setSearch(e.target.value);
   };
+
   const searchResultHandler = () => {
     // const data = await api.getProducts(category, 0);
     // setSearchProducts(data.data);
@@ -219,6 +225,7 @@ const CreateList = () => {
         <SelectAll onClick={allSelectHandler}>全選</SelectAll>
         <ClearAll onClick={clearAllHandler}>清除</ClearAll>
         <AddProduct>上架</AddProduct>
+
         <UploadLiveForm>
           <InputImg type="file" name="img" onChange={uploadImgHandler} />
           <ImgBx>{uploadImg && <Img src={uploadImg} />}</ImgBx>

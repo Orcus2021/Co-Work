@@ -11,6 +11,7 @@ const Container = styled.div`
   width: 1820px;
   margin: 0 auto;
 `;
+
 const VideoContainer = styled.div`
   width: 100%;
   padding-top: 50px;
@@ -69,7 +70,10 @@ const ChatBx = styled.div`
   position: relative;
   width: 500px;
   height: 820px;
+<<<<<<< HEAD
   max-height: 820px;
+=======
+>>>>>>> 2e4c045 (add:streamer)
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -80,6 +84,7 @@ const ChatBx = styled.div`
 `;
 const ChatContent = styled.div`
   width: 100%;
+
   height: 715px;
   display: flex;
   flex-direction: column;
@@ -92,6 +97,9 @@ const ChatContent = styled.div`
 const InputBx = styled.div`
   width: 100%;
   min-height: 60px;
+  flex-grow: 1;
+  border: 2.5px solid black;
+  border-radius: 30px 30px 0 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -116,6 +124,7 @@ const EnterBtn = styled.button`
   font-size: 1rem;
   cursor: pointer;
 `;
+
 const Message = styled.p`
   flex-grow: 1;
   font-size: 1.5rem;
@@ -153,6 +162,7 @@ const Streamer = () => {
   const localStream = useRef();
   const localVideo = useRef();
   const peerConnect = useRef();
+
   const chatBottom = useRef();
   const [isStart, setIsStart] = useState(false);
   const [chatContent, setChatContent] = useState([]);
@@ -217,7 +227,9 @@ const Streamer = () => {
   // connect io
   const connectIO = () => {
     //   offer socket
+
     // socket = io("https://kelvin-wu.site");
+
     socket.on("offer", async (desc) => {
       console.log("main receive desc", desc);
       await peerConnect.current.setRemoteDescription(desc);
@@ -239,6 +251,7 @@ const Streamer = () => {
     if (localStream.current) {
       connectIO();
       initPeerConnection();
+
       setIsStart(true);
     }
   };
@@ -246,6 +259,7 @@ const Streamer = () => {
   const closeLiveHandler = () => {
     if (peerConnect.current) {
       setIsStart(false);
+
       peerConnect.current.close();
       peerConnect.current = null;
     }
@@ -289,6 +303,7 @@ const Streamer = () => {
           <Video muted autoPlay playsInline ref={localVideo}></Video>
           <BtnBx>
             <CameraBtn onClick={createStream}>開啟鏡頭</CameraBtn>
+
             {isStart ? (
               <StopBtn onClick={closeLiveHandler}>結束</StopBtn>
             ) : (
