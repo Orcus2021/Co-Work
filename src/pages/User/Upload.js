@@ -38,6 +38,7 @@ const Form = styled.div`
 `;
 const FormLeft = styled.div`
   display: flex;
+  flex-direction: column;
   width: 300px;
   margin-right: 20px;
 `;
@@ -222,20 +223,6 @@ const uploadFormGroups = [
   { label: "產地", key: "place" },
   { label: "產品故事", key: "story", textarea: true },
 ];
-const uploadFormInputCheck = (label, key, textarea, options) => {
-  if (options) {
-    return options.map((option) => (
-      <FormCheck key={option.value}>
-        <FormCheckInput type="radio" />
-        <FormCheckLabel>{option.label}</FormCheckLabel>
-      </FormCheck>
-    ));
-  } else if (textarea) {
-    return <FormText />;
-  } else {
-    return <FormControl />;
-  }
-};
 
 const VariantsCardStyled = styled.label`
   background-color: #fff;
@@ -273,20 +260,8 @@ const variantsFormGroups = [
     ],
   },
 ];
-const variantsFormInputCheck = (label, key, options) => {
-  if (options) {
-    return options.map((option) => (
-      <FormCheck key={option.value}>
-        <FormCheckInput type="radio" />
-        <FormCheckLabel>{option.label}</FormCheckLabel>
-      </FormCheck>
-    ));
-  } else {
-    return <FormNumber />;
-  }
-};
 
-const AddBtn = styled.button`
+const AddButton = styled.button`
   border: 0px;
   border-radius: 30px;
   padding: 5px;
@@ -297,32 +272,26 @@ const AddBtn = styled.button`
 function Upload() {
   const navigate = useNavigate();
   const [fileSrc, setFileSrc] = useState(null);
+  const [fileMultiSrc, setMultiSrc] = useState(null);
   const [addVariant, setAddVariant] = useState([1]);
-  const [createProductList, setCreateProductList] = useState({
-    category: "men",
-    title: "string",
-    description: "高抗寒素材選用，保暖也時尚有型",
-    price: "600",
-    texture: "棉、聚脂纖維",
-    wash: "手洗，溫水",
-    place: "中國",
+  const [recipient, setRecipient] = useState({
+    category: "",
+    title: "",
+    description: "",
+    price: "",
+    texture: "",
+    wash: "",
+    place: "",
     note: "實品顏色以單品照為主",
-    story: "休閒與我們的時尚街頭服飾品牌毫不費力地融為一體",
-    main_image:
-      "https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851795868.jpg",
-    other_images: [
-      "https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851796227.jpg, https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851796227.jpg",
-    ],
-    variants: [
-      {
-        color: "FFFFFF",
-        size: "S",
-        stock: "10",
-      },
-    ],
+    story: "",
   });
-
+  const [recipientVariants, setRecipientVariants] = useState([
+    { color: "", size: "", stock: "" },
+  ]);
+  const [recipientImage, setRecipientImage] = useState(null);
+  // console.log(recipientVariants);
   const handleUploadFile = (e) => {
+    setRecipientImage(e.target.files);
     if (!e.target.files[0]) return;
     var reader = new FileReader();
     reader.onload = function () {
@@ -335,57 +304,123 @@ function Upload() {
     e.preventDefault();
     setFileSrc(null);
   };
+  const handleMultipleUploadFile = (e) => {
+    if (!e.target.files[0]) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      setMultiSrc(reader.result);
+    };
+    reader?.readAsDataURL(e?.target?.files[0]);
+    e.target.value = "";
+  };
+  const handleMultiClear = (e) => {
+    e.preventDefault();
+    setMultiSrc(null);
+  };
+
   const clickToAddVariant = (e) => {
     e.preventDefault();
     let tempArr = [...addVariant];
     tempArr.push(1);
     setAddVariant(tempArr);
+    setRecipientVariants([
+      ...recipientVariants,
+      { color: "", size: "", stock: "" },
+    ]);
   };
 
   const clickToCreateProduct = () => {
-    const data = {
-      product_id: "1231",
-      category: "men",
-      title: "string",
-      description: "高抗寒素材選用，保暖也時尚有型",
-      price: "600",
-      texture: "棉、聚脂纖維",
-      wash: "手洗，溫水",
-      place: "中國",
-      note: "實品顏色以單品照為主",
-      story: "休閒與我們的時尚街頭服飾品牌毫不費力地融為一體",
-      main_image:
-        "https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851795868.jpg",
-      other_images: [
-        "https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851796227.jpg, https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851796227.jpg",
-      ],
-      variants: [
-        {
-          color: "FFFFFF",
-          size: "S",
-          stock: "10",
-        },
-      ],
-    };
-    createProduct(data);
+    createProduct();
   };
-  async function createProduct(data) {
+  async function createProduct() {
+    var formData = new FormData();
     const response = await fetch(
       `https://kelvin-wu.site/api/1.0/admin/product`,
       {
-        body: JSON.stringify(data),
-        headers: new Headers({
-          "Content-Type": "form-data",
-        }),
+        body: formData,
+        // headers: new Headers({
+        //   "Content-Type": "multipart/form-data",
+        // }),
         method: "POST",
       }
     );
     console.log(response);
-    if (response.ok) {
-      return await response.json();
-    }
-    throw new Error("error message");
   }
+  const uploadFormInputCheck = (label, key, textarea, options) => {
+    if (options) {
+      return options.map((option) => (
+        <FormCheck key={option.value}>
+          <FormCheckInput
+            type="radio"
+            checked={recipient.category === option.value}
+            onChange={(e) => {
+              if (e.target.checked)
+                setRecipient({ ...recipient, category: option.value });
+            }}
+          />
+          <FormCheckLabel>{option.label}</FormCheckLabel>
+        </FormCheck>
+      ));
+    } else if (textarea) {
+      return (
+        <FormText
+          value={recipient[key]}
+          onChange={(e) =>
+            setRecipient({ ...recipient, [key]: e.target.value })
+          }
+        />
+      );
+    } else {
+      return (
+        <FormControl
+          value={recipient[key]}
+          onChange={(e) =>
+            setRecipient({ ...recipient, [key]: e.target.value })
+          }
+        />
+      );
+    }
+  };
+  const variantsFormInputCheck = (label, key, options, index) => {
+    // console.log(index);
+    if (options) {
+      return options.map((option) => (
+        <FormCheck key={option.value}>
+          <FormCheckInput
+            type="radio"
+            name="size"
+            onChange={(e) => {
+              if (e.target.checked)
+                setRecipientVariants((pre) => {
+                  pre[index].size = option.value;
+                  const newArr = [...pre];
+                  return newArr;
+                });
+            }}
+          />
+          <FormCheckLabel>{option.label}</FormCheckLabel>
+        </FormCheck>
+      ));
+    } else {
+      return (
+        <FormNumber
+          value={recipientVariants[key]}
+          onChange={
+            (e) =>
+              setRecipientVariants((pre) => {
+                pre[index][key] = e.target.value;
+                const newArr = [...pre];
+                return newArr;
+              })
+            // setRecipientVariants([
+            //   ...recipientVariants,
+            //   { [key]: e.target.value },
+            // ])
+          }
+        />
+      );
+    }
+  };
 
   return (
     <Wrapper>
@@ -394,6 +429,7 @@ function Upload() {
       <form>
         <Form>
           <FormLeft>
+            {/* <input type="file" onChange={uploadPhoto} /> */}
             <UploadCardStyled>
               {fileSrc ? (
                 <>
@@ -403,9 +439,22 @@ function Upload() {
                   </UploadPreview>
                 </>
               ) : (
-                <UploadCardButton>商品照片上傳</UploadCardButton>
+                <UploadCardButton>主要商品照片上傳</UploadCardButton>
               )}
               <UploadCardInput onChange={handleUploadFile} />
+            </UploadCardStyled>
+            <UploadCardStyled>
+              {fileMultiSrc ? (
+                <>
+                  <ClearBtn onClick={handleMultiClear}>刪除</ClearBtn>
+                  <UploadPreview>
+                    <UploadPreviewImg src={fileMultiSrc} />
+                  </UploadPreview>
+                </>
+              ) : (
+                <UploadCardButton>其他商品照片上傳</UploadCardButton>
+              )}
+              <UploadCardInput multiple onChange={handleMultipleUploadFile} />
             </UploadCardStyled>
           </FormLeft>
           <FormCenter>
@@ -420,18 +469,18 @@ function Upload() {
           </FormCenter>
           <FormRight>
             <VariantsCardStyled>
-              {addVariant.map((variant, index) => {
+              {addVariant.map((data, index) => {
                 {
                   return variantsFormGroups.map(({ label, key, options }) => (
                     <FormGroup key={key}>
                       <FormLabel>{label}</FormLabel>
-                      {variantsFormInputCheck(label, key, options)}
+                      {variantsFormInputCheck(label, key, options, index)}
                     </FormGroup>
                   ));
                 }
               })}
             </VariantsCardStyled>
-            <AddBtn onClick={clickToAddVariant}>+</AddBtn>
+            <AddButton onClick={clickToAddVariant}>+</AddButton>
           </FormRight>
         </Form>
       </form>
