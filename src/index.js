@@ -9,6 +9,7 @@ import Product from "./pages/Product/Product";
 import SignUp from "./pages/Profile/SignUp";
 import User from "./pages/User/User";
 import Upload from "./pages/User/Upload";
+import Test from "./pages/User/Test";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -23,6 +24,7 @@ root.render(
         <Route path="profile/signup" element={<SignUp />} />
         <Route path="user" element={<User />} />
         <Route path="user/upload" element={<Upload />} />
+        <Route path="test" element={<Test />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
