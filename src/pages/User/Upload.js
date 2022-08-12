@@ -9,18 +9,15 @@ const Wrapper = styled.div`
   align-items: center;
   text-align: center;
 `;
-
 const Title = styled.div`
   padding-bottom: 16px;
   border-bottom: 1px solid #979797;
   font-size: 24px;
   font-weight: bold;
 `;
-
 const Content = styled.div`
   margin-top: 24px;
 `;
-
 const BackButton = styled.button`
   background-color: #fff;
   border: solid 2px #e6e6e6;
@@ -42,10 +39,18 @@ const Form = styled.div`
 const FormLeft = styled.div`
   display: flex;
   width: 300px;
+  margin-right: 20px;
+`;
+const FormCenter = styled.div`
+  display: flex;
+  width: 400px;
+  margin-right: 20px;
 `;
 const FormRight = styled.div`
   display: flex;
-  width: 250px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const UploadCardStyled = styled.label`
@@ -105,22 +110,6 @@ const ClearBtn = styled.button`
   cursor: pointer;
 `;
 
-// const DragBox = styled.div`
-//   width: 250px;
-//   height: 100px;
-//   position: relative;
-//   text-align: center;
-//   font-weight: bold;
-//   line-height: 95px;
-//   color: black;
-//   border: 2px dashed #ccc;
-//   display: inline-block;
-//   transition: transform 0.3s;
-// `;
-// const Preview = styled.div`
-//   text-align: center;
-// `;
-
 const FormFieldSet = styled.fieldset`
   margin-bottom: 50px;
 `;
@@ -129,6 +118,7 @@ const FormGroup = styled.div`
   align-items: center;
   flex-wrap: wrap;
   margin-top: 30px;
+  margin-bottom: 30px;
   width: 400px;
   @media screen and (max-width: 1279px) {
     line-height: 17px;
@@ -194,6 +184,16 @@ const FormCheckLabel = styled.label`
     font-size: 14px;
   }
 `;
+const FormNumber = styled.input`
+  width: 80px;
+  height: 30px;
+  border-radius: 8px;
+  border: solid 1px #979797;
+  @media screen and (max-width: 1279px) {
+    margin-top: 10px;
+    width: 100%;
+  }
+`;
 
 const uploadFormGroups = [
   {
@@ -222,8 +222,7 @@ const uploadFormGroups = [
   { label: "產地", key: "place" },
   { label: "產品故事", key: "story", textarea: true },
 ];
-
-const inputCheck = (label, key, textarea, options) => {
+const uploadFormInputCheck = (label, key, textarea, options) => {
   if (options) {
     return options.map((option) => (
       <FormCheck key={option.value}>
@@ -238,15 +237,91 @@ const inputCheck = (label, key, textarea, options) => {
   }
 };
 
+const VariantsCardStyled = styled.label`
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
+`;
+
+const variantsFormGroups = [
+  {
+    label: "商品顏色",
+    key: "color",
+  },
+  { label: "商品庫存", key: "stock" },
+  {
+    label: "商品尺寸",
+    key: "size",
+    options: [
+      {
+        label: "S",
+        value: "S",
+      },
+      {
+        label: "M",
+        value: "M",
+      },
+      {
+        label: "L",
+        value: "L",
+      },
+      {
+        label: "XL",
+        value: "XL",
+      },
+    ],
+  },
+];
+const variantsFormInputCheck = (label, key, options) => {
+  if (options) {
+    return options.map((option) => (
+      <FormCheck key={option.value}>
+        <FormCheckInput type="radio" />
+        <FormCheckLabel>{option.label}</FormCheckLabel>
+      </FormCheck>
+    ));
+  } else {
+    return <FormNumber />;
+  }
+};
+
+const AddBtn = styled.button`
+  border: 0px;
+  border-radius: 30px;
+  padding: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+`;
+
 function Upload() {
   const navigate = useNavigate();
-  // const imgUpload = useRef();
-  // const dragNdrop = (event) => {
-  //   const filename = URL.createObjectURL(event.target.files[0]);
-  //   const imgInsert = <img src={filename} />;
-  //   imgUpload.setAttribute("src", filename);
-  // };
   const [fileSrc, setFileSrc] = useState(null);
+  const [addVariant, setAddVariant] = useState([1]);
+  const [createProductList, setCreateProductList] = useState({
+    category: "men",
+    title: "string",
+    description: "高抗寒素材選用，保暖也時尚有型",
+    price: "600",
+    texture: "棉、聚脂纖維",
+    wash: "手洗，溫水",
+    place: "中國",
+    note: "實品顏色以單品照為主",
+    story: "休閒與我們的時尚街頭服飾品牌毫不費力地融為一體",
+    main_image:
+      "https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851795868.jpg",
+    other_images: [
+      "https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851796227.jpg, https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851796227.jpg",
+    ],
+    variants: [
+      {
+        color: "FFFFFF",
+        size: "S",
+        stock: "10",
+      },
+    ],
+  });
+
   const handleUploadFile = (e) => {
     if (!e.target.files[0]) return;
     var reader = new FileReader();
@@ -260,6 +335,57 @@ function Upload() {
     e.preventDefault();
     setFileSrc(null);
   };
+  const clickToAddVariant = (e) => {
+    e.preventDefault();
+    let tempArr = [...addVariant];
+    tempArr.push(1);
+    setAddVariant(tempArr);
+  };
+
+  const clickToCreateProduct = () => {
+    const data = {
+      product_id: "1231",
+      category: "men",
+      title: "string",
+      description: "高抗寒素材選用，保暖也時尚有型",
+      price: "600",
+      texture: "棉、聚脂纖維",
+      wash: "手洗，溫水",
+      place: "中國",
+      note: "實品顏色以單品照為主",
+      story: "休閒與我們的時尚街頭服飾品牌毫不費力地融為一體",
+      main_image:
+        "https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851795868.jpg",
+      other_images: [
+        "https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851796227.jpg, https://d1lbsv9yxow2js.cloudfront.net/uploads/1657851796227.jpg",
+      ],
+      variants: [
+        {
+          color: "FFFFFF",
+          size: "S",
+          stock: "10",
+        },
+      ],
+    };
+    createProduct(data);
+  };
+  async function createProduct(data) {
+    const response = await fetch(
+      `https://kelvin-wu.site/api/1.0/admin/product`,
+      {
+        body: JSON.stringify(data),
+        headers: new Headers({
+          "Content-Type": "form-data",
+        }),
+        method: "POST",
+      }
+    );
+    console.log(response);
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error("error message");
+  }
 
   return (
     <Wrapper>
@@ -281,32 +407,35 @@ function Upload() {
               )}
               <UploadCardInput onChange={handleUploadFile} />
             </UploadCardStyled>
-            {/* <DragBox>Drag and Drop Image here</DragBox>
-            <input
-              type="file"
-              onChange={dragNdrop}
-              // ondragover={drag()}
-              // ondrop={drop()}
-              // id="uploadFile"
-            ></input>
-            <Preview
-              ref={imgUpload}
-              // id
-            /> */}
           </FormLeft>
-          <FormRight>
+          <FormCenter>
             <FormFieldSet>
               {uploadFormGroups.map(({ label, key, textarea, options }) => (
                 <FormGroup key={key}>
                   <FormLabel>{label}</FormLabel>
-                  {inputCheck(label, key, textarea, options)}
+                  {uploadFormInputCheck(label, key, textarea, options)}
                 </FormGroup>
               ))}
             </FormFieldSet>
+          </FormCenter>
+          <FormRight>
+            <VariantsCardStyled>
+              {addVariant.map((variant, index) => {
+                {
+                  return variantsFormGroups.map(({ label, key, options }) => (
+                    <FormGroup key={key}>
+                      <FormLabel>{label}</FormLabel>
+                      {variantsFormInputCheck(label, key, options)}
+                    </FormGroup>
+                  ));
+                }
+              })}
+            </VariantsCardStyled>
+            <AddBtn onClick={clickToAddVariant}>+</AddBtn>
           </FormRight>
         </Form>
       </form>
-      <BackButton onClick={() => navigate("/")}>返回首頁</BackButton>
+      <BackButton onClick={clickToCreateProduct}>新增商品</BackButton>
     </Wrapper>
   );
 }
