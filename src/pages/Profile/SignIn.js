@@ -111,10 +111,8 @@ function SignIn() {
       email: email,
       password: password,
     };
-    // console.log(data);
     signIn(data);
-    setEmail("");
-    setPassword("");
+    navigate("/");
   };
   async function signIn(data) {
     const response = await fetch(`https://kelvin-wu.site/api/1.0/user/signin`, {
@@ -124,11 +122,11 @@ function SignIn() {
       }),
       method: "POST",
     });
-    console.log(response);
-    if (response.ok) {
-      return await response.json();
-    }
-    throw new Error("error message");
+    let signInResponse = await response.json();
+    let signInData = signInResponse?.data;
+    let access_token = signInData?.access_token;
+    console.log(access_token);
+    window.localStorage.setItem("access_token", access_token);
   }
 
   return (
