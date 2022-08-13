@@ -490,12 +490,13 @@ function Upload() {
     formData.append("place", recipient.place);
     formData.append("note", recipient.note);
     formData.append("story", recipient.story);
-    formData.append("variants", recipientVariants);
+    formData.append("variants", JSON.stringify(recipientVariants));
     formData.append("main_image", recipientImage.main_image[0]);
     for (const file of recipientImage.other_images) {
       formData.append("other_images", file);
       // console.log(file);
     }
+    console.log(recipientVariants);
     for (const value of formData.values()) {
       console.log(value);
     }
@@ -503,9 +504,9 @@ function Upload() {
       `https://kelvin-wu.site/api/1.0/admin/product`,
       {
         body: formData,
-        headers: new Headers({
-          "Content-Type": "multipart/form-data",
-        }),
+        // headers: new Headers({
+        //   "Content-Type": "multipart/form-data",
+        // }),
         method: "POST",
       }
     );
@@ -545,28 +546,28 @@ function Upload() {
             </UploadCardStyled>
             <UploadCardStyled>
               {images.length > 0 ? (
-                <div>
-                  <MultiUploadPreview>
-                    {images.map((image, idx) => {
-                      return (
-                        <p key={idx}>
-                          <MultiUploadPreviewImg src={image} alt="" />
-                        </p>
-                      );
-                    })}
-                  </MultiUploadPreview>
-                </div>
-              ) : null}
-              {fileMultiSrc ? (
-                <>
-                  {/* <ClearBtn onClick={handleMultiClear}>刪除</ClearBtn> */}
-                  {/* <MultiUploadPreview>
-                    <MultiUploadPreviewImg src={fileMultiSrc} />
-                  </MultiUploadPreview> */}
-                </>
+                <MultiUploadPreview>
+                  {images.map((image, idx) => {
+                    return (
+                      <p key={idx}>
+                        <MultiUploadPreviewImg src={image} alt="" />
+                      </p>
+                    );
+                  })}
+                </MultiUploadPreview>
               ) : (
                 <UploadCardButton>其他商品照片上傳</UploadCardButton>
               )}
+              {/* {fileMultiSrc ? (
+                <>
+                   <ClearBtn onClick={handleMultiClear}>刪除</ClearBtn> 
+                   <MultiUploadPreview>
+                    <MultiUploadPreviewImg src={fileMultiSrc} />
+                  </MultiUploadPreview> 
+                </>
+              ) : (
+                <UploadCardButton>其他商品照片上傳</UploadCardButton>
+              )} */}
               <UploadCardInput multiple onChange={handleMultipleUploadFile} />
             </UploadCardStyled>
           </FormLeft>
