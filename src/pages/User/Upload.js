@@ -101,13 +101,22 @@ const UploadPreviewImg = styled.img`
   max-height: 100%;
 `;
 const MultiUploadPreview = styled.div`
-  max-width: 50%;
-  max-height: 50%;
-  text-align: center;
-`;
-const MultiUploadPreviewImg = styled.img`
   max-width: 100%;
   max-height: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  overflow-y: auto;
+`;
+const MultiUploadPreviewImg = styled.img`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  object-fit: cover;
+  top: 0;
+  left: 0;
 `;
 const ClearBtn = styled.button`
   border: 1px solid white;
@@ -158,6 +167,7 @@ const FormControl = styled.input`
   }
 `;
 const FormText = styled.textarea`
+  resize: none;
   width: 250px;
   height: 60px;
   border-radius: 8px;
@@ -239,6 +249,12 @@ const VariantsCardStyled = styled.label`
   border-radius: 12px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
 `;
+const ImgBx = styled.div`
+  position: relative;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+`;
 
 const variantsFormGroups = [
   {
@@ -270,12 +286,16 @@ const variantsFormGroups = [
   },
 ];
 
-const AddButton = styled.button`
+const ButtonContainer = styled.div`
+  display: flex;
+`;
+const VariantsButton = styled.button`
   border: 0px;
   border-radius: 30px;
   padding: 5px;
   cursor: pointer;
-  margin-top: 20px;
+  margin: 20px 5px 0 5px;
+  width: 50%;
 `;
 
 function Upload() {
@@ -520,6 +540,18 @@ function Upload() {
   //   setRecipientImage({ ...recipientImage, other_images: e.target.files });
   // };
 
+  const removeVaraintHandler = (e) => {
+    e.preventDefault();
+    setAddVariant((pre) => {
+      if (pre.length === 1) {
+        return pre;
+      } else {
+        pre.pop();
+        const newArr = [...pre];
+        return newArr;
+      }
+    });
+  };
   return (
     <Wrapper>
       <Title>商家上架系統</Title>
@@ -549,9 +581,9 @@ function Upload() {
                 <MultiUploadPreview>
                   {images.map((image, idx) => {
                     return (
-                      <p key={idx}>
-                        <MultiUploadPreviewImg src={image} alt="" />
-                      </p>
+                      <ImgBx>
+                        <MultiUploadPreviewImg key={idx} src={image} alt="" />
+                      </ImgBx>
                     );
                   })}
                 </MultiUploadPreview>
@@ -594,7 +626,10 @@ function Upload() {
                 }
               })}
             </VariantsCardStyled>
-            <AddButton onClick={clickToAddVariant}>+</AddButton>
+            <ButtonContainer>
+              <VariantsButton onClick={clickToAddVariant}>+</VariantsButton>
+              <VariantsButton onClick={removeVaraintHandler}>-</VariantsButton>
+            </ButtonContainer>
           </FormRight>
         </Form>
       </form>
