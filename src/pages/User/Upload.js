@@ -100,6 +100,15 @@ const UploadPreviewImg = styled.img`
   max-width: 100%;
   max-height: 100%;
 `;
+const MultiUploadPreview = styled.div`
+  max-width: 50%;
+  max-height: 50%;
+  text-align: center;
+`;
+const MultiUploadPreviewImg = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+`;
 const ClearBtn = styled.button`
   border: 1px solid white;
   position: absolute;
@@ -234,7 +243,7 @@ const VariantsCardStyled = styled.label`
 const variantsFormGroups = [
   {
     label: "商品顏色",
-    key: "color",
+    key: "color_id",
   },
   { label: "商品庫存", key: "stock" },
   {
@@ -273,6 +282,9 @@ function Upload() {
   const navigate = useNavigate();
   const [fileSrc, setFileSrc] = useState(null);
   const [fileMultiSrc, setMultiSrc] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [images, setImages] = useState([]);
+  const imageTypeRegex = /image\/(png|jpg|jpeg)/gm;
   const [addVariant, setAddVariant] = useState([1]);
   const [recipient, setRecipient] = useState({
     category: "",
@@ -286,37 +298,96 @@ function Upload() {
     story: "",
   });
   const [recipientVariants, setRecipientVariants] = useState([
-    { color: "", size: "", stock: "" },
+    { color_id: "", size: "", stock: "" },
   ]);
-  const [recipientImage, setRecipientImage] = useState(null);
+  const [recipientImage, setRecipientImage] = useState({
+    main_image: "",
+    other_images: "",
+  });
   // console.log(recipientVariants);
   const handleUploadFile = (e) => {
-    setRecipientImage(e.target.files);
     if (!e.target.files[0]) return;
     var reader = new FileReader();
     reader.onload = function () {
       setFileSrc(reader.result);
     };
     reader?.readAsDataURL(e?.target?.files[0]);
-    e.target.value = "";
+    // e.target.value = "";
+    setRecipientImage({ ...recipientImage, main_image: e.target.files });
   };
-  const handleClear = (e) => {
-    e.preventDefault();
-    setFileSrc(null);
-  };
+  // const handleClear = (e) => {
+  //   e.preventDefault();
+  //   setFileSrc(null);
+  // };
   const handleMultipleUploadFile = (e) => {
-    if (!e.target.files[0]) return;
-    var reader = new FileReader();
-    reader.onload = function () {
-      setMultiSrc(reader.result);
+    setRecipientImage({ ...recipientImage, other_images: e.target.files });
+    const { files } = e.target;
+    const validImageFiles = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type.match(imageTypeRegex)) {
+        validImageFiles.push(file);
+      }
+    }
+    if (validImageFiles.length) {
+      setImageFiles(validImageFiles);
+      return;
+    }
+    // if (!e.target.files) return;
+    // var files = e.target.files;
+    // for (var i = 0, f; (f = files[i]); i++) {
+    //   // Only process image files.
+    //   var reader = new FileReader();
+    //   reader.onload = function () {
+    //     setMultiSrc(reader.result);
+    //   };
+    //   reader.readAsDataURL(f);
+    //   console.log(f);
+    // }
+  };
+
+  useEffect(() => {
+    const images = [],
+      fileReaders = [];
+    let isCancel = false;
+    if (imageFiles.length) {
+      imageFiles.forEach((file) => {
+        const fileReader = new FileReader();
+        fileReaders.push(fileReader);
+        fileReader.onload = (e) => {
+          const { result } = e.target;
+          if (result) {
+            images.push(result);
+          }
+          if (images.length === imageFiles.length && !isCancel) {
+            setImages(images);
+          }
+        };
+        fileReader.readAsDataURL(file);
+      });
+    }
+    return () => {
+      isCancel = true;
+      fileReaders.forEach((fileReader) => {
+        if (fileReader.readyState === 1) {
+          fileReader.abort();
+        }
+      });
     };
-    reader?.readAsDataURL(e?.target?.files[0]);
-    e.target.value = "";
-  };
-  const handleMultiClear = (e) => {
-    e.preventDefault();
-    setMultiSrc(null);
-  };
+  }, [imageFiles]);
+
+  //   var reader = new FileReader();
+  //   reader.onload = function () {
+  //     setMultiSrc(reader.result);
+  //   };
+  //   reader?.readAsDataURL(e?.target?.files[0]);
+  //   console.log(fileMultiSrc);
+  //   e.target.value = "";
+  // };
+  // const handleMultiClear = (e) => {
+  //   e.preventDefault();
+  //   setMultiSrc(null);
+  // };
 
   const clickToAddVariant = (e) => {
     e.preventDefault();
@@ -325,27 +396,10 @@ function Upload() {
     setAddVariant(tempArr);
     setRecipientVariants([
       ...recipientVariants,
-      { color: "", size: "", stock: "" },
+      { color_id: "", size: "", stock: "" },
     ]);
   };
 
-  const clickToCreateProduct = () => {
-    createProduct();
-  };
-  async function createProduct() {
-    var formData = new FormData();
-    const response = await fetch(
-      `https://kelvin-wu.site/api/1.0/admin/product`,
-      {
-        body: formData,
-        // headers: new Headers({
-        //   "Content-Type": "multipart/form-data",
-        // }),
-        method: "POST",
-      }
-    );
-    console.log(response);
-  }
   const uploadFormInputCheck = (label, key, textarea, options) => {
     if (options) {
       return options.map((option) => (
@@ -422,6 +476,49 @@ function Upload() {
     }
   };
 
+  const clickToCreateProduct = () => {
+    createProduct();
+  };
+  async function createProduct() {
+    var formData = new FormData();
+    formData.append("category", recipient.category);
+    formData.append("title", recipient.title);
+    formData.append("description", recipient.description);
+    formData.append("price", recipient.price);
+    formData.append("texture", recipient.texture);
+    formData.append("wash", recipient.wash);
+    formData.append("place", recipient.place);
+    formData.append("note", recipient.note);
+    formData.append("story", recipient.story);
+    formData.append("variants", recipientVariants);
+    formData.append("main_image", recipientImage.main_image[0]);
+    for (const file of recipientImage.other_images) {
+      formData.append("other_images", file);
+      // console.log(file);
+    }
+    for (const value of formData.values()) {
+      console.log(value);
+    }
+    const response = await fetch(
+      `https://kelvin-wu.site/api/1.0/admin/product`,
+      {
+        body: formData,
+        headers: new Headers({
+          "Content-Type": "multipart/form-data",
+        }),
+        method: "POST",
+      }
+    );
+    console.log(response);
+  }
+
+  // const UploadFile = (e) => {
+  //   setRecipientImage({ ...recipientImage, main_image: e.target.files });
+  // };
+  // const MultipleUploadFile = (e) => {
+  //   setRecipientImage({ ...recipientImage, other_images: e.target.files });
+  // };
+
   return (
     <Wrapper>
       <Title>商家上架系統</Title>
@@ -429,11 +526,14 @@ function Upload() {
       <form>
         <Form>
           <FormLeft>
-            {/* <input type="file" onChange={uploadPhoto} /> */}
+            {/* 單張照片
+            <input type="file" onChange={UploadFile} />
+            多張照片
+            <input type="file" multiple onChange={MultipleUploadFile} /> */}
             <UploadCardStyled>
               {fileSrc ? (
                 <>
-                  <ClearBtn onClick={handleClear}>刪除</ClearBtn>
+                  {/* <ClearBtn onClick={handleClear}>刪除</ClearBtn> */}
                   <UploadPreview>
                     <UploadPreviewImg src={fileSrc} />
                   </UploadPreview>
@@ -444,12 +544,25 @@ function Upload() {
               <UploadCardInput onChange={handleUploadFile} />
             </UploadCardStyled>
             <UploadCardStyled>
+              {images.length > 0 ? (
+                <div>
+                  <MultiUploadPreview>
+                    {images.map((image, idx) => {
+                      return (
+                        <p key={idx}>
+                          <MultiUploadPreviewImg src={image} alt="" />
+                        </p>
+                      );
+                    })}
+                  </MultiUploadPreview>
+                </div>
+              ) : null}
               {fileMultiSrc ? (
                 <>
-                  <ClearBtn onClick={handleMultiClear}>刪除</ClearBtn>
-                  <UploadPreview>
-                    <UploadPreviewImg src={fileMultiSrc} />
-                  </UploadPreview>
+                  {/* <ClearBtn onClick={handleMultiClear}>刪除</ClearBtn> */}
+                  {/* <MultiUploadPreview>
+                    <MultiUploadPreviewImg src={fileMultiSrc} />
+                  </MultiUploadPreview> */}
                 </>
               ) : (
                 <UploadCardButton>其他商品照片上傳</UploadCardButton>
