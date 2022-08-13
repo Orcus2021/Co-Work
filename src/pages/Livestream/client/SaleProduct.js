@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import StandbyProduct from "./StandbyProduct";
 
 const dummy = {
   id: 201807242222,
@@ -51,7 +50,6 @@ const dummy = {
   ],
   sizes: ["S", "M", "L", "XL"],
 };
-const products = [dummy, dummy, dummy, dummy];
 
 const ProductContainer = styled.div`
   width: 100%;
@@ -166,106 +164,73 @@ const Btn = styled.button`
   cursor: pointer;
   height: 40px;
 `;
-const RemoveBtn = styled(Btn)`
+const AddCartBtn = styled(Btn)`
   background-color: rgb(240, 47, 47);
   color: white;
   border: 2px solid rgb(240, 47, 47);
   margin-bottom: 10px;
 `;
-const StandbyProductBx = styled.div`
-  border: 2px solid black;
-  width: 100%;
-  padding: 20px;
-  max-height: 460px;
-  overflow-y: scroll;
-`;
-const StreamerProduct = () => {
-  const [allProduct, setAllProduct] = useState(products || []);
-  const [saleProduct, setSaleProduct] = useState(null);
+
+const SaleProduct = (props) => {
   const [colorCode, setColorCode] = useState("");
   const [size, setSize] = useState("");
   const [qty, setQty] = useState(0);
-  const saleProductHandler = (product) => {
-    setSaleProduct(product);
-  };
-  const removeSaleHandler = () => {
-    setSaleProduct(null);
-  };
-  const deleteStandbyProduct = (id) => {
-    const newArr = products.filter((product) => {
-      return product.id !== id;
-    });
-    setAllProduct(newArr);
-  };
   useEffect(() => {
-    saleProduct?.variants.forEach((data) => {
+    dummy?.variants.forEach((data) => {
       if (size === data.size && colorCode === data.color_code) {
         setQty(data.stock);
       }
     });
-  }, [size, colorCode, saleProduct]);
+  }, [size, colorCode, dummy]);
 
+  const addToCartHandler = () => {
+    // 加入購物車
+  };
   return (
     <>
-      <ProductContainer>
-        <AddProductBx>
-          <SaleTitle>拍賣區</SaleTitle>
-          {saleProduct && (
-            <Product>
-              <ImgBx>
-                <ProductImg src={saleProduct.main_image} />
-              </ImgBx>
-              <Details>
-                <ProductTitle>{saleProduct.title}</ProductTitle>
-                <Price>原價:{saleProduct.price} 特價:100</Price>
-              </Details>
-              <Variants>
-                <ColorBx>
-                  {saleProduct.colors.map((color) => {
-                    return (
-                      <Color
-                        $colorCode={`#${color.code}`}
-                        onClick={() => {
-                          setColorCode(color.code);
-                        }}
-                      ></Color>
-                    );
-                  })}
-                </ColorBx>
-                <SizeBx>
-                  {saleProduct.sizes.map((size) => {
-                    return (
-                      <Size
-                        onClick={() => {
-                          setSize(size);
-                        }}
-                      >
-                        {size}
-                      </Size>
-                    );
-                  })}
-                </SizeBx>
-                <Qty>數量:{qty}件</Qty>
-              </Variants>
-              <RemoveBtn onClick={removeSaleHandler}>下架</RemoveBtn>
-            </Product>
-          )}
-        </AddProductBx>
-      </ProductContainer>
-      <SaleTitle>待上架區</SaleTitle>
-      <StandbyProductBx>
-        {allProduct.map((product) => {
-          return (
-            <StandbyProduct
-              product={product}
-              onSale={saleProductHandler}
-              onDelete={deleteStandbyProduct}
-            ></StandbyProduct>
-          );
-        })}
-      </StandbyProductBx>
+      <SaleTitle>拍賣區</SaleTitle>
+      {dummy && (
+        <Product key={dummy.id}>
+          <ImgBx>
+            <ProductImg src={dummy.main_image} />
+          </ImgBx>
+          <Details>
+            <ProductTitle>{dummy.title}</ProductTitle>
+            <Price>原價:{dummy.price} 特價:100</Price>
+          </Details>
+          <Variants>
+            <ColorBx>
+              {dummy.colors.map((color) => {
+                return (
+                  <Color
+                    $colorCode={`#${color.code}`}
+                    onClick={() => {
+                      setColorCode(color.code);
+                    }}
+                  ></Color>
+                );
+              })}
+            </ColorBx>
+            <SizeBx>
+              {dummy.sizes.map((size) => {
+                return (
+                  <Size
+                    onClick={() => {
+                      setSize(size);
+                    }}
+                  >
+                    {size}
+                  </Size>
+                );
+              })}
+            </SizeBx>
+            <Qty>數量:{qty}件</Qty>
+          </Variants>
+          <AddCartBtn onClick={addToCartHandler}>加入購物車</AddCartBtn>
+        </Product>
+      )}
     </>
   );
 };
 
-export default StreamerProduct;
+export default SaleProduct;

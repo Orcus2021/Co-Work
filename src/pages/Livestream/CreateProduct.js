@@ -114,7 +114,7 @@ const CouponInput = styled.input`
 `;
 
 const CreateProduct = (props) => {
-  const { isAll, onAll, isClear, onClear, product } = props;
+  const { isAll, onAll, isClear, onClear, product, onAdd, onRemove } = props;
   const [isChecked, setIsChecked] = useState(false);
   const [isCheckCoupon, setIsCheckCoupon] = useState(false);
 
@@ -128,6 +128,13 @@ const CreateProduct = (props) => {
       onClear(false);
     }
   }, [isAll, isClear]);
+  useEffect(() => {
+    if (isChecked) {
+      onAdd(product.id);
+    } else {
+      onRemove(product.id);
+    }
+  }, [isChecked]);
   const checkHandler = () => {
     setIsChecked((pre) => !pre);
   };

@@ -10,7 +10,8 @@ import SignUp from "./pages/Profile/SignUp";
 import Upload from "./pages/User/Upload";
 import Profile from "./pages/Profile/Profile";
 import Streamer from "./pages/Livestream/Streamer";
-import LiveStream from "./pages/Livestream/LiveStream";
+import LiveStream from "./pages/Livestream/client/LiveStream";
+import Test from "./pages/Livestream/Test";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -27,6 +28,7 @@ root.render(
         <Route path="profile" element={<Profile />} />
         <Route path="streamer" element={<Streamer />} />
         <Route path="liveStream" element={<LiveStream />} />
+        <Route path="test" element={<Test />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

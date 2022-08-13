@@ -1,11 +1,9 @@
-import React, { useRef, useState, useEffect, useContext } from "react";
+import React, { useRef, useState } from "react";
 import { io } from "socket.io-client";
-import Picker from "emoji-picker-react";
 import styled from "styled-components";
-import StreamerProduct from "./StreamerProduct";
-import CreateList from "./CreateList";
-import icon from "../../assets/icons8-happy.gif";
-// import { UserContext } from "../../contexts/UserContext";
+import Picker from "emoji-picker-react";
+import icon from "../../../assets/icons8-happy.gif";
+import SaleProduct from "./SaleProduct";
 
 const Container = styled.div`
   width: 1820px;
@@ -49,11 +47,6 @@ const Btn = styled.button`
   border: 2px solid black;
   cursor: pointer;
   height: 40px;
-`;
-const CameraBtn = styled(Btn)`
-  background-color: white;
-  color: black;
-  margin-right: 10px;
 `;
 const LiveBtn = styled(Btn)`
   background-color: black;
@@ -149,81 +142,37 @@ const EmojiBx = styled.div`
   right: 90px;
 `;
 
-const Streamer = () => {
-  const localStream = useRef();
-  const localVideo = useRef();
+const SaleProductBx = styled.div`
+  width: 100%;
+`;
+
+const LiveStream = () => {
+  const remoteVideo = useRef();
   const peerConnect = useRef();
+  const [test, setTest] = useState(0);
+  const room = "room1";
+  let socket;
+
   const chatBottom = useRef();
-  const [isStart, setIsStart] = useState(false);
+
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
-  // const userContext = useContext(UserContext);
-
-  const room = "room1";
-  let socket;
 
   const onEmojiClick = (event, emojiObject) => {
     setInput((pre) => pre + emojiObject.emoji);
     setChosenEmoji(false);
   };
 
-  const createStream = async () => {
-    const constraints = {
-      audio: true,
-      video: { width: 1280, height: 720 },
-    };
-
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    console.log(stream);
-    localStream.current = stream;
-    localVideo.current.srcObject = stream;
-  };
-
-  const initPeerConnection = () => {
-    const configuration = {
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    };
-    peerConnect.current = new RTCPeerConnection(configuration);
-    localStream.current.getTracks().forEach((track) => {
-      {
-        peerConnect.current.addTrack(track, localStream.current);
-      }
-    });
-    //create offer send offer
-
-    peerConnect.current.onicecandidate = (e) => {
-      // socket發送 ICE
-      if (e.candidate) {
-        socket.emit("candidate", {
-          label: e.candidate.sdpMLineIndex,
-          id: e.candidate.sdpMid,
-          candidate: e.candidate.candidate,
-        });
-      }
-    };
-  };
-  const createOffer = async () => {
-    if (!peerConnect.current) {
-      initPeerConnection();
-    }
-    const localSDP = peerConnect.current.createOffer({
-      offerToReceiveAudio: true,
-      offerToReceiveVideo: true,
-    });
-    await peerConnect.current.setLocalDescription(localSDP);
-    socket.emit("offer", peerConnect.current.localDescription);
-  };
-  // connect io
   const connectIO = () => {
     //   offer socket
     // socket = io("https://kelvin-wu.site");
     socket.on("offer", async (desc) => {
-      console.log("main receive desc", desc);
+      console.log("view receive desc", desc);
       await peerConnect.current.setRemoteDescription(desc);
-      await createOffer();
     });
-    //   candidate socket
+
+    // ICE socket
     socket.on("candidate", async (data) => {
       console.log("收到candidate", data);
       const candidate = new RTCIceCandidate({
@@ -234,27 +183,51 @@ const Streamer = () => {
     });
     socket.emit("join", room);
   };
-  // init live stream
-  const initLiveStream = () => {
-    if (localStream.current) {
-      connectIO();
+
+  const initPeerConnection = () => {
+    const configuration = {
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    };
+
+    peerConnect.current = new RTCPeerConnection(configuration);
+    peerConnect.current.addTransceiver("video", { direction: "recvonly" });
+    peerConnect.current.addTransceiver("audio", { direction: "recvonly" });
+
+    // 找尋到 ICE 候選位置後，送去 Server 與另一位配對
+    peerConnect.current.onicecandidate = (e) => {
+      console.log(e);
+      // emit ICE
+      if (e.candidate) {
+        socket.emit("candidate", {
+          label: e.candidate.sdpMLineIndex,
+          id: e.candidate.sdpMid,
+          candidate: e.candidate.candidate,
+        });
+      }
+    };
+    createAnswer();
+    // 監聽視訊流
+    peerConnect.current.onaddstream = ({ stream }) => {
+      console.log("收到stream", stream);
+      // 接收流並顯示遠端視訊
+      remoteVideo.current.srcObject = stream;
+      console.log(remoteVideo.current.srcObject);
+    };
+  };
+
+  const createAnswer = async () => {
+    if (!peerConnect.current) {
       initPeerConnection();
-      setIsStart(true);
     }
+    const localSDP = peerConnect.current.createAnswer();
+    await peerConnect.current.setLocalDescription(localSDP);
+    socket.emit("offer", peerConnect.current.localDescription);
+  };
+  const init = async () => {
+    initPeerConnection();
+    connectIO();
   };
 
-  const closeLiveHandler = () => {
-    if (peerConnect.current) {
-      setIsStart(false);
-      peerConnect.current.close();
-      peerConnect.current = null;
-    }
-    localStream.current.getTracks().forEach((track) => track.stop());
-  };
-
-  const inputHandler = (e) => {
-    setInput(e.target.value);
-  };
   const transferChatHandler = () => {
     // console.log(chatBottom.current.scrollTop);
     // console.log(chatBottom.current.scrollHeight);
@@ -269,31 +242,40 @@ const Streamer = () => {
       });
     }
   };
+
+  const inputHandler = (e) => {
+    setInput(e.target.value);
+  };
+
   const showEmoji = () => {
     setChosenEmoji((pre) => !pre);
   };
-  // useEffect(() => {
-  //   userContext.addUser({
-  //     id: 11245642,
-  //     provider: "facebook",
-  //     name: "Pei",
-  //     email: "pei@appworks.tw",
-  //     picture: "https://schoolvoyage.ga/images/123498.png",
-  //   });
-  // }, []);
 
+  const closeLiveHandler = () => {
+    if (peerConnect.current) {
+      peerConnect.current.close();
+      peerConnect.current = null;
+    }
+  };
+  // const testAAAAA = async () => {
+  //   const constraints = {
+  //     audio: true,
+  //     video: { width: 460, height: 600 },
+  //   };
+
+  //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  //   console.log(stream);
+
+  //   remoteVideo.current.srcObject = stream;
+  // };
   return (
     <Container>
       <VideoContainer>
         <VideoBx>
-          <Video muted autoPlay playsInline ref={localVideo}></Video>
+          <Video ref={remoteVideo} autoPlay controls playsInline></Video>
           <BtnBx>
-            <CameraBtn onClick={createStream}>開啟鏡頭</CameraBtn>
-            {isStart ? (
-              <StopBtn onClick={closeLiveHandler}>結束</StopBtn>
-            ) : (
-              <LiveBtn onClick={initLiveStream}>直播</LiveBtn>
-            )}
+            <LiveBtn onClick={init}>觀看</LiveBtn>
+            <StopBtn onClick={closeLiveHandler}>暫停</StopBtn>
           </BtnBx>
         </VideoBx>
         <ChatBx>
@@ -319,10 +301,11 @@ const Streamer = () => {
           )}
         </ChatBx>
       </VideoContainer>
-      <StreamerProduct></StreamerProduct>
-      <CreateList></CreateList>
+      <SaleProductBx>
+        <SaleProduct></SaleProduct>
+      </SaleProductBx>
     </Container>
   );
 };
 
-export default Streamer;
+export default LiveStream;
