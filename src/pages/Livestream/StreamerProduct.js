@@ -60,7 +60,6 @@ const ProductContainer = styled.div`
   align-items: center;
   height: 281px;
 `;
-
 const AddProductBx = styled.div`
   position: relative;
   width: 100%;
@@ -68,7 +67,6 @@ const AddProductBx = styled.div`
   padding: 20px;
   height: 281px;
 `;
-
 const SaleTitle = styled.p`
   width: 100%;
   text-align: center;
@@ -132,14 +130,9 @@ const ColorBx = styled.div`
 const Color = styled.div`
   width: 30px;
   height: 30px;
-<<<<<<< HEAD
   margin-right: 20px;
   background-color: ${(props) => props.$colorCode};
   cursor: pointer;
-=======
-  background-color: blueviolet;
-  margin-right: 20px;
->>>>>>> 2e4c045 (add:streamer)
 `;
 const SizeBx = styled.div`
   width: 100%;
@@ -157,10 +150,7 @@ const Size = styled.div`
   align-items: center;
   justify-content: center;
   margin-right: 20px;
-<<<<<<< HEAD
   cursor: pointer;
-=======
->>>>>>> 2e4c045 (add:streamer)
 `;
 const Qty = styled.p`
   width: 100%;
@@ -168,7 +158,6 @@ const Qty = styled.p`
   font-size: 1.5rem;
   text-align: center;
 `;
-
 const Btn = styled.button`
   width: 150px;
   font-size: 1rem;
@@ -177,14 +166,12 @@ const Btn = styled.button`
   cursor: pointer;
   height: 40px;
 `;
-
 const RemoveBtn = styled(Btn)`
   background-color: rgb(240, 47, 47);
   color: white;
   border: 2px solid rgb(240, 47, 47);
   margin-bottom: 10px;
 `;
-
 const StandbyProductBx = styled.div`
   border: 2px solid black;
   width: 100%;
@@ -192,7 +179,6 @@ const StandbyProductBx = styled.div`
   max-height: 460px;
   overflow-y: scroll;
 `;
-
 const StreamerProduct = () => {
   const [allProduct, setAllProduct] = useState(products || []);
   const [saleProduct, setSaleProduct] = useState(null);

@@ -100,9 +100,7 @@ const CreateList = () => {
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [searchProducts, setSearchProducts] = useState([]);
-
   const [uploadImg, setUploadImg] = useState("");
-
   const nextPagingRef = useRef();
   const waypointRef = useRef();
 
@@ -132,7 +130,6 @@ const CreateList = () => {
   const searchValueHandler = (e) => {
     setSearch(e.target.value);
   };
-
   const searchResultHandler = () => {
     // const data = await api.getProducts(category, 0);
     // setSearchProducts(data.data);

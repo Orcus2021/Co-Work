@@ -11,7 +11,6 @@ const Container = styled.div`
   width: 1820px;
   margin: 0 auto;
 `;
-
 const VideoContainer = styled.div`
   width: 100%;
   padding-top: 50px;
@@ -70,10 +69,7 @@ const ChatBx = styled.div`
   position: relative;
   width: 500px;
   height: 820px;
-<<<<<<< HEAD
   max-height: 820px;
-=======
->>>>>>> 2e4c045 (add:streamer)
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -84,7 +80,6 @@ const ChatBx = styled.div`
 `;
 const ChatContent = styled.div`
   width: 100%;
-
   height: 715px;
   display: flex;
   flex-direction: column;
@@ -124,7 +119,6 @@ const EnterBtn = styled.button`
   font-size: 1rem;
   cursor: pointer;
 `;
-
 const Message = styled.p`
   flex-grow: 1;
   font-size: 1.5rem;
@@ -162,7 +156,6 @@ const Streamer = () => {
   const localStream = useRef();
   const localVideo = useRef();
   const peerConnect = useRef();
-
   const chatBottom = useRef();
   const [isStart, setIsStart] = useState(false);
   const [chatContent, setChatContent] = useState([]);
@@ -227,7 +220,6 @@ const Streamer = () => {
   // connect io
   const connectIO = () => {
     //   offer socket
-
     // socket = io("https://kelvin-wu.site");
 
     socket.on("offer", async (desc) => {
@@ -251,7 +243,6 @@ const Streamer = () => {
     if (localStream.current) {
       connectIO();
       initPeerConnection();
-
       setIsStart(true);
     }
   };
@@ -259,7 +250,6 @@ const Streamer = () => {
   const closeLiveHandler = () => {
     if (peerConnect.current) {
       setIsStart(false);
-
       peerConnect.current.close();
       peerConnect.current = null;
     }
@@ -303,7 +293,6 @@ const Streamer = () => {
           <Video muted autoPlay playsInline ref={localVideo}></Video>
           <BtnBx>
             <CameraBtn onClick={createStream}>開啟鏡頭</CameraBtn>
-
             {isStart ? (
               <StopBtn onClick={closeLiveHandler}>結束</StopBtn>
             ) : (

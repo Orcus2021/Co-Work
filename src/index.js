@@ -31,7 +31,6 @@ root.render(
         <Route path="streamer" element={<Streamer />} />
         <Route path="liveStream" element={<LiveStream />} />
         <Route path="test" element={<Test />} />
-
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
