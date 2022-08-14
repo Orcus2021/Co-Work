@@ -5,9 +5,10 @@ import styled from "styled-components";
 import StreamerProduct from "./StreamerProduct";
 import CreateList from "./CreateList";
 import icon from "../../assets/icons8-happy.gif";
+import videoBackground from "../../assets/videoBackground.jpg";
 
 const Container = styled.div`
-  width: 1820px;
+  width: 90vw;
   margin: 0 auto;
 `;
 const VideoContainer = styled.div`
@@ -20,7 +21,8 @@ const VideoContainer = styled.div`
 `;
 const VideoBx = styled.div`
   position: relative;
-  width: 1320px;
+  width: 100%;
+  max-width: 1280px;
   height: 820px;
   overflow: hidden;
   padding: 20px;
@@ -28,11 +30,7 @@ const VideoBx = styled.div`
   border-right: none;
   border-radius: 30px 0 0 30px;
 `;
-const Video = styled.video`
-  width: 1280px;
-  height: 720px;
-  background-color: black;
-`;
+
 const BtnBx = styled.div`
   width: 100%;
   height: 60px;
@@ -149,6 +147,23 @@ const EmojiBx = styled.div`
   position: absolute;
   bottom: 100px;
   right: 90px;
+`;
+const VideoWrapper = styled.div`
+  position: relative;
+  width: 100%;
+
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+`;
+const Video = styled.video`
+  width: 100%;
+  max-width: 1280px;
+  max-height: 720px;
+  object-fit: contain;
+  background-image: url("../../assets/videoBackground.jpg");
+  background-repeat: ;
 `;
 
 const Streamer = () => {
@@ -456,7 +471,16 @@ const Streamer = () => {
     <Container>
       <VideoContainer>
         <VideoBx>
-          <Video muted autoPlay playsInline ref={localVideo}></Video>
+          <VideoWrapper>
+            <Video
+              poster={videoBackground}
+              muted
+              autoPlay
+              playsInline
+              ref={localVideo}
+            ></Video>
+          </VideoWrapper>
+
           <BtnBx>
             <CameraBtn onClick={createStream}>開啟鏡頭</CameraBtn>
             {isStart ? (

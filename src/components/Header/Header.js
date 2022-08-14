@@ -253,8 +253,7 @@ function Header() {
   }, [category]);
 
   const profileHandler = () => {
-    console.log(userCtx.user);
-    if (userCtx.user.accessToken) {
+    if (userCtx.user?.accessToken) {
       navigate("/user");
     } else {
       navigate("/profile/signin");

@@ -95,8 +95,8 @@ const SignInButton = styled.button`
 
 function SignIn() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const userCtx = useContext(UserContext);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -134,6 +134,7 @@ function SignIn() {
         provider: resUser.data.user.provider,
         email: resUser.data.user.email,
         picture: resUser.data.user.picture,
+        name: resUser.data.user.name,
       };
       userCtx.addUser(userObj);
       navigate("/");
