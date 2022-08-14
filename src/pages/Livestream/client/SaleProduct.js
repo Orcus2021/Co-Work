@@ -69,17 +69,20 @@ const SaleTitle = styled.p`
   width: 100%;
   text-align: center;
   font-size: 1.5rem;
-  border-bottom: 1px solid black;
+  color: #99262a;
+  border-bottom: 1px solid #99262a;
+  padding-bottom: 10px;
 `;
 const Product = styled.div`
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
-
   height: 210px;
 `;
 const ImgBx = styled.div`
+  border-radius: 30px;
   width: 150px;
   height: 100%;
   position: relative;
@@ -99,15 +102,14 @@ const Details = styled.div`
   justify-content: center;
 `;
 const ProductTitle = styled.p`
+  margin-bottom: 10px;
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Price = styled.p`
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Variants = styled.div`
@@ -143,17 +145,22 @@ const SizeBx = styled.div`
 const Size = styled.div`
   width: 30px;
   height: 30px;
-  background-color: rgb(131, 152, 222);
+  background-color: #99262a;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 20px;
   cursor: pointer;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+  }
 `;
 const Qty = styled.p`
   width: 100%;
 
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Btn = styled.button`
@@ -165,10 +172,15 @@ const Btn = styled.button`
   height: 40px;
 `;
 const AddCartBtn = styled(Btn)`
-  background-color: rgb(240, 47, 47);
+  background-color: #99262a;
   color: white;
-  border: 2px solid rgb(240, 47, 47);
+  border: #99262a;
   margin-bottom: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+  }
 `;
 
 const SaleProduct = (props) => {
@@ -196,7 +208,10 @@ const SaleProduct = (props) => {
           </ImgBx>
           <Details>
             <ProductTitle>{dummy.title}</ProductTitle>
-            <Price>原價:{dummy.price} 特價:100</Price>
+            <Price>
+              原價:{dummy.price} <br />
+              特價:100
+            </Price>
           </Details>
           <Variants>
             <ColorBx>

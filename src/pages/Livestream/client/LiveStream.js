@@ -7,34 +7,45 @@ import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
 
 const Container = styled.div`
-<<<<<<< HEAD
-  max-width: 1820px;
-=======
-  width: 1820px;
->>>>>>> d2f10ce31c8f41f077b91ce048091da2619d020b
   margin: 0 auto;
+  padding: 50px 0 50px;
+  max-width: 1160px;
+
+  @media screen and (max-width: 1279px) {
+    padding: 20px 24px 236px;
+  }
 `;
+const CardStyle = styled.div`
+  width: 120px;
+  height: 40px;
+  border-radius: 20px 20px 0 0;
+  margin-left: 50px;
+  text-align: center;
+  font-size: 20px;
+  border: #e08386;
+  padding-top: 10px;
+  color: white;
+  background-color: #e08386;
+`;
+
 const VideoContainer = styled.div`
   width: 100%;
-  padding-top: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
 const VideoBx = styled.div`
+  background-color: white;
   position: relative;
-<<<<<<< HEAD
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-=======
->>>>>>> d2f10ce31c8f41f077b91ce048091da2619d020b
-  width: 1320px;
-  height: 820px;
-  overflow: hidden;
+  width: 800px;
+  height: 750px;
+  overflow: scroll;
   padding: 20px;
-  border: 2.5px solid black;
+  border: 2.5px solid #e08386;
   border-right: none;
   border-radius: 30px 0 0 30px;
 `;
@@ -57,7 +68,7 @@ const Btn = styled.button`
   width: 150px;
   font-size: 1rem;
   border-radius: 30px;
-  border: 2px solid black;
+  border: 2px solid #e08386;
   cursor: pointer;
   height: 40px;
 `;
@@ -72,26 +83,28 @@ const StopBtn = styled(Btn)`
   border: 2px solid rgb(240, 47, 47);
 `;
 const ChatBx = styled.div`
+  background-color: white;
   position: relative;
-  width: 500px;
-  height: 820px;
-  max-height: 820px;
+  width: 400px;
+  height: 750px;
+  max-height: 750px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  border: 2.5px solid black;
+  border: 2.5px solid #e08386;
   border-left: none;
+  border-radius: 0px 30px 30px 0px;
 `;
 const ChatContent = styled.div`
+  background-color: white;
   width: 100%;
-  height: 715px;
+  height: 750px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow-y: scroll;
-  border: 2.5px solid black;
+  overflow-y: hidden;
+  border: 2.5px solid #e08386;
   border-radius: 30px 30px 0 0;
   padding: 10px;
 `;
@@ -101,7 +114,7 @@ const InputBx = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: black;
+  background-color: #e08386;
   border-radius: 0 0 30px 30px;
   padding: 5px 5px 5px 25px;
 `;
@@ -111,6 +124,7 @@ const Input = styled.input`
   outline: none;
   background-color: white;
   border-radius: 8px;
+  border: #e08386;
   font-size: 1.5rem;
 `;
 const EnterBtn = styled.button`
@@ -156,6 +170,7 @@ const EmojiBx = styled.div`
 `;
 
 const SaleProductBx = styled.div`
+  margin-top: 40px;
   width: 100%;
 `;
 
@@ -273,6 +288,7 @@ const LiveStream = () => {
 
   return (
     <Container>
+      <CardStyle>現正直播中</CardStyle>
       <VideoContainer>
         <VideoBx>
           {/* <Video ref={remoteVideo} autoPlay controls playsInline></Video>
@@ -281,6 +297,9 @@ const LiveStream = () => {
             <StopBtn onClick={closeLiveHandler}>暫停</StopBtn>
           </BtnBx> */}
           <Video onStart={init} videoRef={remoteVideo}></Video>
+          <SaleProductBx>
+            <SaleProduct></SaleProduct>
+          </SaleProductBx>
         </VideoBx>
         <ChatBx>
           <ChatContent ref={chatBottom}>
@@ -305,9 +324,6 @@ const LiveStream = () => {
           )}
         </ChatBx>
       </VideoContainer>
-      <SaleProductBx>
-        <SaleProduct></SaleProduct>
-      </SaleProductBx>
     </Container>
   );
 };
