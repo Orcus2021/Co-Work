@@ -60,10 +60,12 @@ const AddProduct = styled(Btn)`
   background-color: black;
   color: white;
 `;
+
 const UploadBtn = styled(Btn)`
   background-color: black;
   color: white;
 `;
+
 const ProductList = styled.div`
 flex-grow: 1;
 overflow-y: scroll;
@@ -111,6 +113,7 @@ const CreateList = () => {
   };
   const addProductHandler = (id) => {
     addProductArr.current.push(id);
+
     console.log(addProductArr.current);
   };
 
@@ -119,6 +122,7 @@ const CreateList = () => {
       return productId !== id;
     });
     addProductArr.current = newArr;
+
     console.log(addProductArr.current);
   };
   const categoryHandler = (e) => {
@@ -219,6 +223,7 @@ const CreateList = () => {
         <SelectAll onClick={allSelectHandler}>全選</SelectAll>
         <ClearAll onClick={clearAllHandler}>清除</ClearAll>
         <AddProduct>上架</AddProduct>
+
         <UploadLiveForm>
           <InputImg type="file" name="img" onChange={uploadImgHandler} />
           <ImgBx>{uploadImg && <Img src={uploadImg} />}</ImgBx>

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
+import { UserContext } from "../../contexts/UserContext";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -97,6 +98,7 @@ function SignUp() {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const userCtx = useContext(UserContext);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "name") {
@@ -131,7 +133,17 @@ function SignUp() {
     });
     console.log(response);
     if (response.ok) {
-      return await response.json();
+      const resUser = await response.json();
+      const userObj = {
+        accessToken: resUser.data.access_token,
+        accessExpired: resUser.data.access_expired,
+        loginAt: resUser.data.login_at,
+        id: resUser.data.user.id,
+        provider: resUser.data.user.provider,
+        email: resUser.data.user.email,
+        picture: resUser.data.user.picture,
+      };
+      userCtx.addUser(userObj);
     }
     throw new Error("error message");
   }

@@ -185,6 +185,7 @@ const StreamerProduct = () => {
   const [colorCode, setColorCode] = useState("");
   const [size, setSize] = useState("");
   const [qty, setQty] = useState(0);
+
   const saleProductHandler = (product) => {
     setSaleProduct(product);
   };
@@ -197,6 +198,7 @@ const StreamerProduct = () => {
     });
     setAllProduct(newArr);
   };
+
   useEffect(() => {
     saleProduct?.variants.forEach((data) => {
       if (size === data.size && colorCode === data.color_code) {

@@ -5,7 +5,6 @@ import styled from "styled-components";
 import StreamerProduct from "./StreamerProduct";
 import CreateList from "./CreateList";
 import icon from "../../assets/icons8-happy.gif";
-// import { UserContext } from "../../contexts/UserContext";
 
 const Container = styled.div`
   width: 1820px;
@@ -92,6 +91,9 @@ const ChatContent = styled.div`
 const InputBx = styled.div`
   width: 100%;
   min-height: 60px;
+  flex-grow: 1;
+  border: 2.5px solid black;
+  border-radius: 30px 30px 0 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -158,7 +160,22 @@ const Streamer = () => {
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
-  // const userContext = useContext(UserContext);
+
+  // -------------------第二方案--------------------
+  // const [connected, setConnected] = useState(false);
+  // const [cameraEnabled, setCameraEnabled] = useState(false);
+  // const [streaming, setStreaming] = useState(false);
+  // const [streamKey, setStreamKey] = useState("test");
+  // const [streamUrl, setStreamUrl] = useState("");
+  // const [textOverlay, setTextOverlay] = useState("");
+
+  // const inputStreamRef = useRef();
+  // const videoRef = useRef();
+  // const canvasRef = useRef();
+  // const wsRef = useRef();
+  // const mediaRecorderRef = useRef();
+  // const requestAnimationRef = useRef();
+  // const nameRef = useRef();
 
   const room = "room1";
   let socket;
@@ -218,6 +235,7 @@ const Streamer = () => {
   const connectIO = () => {
     //   offer socket
     // socket = io("https://kelvin-wu.site");
+
     socket.on("offer", async (desc) => {
       console.log("main receive desc", desc);
       await peerConnect.current.setRemoteDescription(desc);
@@ -256,11 +274,8 @@ const Streamer = () => {
     setInput(e.target.value);
   };
   const transferChatHandler = () => {
-    // console.log(chatBottom.current.scrollTop);
-    // console.log(chatBottom.current.scrollHeight);
     chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
-    // chatBottom.current?.scrollIntoView(false);
-    // chatBottom.current.scrollBottom = 0;
+
     const obj = { name: "Penny", content: input };
     if (input.trim().length > 0) {
       setChatContent((pre) => {
@@ -272,14 +287,169 @@ const Streamer = () => {
   const showEmoji = () => {
     setChosenEmoji((pre) => !pre);
   };
-  // useEffect(() => {
-  //   userContext.addUser({
-  //     id: 11245642,
-  //     provider: "facebook",
-  //     name: "Pei",
-  //     email: "pei@appworks.tw",
-  //     picture: "https://schoolvoyage.ga/images/123498.png",
+
+  // --------------第二方案-------------
+
+  // const CAMERA_CONSTRAINTS = {
+  //   audio: true,
+  //   video: true,
+  // };
+
+  // const getRecorderSettings = () => {
+  //   const settings = {};
+  //   if (MediaRecorder.isTypeSupported("video/mp4")) {
+  //     settings.format = "mp4";
+  //     settings.video = "h264";
+  //     settings.audio = "aac";
+  //   } else {
+  //     settings.format = "webm";
+  //     settings.audio = "opus";
+  //     settings.video = MediaRecorder.isTypeSupported("video/webm;codecs=h264")
+  //       ? "h264"
+  //       : "vp8";
+  //   }
+  //   return settings;
+  // };
+
+  // const getRecorderMimeType = () => {
+  //   const settings = getRecorderSettings();
+  //   const codecs =
+  //     settings.format === "webm"
+  //       ? `;codecs="${settings.video}, ${settings.audio}"`
+  //       : "";
+  //   return `video/${settings.format}${codecs}`;
+  // };
+
+  // const enableCamera = async () => {
+  //   inputStreamRef.current = await navigator.mediaDevices.getUserMedia(
+  //     CAMERA_CONSTRAINTS
+  //   );
+
+  //   videoRef.current.srcObject = inputStreamRef.current;
+
+  //   await videoRef.current.play();
+
+  //   canvasRef.current.height = videoRef.current.clientHeight;
+  //   canvasRef.current.width = videoRef.current.clientWidth;
+
+  //   requestAnimationRef.current = requestAnimationFrame(updateCanvas);
+
+  //   setCameraEnabled(true);
+  // };
+
+  // const updateCanvas = () => {
+  //   if (videoRef.current.ended || videoRef.current.paused) {
+  //     return;
+  //   }
+
+  //   const ctx = canvasRef.current.getContext("2d");
+
+  //   ctx.drawImage(
+  //     videoRef.current,
+  //     0,
+  //     0,
+  //     videoRef.current.clientWidth,
+  //     videoRef.current.clientHeight
+  //   );
+
+  //   ctx.fillStyle = "#FB3C4E";
+  //   ctx.font = "50px Akkurat";
+  //   const date = new Date();
+  //   const dateText = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date
+  //     .getMilliseconds()
+  //     .toString()
+  //     .padStart(3, "0")}`;
+  //   ctx.fillText(
+  //     `${nameRef.current}${dateText}`,
+  //     10,
+  //     50,
+  //     canvasRef.current.width - 20
+  //   );
+
+  //   requestAnimationRef.current = requestAnimationFrame(updateCanvas);
+  // };
+
+  // const stopStreaming = () => {
+  //   if (mediaRecorderRef.current.state === "recording") {
+  //     mediaRecorderRef.current.stop();
+  //   }
+
+  //   setStreaming(false);
+  // };
+
+  // const startStreaming = () => {
+  //   setStreaming(true);
+  //   const settings = getRecorderSettings();
+  //   // const protocol = window.location.protocol.replace("http", "wss");
+  //   // const wsUrl = new URL("wss://kelvin-wu.site/rtmp");
+  //   // wsUrl.searchParams.set("video", settings.video);
+  //   // wsUrl.searchParams.set("audio", settings.audio);
+  //   // if (streamUrl) {
+  //   //   wsUrl.searchParams.set("url", streamUrl);
+  //   // }
+  //   // if (streamKey) {
+  //   //   wsUrl.searchParams.set("key", streamKey);
+  //   // }
+
+  //   wsRef.current = new WebSocket(
+  //     "wss://kelvin-wu.site/rtmp?video=h264&audio=opus&url=rtmp%3A%2F%2F18.142.201.212%3A1935%2Flive&key=test"
+  //   );
+
+  //   console.log(wsRef.current.readyState);
+  //   wsRef.current.addEventListener("open", function open() {
+  //     console.log("open");
+  //     setConnected(true);
   //   });
+
+  //   wsRef.current.addEventListener("close", () => {
+  //     console.log("close");
+  //     setConnected(false);
+  //     stopStreaming();
+  //   });
+
+  //   const videoOutputStream = canvasRef.current.captureStream(30); // 30 FPS
+
+  //   // Let's do some extra work to get audio to join the party.
+  //   // https://hacks.mozilla.org/2016/04/record-almost-everything-in-the-browser-with-mediarecorder/
+  //   const audioStream = new MediaStream();
+  //   const audioTracks = inputStreamRef.current.getAudioTracks();
+  //   audioTracks.forEach(function (track) {
+  //     audioStream.addTrack(track);
+  //   });
+
+  //   const outputStream = new MediaStream();
+  //   [audioStream, videoOutputStream].forEach(function (s) {
+  //     s.getTracks().forEach(function (t) {
+  //       outputStream.addTrack(t);
+  //     });
+  //   });
+
+  //   mediaRecorderRef.current = new MediaRecorder(outputStream, {
+  //     mimeType: getRecorderMimeType(),
+  //     videoBitsPerSecond: 3000000,
+  //     audioBitsPerSecond: 64000,
+  //   });
+
+  //   mediaRecorderRef.current.addEventListener("dataavailable", (e) => {
+  //     wsRef.current.send(e.data);
+  //   });
+
+  //   mediaRecorderRef.current.addEventListener("stop", () => {
+  //     stopStreaming();
+  //     wsRef.current.close();
+  //   });
+
+  //   mediaRecorderRef.current.start(1000);
+  // };
+
+  // useEffect(() => {
+  //   nameRef.current = textOverlay;
+  // }, [textOverlay]);
+
+  // useEffect(() => {
+  //   return () => {
+  //     cancelAnimationFrame(requestAnimationRef.current);
+  //   };
   // }, []);
 
   return (
