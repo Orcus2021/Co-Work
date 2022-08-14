@@ -69,8 +69,8 @@ const SaleTitle = styled.p`
   width: 100%;
   text-align: center;
   font-size: 1.5rem;
-  color: #e08386;
-  border-bottom: 1px solid #e08386;
+  color: #99262a;
+  border-bottom: 1px solid #99262a;
   padding-bottom: 10px;
 `;
 const Product = styled.div`
@@ -144,7 +144,8 @@ const SizeBx = styled.div`
 const Size = styled.div`
   width: 30px;
   height: 30px;
-  background-color: rgb(131, 152, 222);
+  background-color: #99262a;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -166,9 +167,9 @@ const Btn = styled.button`
   height: 40px;
 `;
 const AddCartBtn = styled(Btn)`
-  background-color: #d5575c;
+  background-color: #99262a;
   color: white;
-  border: #d5575c;
+  border: #99262a;
   margin-bottom: 10px;
   cursor: pointer;
   &:hover {

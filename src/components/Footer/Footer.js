@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: #e08386;
+  background-color: #f6dbdb;
   font-family: PingFangTC;
 
   @media screen and (max-width: 1279px) {
@@ -51,7 +51,7 @@ const SiteLink = styled.div`
   width: 134px;
   text-align: center;
   position: relative;
-  color: #f5f5f5;
+  color: #99262a;
   cursor: pointer;
 
   @media screen and (max-width: 1279px) {
@@ -109,7 +109,7 @@ const Copywright = styled.div`
   margin-left: 30px;
   line-height: 17px;
   font-size: 12px;
-  color: #fff;
+  color: #99262a;
 
   @media screen and (max-width: 1279px) {
     margin-left: 0;

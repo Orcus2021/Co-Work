@@ -7,22 +7,24 @@ import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
 
 const Container = styled.div`
-  max-width: 1820px;
   margin: 0 auto;
-  margin: 20px;
+  padding: 50px 0 50px;
+  max-width: 1160px;
+
+  @media screen and (max-width: 1279px) {
+    padding: 20px 24px 236px;
+  }
 `;
 
 const VideoContainer = styled.div`
   width: 100%;
-  padding-top: 50px;
-  padding-bottom: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
 const VideoBx = styled.div`
-  background-color: #fdf8f8;
+  background-color: #edb6b8;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -31,7 +33,7 @@ const VideoBx = styled.div`
   height: 750px;
   overflow: scroll;
   padding: 20px;
-  border: 2.5px solid #e08386;
+  border: 2.5px solid #edb6b8;
   border-right: none;
   border-radius: 30px 0 0 30px;
 `;
@@ -69,7 +71,7 @@ const StopBtn = styled(Btn)`
   border: 2px solid rgb(240, 47, 47);
 `;
 const ChatBx = styled.div`
-  background-color: #fdf8f8;
+  background-color: #edb6b8;
   position: relative;
   width: 400px;
   height: 750px;
@@ -78,7 +80,7 @@ const ChatBx = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2.5px solid #e08386;
+  border: 2.5px solid #edb6b8;
   border-left: none;
   border-radius: 0px 30px 30px 0px;
 `;
