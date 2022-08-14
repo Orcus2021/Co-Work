@@ -69,17 +69,20 @@ const SaleTitle = styled.p`
   width: 100%;
   text-align: center;
   font-size: 1.5rem;
-  border-bottom: 1px solid black;
+  color: #e08386;
+  border-bottom: 1px solid #e08386;
+  padding-bottom: 10px;
 `;
 const Product = styled.div`
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
-
   height: 210px;
 `;
 const ImgBx = styled.div`
+  border-radius: 30px;
   width: 150px;
   height: 100%;
   position: relative;
@@ -100,14 +103,12 @@ const Details = styled.div`
 `;
 const ProductTitle = styled.p`
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-align: center;
 `;
 const Price = styled.p`
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-align: center;
 `;
 const Variants = styled.div`
@@ -153,7 +154,7 @@ const Size = styled.div`
 const Qty = styled.p`
   width: 100%;
 
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-align: center;
 `;
 const Btn = styled.button`
@@ -165,10 +166,14 @@ const Btn = styled.button`
   height: 40px;
 `;
 const AddCartBtn = styled(Btn)`
-  background-color: rgb(240, 47, 47);
+  background-color: #d5575c;
   color: white;
-  border: 2px solid rgb(240, 47, 47);
+  border: #d5575c;
   margin-bottom: 10px;
+  cursor: pointer;
+  &:hover {
+    color: #000;
+  }
 `;
 
 const SaleProduct = (props) => {
