@@ -56,7 +56,6 @@ const Test = () => {
 
     await videoRef.current.play();
 
-    // We need to set the canvas height/width to match the video element.
     canvasRef.current.height = videoRef.current.clientHeight;
     canvasRef.current.width = videoRef.current.clientWidth;
 
@@ -109,18 +108,20 @@ const Test = () => {
     setStreaming(true);
     const settings = getRecorderSettings();
     // const protocol = window.location.protocol.replace("http", "wss");
-    const wsUrl = new URL("ws://kelvin-wu.site/rtmp");
-    wsUrl.searchParams.set("video", settings.video);
-    wsUrl.searchParams.set("audio", settings.audio);
-    if (streamUrl) {
-      wsUrl.searchParams.set("url", streamUrl);
-    }
-    if (streamKey) {
-      wsUrl.searchParams.set("key", streamKey);
-    }
+    // const wsUrl = new URL("wss://kelvin-wu.site/rtmp");
+    // wsUrl.searchParams.set("video", settings.video);
+    // wsUrl.searchParams.set("audio", settings.audio);
+    // if (streamUrl) {
+    //   wsUrl.searchParams.set("url", streamUrl);
+    // }
+    // if (streamKey) {
+    //   wsUrl.searchParams.set("key", streamKey);
+    // }
 
-    wsRef.current = new WebSocket(wsUrl);
-    console.log(wsUrl);
+    wsRef.current = new WebSocket(
+      "wss://kelvin-wu.site/rtmp?video=h264&audio=opus&url=rtmp%3A%2F%2F18.142.201.212%3A1935%2Flive&key=test"
+    );
+
     console.log(wsRef.current.readyState);
     wsRef.current.addEventListener("open", function open() {
       console.log("open");

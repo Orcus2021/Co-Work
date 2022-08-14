@@ -27,7 +27,6 @@ root.render(
         <Route path="profile/signup" element={<SignUp />} />
         <Route path="user" element={<User />} />
         <Route path="user/upload" element={<Upload />} />
-
         <Route path="streamer" element={<Streamer />} />
         <Route path="liveStream" element={<LiveStream />} />
         <Route path="test" element={<Test />} />
