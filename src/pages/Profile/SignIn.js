@@ -60,11 +60,11 @@ const InputGroup = styled.div`
   }
 `;
 
-const ToSignIn = styled.div`
+const ToSignUp = styled.div`
   font-size: 17px;
   margin-bottom: 20px;
 `;
-const SignInbtn = styled.button`
+const SignUpbtn = styled.button`
   background-color: #fff;
   border: 0px;
   border-radius: 30px;
@@ -77,7 +77,7 @@ const SignInbtn = styled.button`
   }
 `;
 
-const SignUpButton = styled.button`
+const SignInButton = styled.button`
   background-color: #fff;
   border: solid 2px #e6e6e6;
   padding: 10px 20px;
@@ -92,16 +92,12 @@ const SignUpButton = styled.button`
   }
 `;
 
-function SignUp() {
+function SignIn() {
   const navigate = useNavigate();
-  const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "name") {
-      setName(value);
-    }
     if (name === "email") {
       setEmail(value);
     }
@@ -111,44 +107,34 @@ function SignUp() {
   };
   const handleSubmit = async () => {
     const data = {
-      name: name,
+      provider: "native",
       email: email,
       password: password,
     };
-    // console.log(data);
-    signUp(data);
-    setName("");
-    setEmail("");
-    setPassword("");
+    signIn(data);
+    navigate("/");
   };
-  async function signUp(data) {
-    const response = await fetch(`https://kelvin-wu.site/api/1.0/user/signup`, {
+  async function signIn(data) {
+    const response = await fetch(`https://kelvin-wu.site/api/1.0/user/signin`, {
       body: JSON.stringify(data),
       headers: new Headers({
         "Content-Type": "application/json",
       }),
       method: "POST",
     });
-    console.log(response);
-    if (response.ok) {
-      return await response.json();
-    }
-    throw new Error("error message");
+    let signInResponse = await response.json();
+    let signInData = signInResponse?.data;
+    let access_token = signInData?.access_token;
+    console.log(access_token);
+    window.localStorage.setItem("access_token", access_token);
   }
 
   return (
     <Wrapper>
-      <Title>會員註冊</Title>
+      <Title>會員登入</Title>
       <form>
         <Form>
           <InputGroup>
-            <InputLabel>姓名</InputLabel>
-            <InputControl
-              type="text"
-              name="name"
-              value={name}
-              onChange={(e) => handleInputChange(e)}
-            />
             <InputLabel>信箱</InputLabel>
             <InputControl
               type="text"
@@ -166,15 +152,15 @@ function SignUp() {
           </InputGroup>
         </Form>
       </form>
-      <ToSignIn>
-        已有會員？
-        <SignInbtn onClick={() => navigate("/profile/signin")}>
-          返回登入頁
-        </SignInbtn>
-      </ToSignIn>
-      <SignUpButton onClick={() => handleSubmit()}>註冊</SignUpButton>
+      <ToSignUp>
+        尚未成為會員？
+        <SignUpbtn onClick={() => navigate("/profile/signup")}>
+          點我註冊
+        </SignUpbtn>
+      </ToSignUp>
+      <SignInButton onClick={() => handleSubmit()}>登入</SignInButton>
     </Wrapper>
   );
 }
 
-export default SignUp;
+export default SignIn;

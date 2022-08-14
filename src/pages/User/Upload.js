@@ -9,18 +9,15 @@ const Wrapper = styled.div`
   align-items: center;
   text-align: center;
 `;
-
 const Title = styled.div`
   padding-bottom: 16px;
   border-bottom: 1px solid #979797;
   font-size: 24px;
   font-weight: bold;
 `;
-
 const Content = styled.div`
   margin-top: 24px;
 `;
-
 const BackButton = styled.button`
   background-color: #fff;
   border: solid 2px #e6e6e6;
@@ -41,11 +38,20 @@ const Form = styled.div`
 `;
 const FormLeft = styled.div`
   display: flex;
+  flex-direction: column;
   width: 300px;
+  margin-right: 20px;
+`;
+const FormCenter = styled.div`
+  display: flex;
+  width: 400px;
+  margin-right: 20px;
 `;
 const FormRight = styled.div`
   display: flex;
-  width: 250px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const UploadCardStyled = styled.label`
@@ -94,6 +100,24 @@ const UploadPreviewImg = styled.img`
   max-width: 100%;
   max-height: 100%;
 `;
+const MultiUploadPreview = styled.div`
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  overflow-y: auto;
+`;
+const MultiUploadPreviewImg = styled.img`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+`;
 const ClearBtn = styled.button`
   border: 1px solid white;
   position: absolute;
@@ -105,22 +129,6 @@ const ClearBtn = styled.button`
   cursor: pointer;
 `;
 
-// const DragBox = styled.div`
-//   width: 250px;
-//   height: 100px;
-//   position: relative;
-//   text-align: center;
-//   font-weight: bold;
-//   line-height: 95px;
-//   color: black;
-//   border: 2px dashed #ccc;
-//   display: inline-block;
-//   transition: transform 0.3s;
-// `;
-// const Preview = styled.div`
-//   text-align: center;
-// `;
-
 const FormFieldSet = styled.fieldset`
   margin-bottom: 50px;
 `;
@@ -129,6 +137,7 @@ const FormGroup = styled.div`
   align-items: center;
   flex-wrap: wrap;
   margin-top: 30px;
+  margin-bottom: 30px;
   width: 400px;
   @media screen and (max-width: 1279px) {
     line-height: 17px;
@@ -158,6 +167,7 @@ const FormControl = styled.input`
   }
 `;
 const FormText = styled.textarea`
+  resize: none;
   width: 250px;
   height: 60px;
   border-radius: 8px;
@@ -194,6 +204,16 @@ const FormCheckLabel = styled.label`
     font-size: 14px;
   }
 `;
+const FormNumber = styled.input`
+  width: 80px;
+  height: 30px;
+  border-radius: 8px;
+  border: solid 1px #979797;
+  @media screen and (max-width: 1279px) {
+    margin-top: 10px;
+    width: 100%;
+  }
+`;
 
 const uploadFormGroups = [
   {
@@ -223,30 +243,88 @@ const uploadFormGroups = [
   { label: "產品故事", key: "story", textarea: true },
 ];
 
-const inputCheck = (label, key, textarea, options) => {
-  if (options) {
-    return options.map((option) => (
-      <FormCheck key={option.value}>
-        <FormCheckInput type="radio" />
-        <FormCheckLabel>{option.label}</FormCheckLabel>
-      </FormCheck>
-    ));
-  } else if (textarea) {
-    return <FormText />;
-  } else {
-    return <FormControl />;
-  }
-};
+const VariantsCardStyled = styled.label`
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
+`;
+const ImgBx = styled.div`
+  position: relative;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+`;
+
+const variantsFormGroups = [
+  {
+    label: "商品顏色",
+    key: "color_id",
+  },
+  { label: "商品庫存", key: "stock" },
+  {
+    label: "商品尺寸",
+    key: "size",
+    options: [
+      {
+        label: "S",
+        value: "S",
+      },
+      {
+        label: "M",
+        value: "M",
+      },
+      {
+        label: "L",
+        value: "L",
+      },
+      {
+        label: "XL",
+        value: "XL",
+      },
+    ],
+  },
+];
+
+const ButtonContainer = styled.div`
+  display: flex;
+`;
+const VariantsButton = styled.button`
+  border: 0px;
+  border-radius: 30px;
+  padding: 5px;
+  cursor: pointer;
+  margin: 20px 5px 0 5px;
+  width: 50%;
+`;
 
 function Upload() {
   const navigate = useNavigate();
-  // const imgUpload = useRef();
-  // const dragNdrop = (event) => {
-  //   const filename = URL.createObjectURL(event.target.files[0]);
-  //   const imgInsert = <img src={filename} />;
-  //   imgUpload.setAttribute("src", filename);
-  // };
   const [fileSrc, setFileSrc] = useState(null);
+  const [fileMultiSrc, setMultiSrc] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [images, setImages] = useState([]);
+  const imageTypeRegex = /image\/(png|jpg|jpeg)/gm;
+  const [addVariant, setAddVariant] = useState([1]);
+  const [recipient, setRecipient] = useState({
+    category: "",
+    title: "",
+    description: "",
+    price: "",
+    texture: "",
+    wash: "",
+    place: "",
+    note: "實品顏色以單品照為主",
+    story: "",
+  });
+  const [recipientVariants, setRecipientVariants] = useState([
+    { color_id: "", size: "", stock: "" },
+  ]);
+  const [recipientImage, setRecipientImage] = useState({
+    main_image: "",
+    other_images: "",
+  });
+  // console.log(recipientVariants);
   const handleUploadFile = (e) => {
     if (!e.target.files[0]) return;
     var reader = new FileReader();
@@ -254,13 +332,226 @@ function Upload() {
       setFileSrc(reader.result);
     };
     reader?.readAsDataURL(e?.target?.files[0]);
-    e.target.value = "";
+    // e.target.value = "";
+    setRecipientImage({ ...recipientImage, main_image: e.target.files });
   };
-  const handleClear = (e) => {
-    e.preventDefault();
-    setFileSrc(null);
+  // const handleClear = (e) => {
+  //   e.preventDefault();
+  //   setFileSrc(null);
+  // };
+  const handleMultipleUploadFile = (e) => {
+    setRecipientImage({ ...recipientImage, other_images: e.target.files });
+    const { files } = e.target;
+    const validImageFiles = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type.match(imageTypeRegex)) {
+        validImageFiles.push(file);
+      }
+    }
+    if (validImageFiles.length) {
+      setImageFiles(validImageFiles);
+      return;
+    }
+    // if (!e.target.files) return;
+    // var files = e.target.files;
+    // for (var i = 0, f; (f = files[i]); i++) {
+    //   // Only process image files.
+    //   var reader = new FileReader();
+    //   reader.onload = function () {
+    //     setMultiSrc(reader.result);
+    //   };
+    //   reader.readAsDataURL(f);
+    //   console.log(f);
+    // }
   };
 
+  useEffect(() => {
+    const images = [],
+      fileReaders = [];
+    let isCancel = false;
+    if (imageFiles.length) {
+      imageFiles.forEach((file) => {
+        const fileReader = new FileReader();
+        fileReaders.push(fileReader);
+        fileReader.onload = (e) => {
+          const { result } = e.target;
+          if (result) {
+            images.push(result);
+          }
+          if (images.length === imageFiles.length && !isCancel) {
+            setImages(images);
+          }
+        };
+        fileReader.readAsDataURL(file);
+      });
+    }
+    return () => {
+      isCancel = true;
+      fileReaders.forEach((fileReader) => {
+        if (fileReader.readyState === 1) {
+          fileReader.abort();
+        }
+      });
+    };
+  }, [imageFiles]);
+
+  //   var reader = new FileReader();
+  //   reader.onload = function () {
+  //     setMultiSrc(reader.result);
+  //   };
+  //   reader?.readAsDataURL(e?.target?.files[0]);
+  //   console.log(fileMultiSrc);
+  //   e.target.value = "";
+  // };
+  // const handleMultiClear = (e) => {
+  //   e.preventDefault();
+  //   setMultiSrc(null);
+  // };
+
+  const clickToAddVariant = (e) => {
+    e.preventDefault();
+    let tempArr = [...addVariant];
+    tempArr.push(1);
+    setAddVariant(tempArr);
+    setRecipientVariants([
+      ...recipientVariants,
+      { color_id: "", size: "", stock: "" },
+    ]);
+  };
+
+  const uploadFormInputCheck = (label, key, textarea, options) => {
+    if (options) {
+      return options.map((option) => (
+        <FormCheck key={option.value}>
+          <FormCheckInput
+            type="radio"
+            checked={recipient.category === option.value}
+            onChange={(e) => {
+              if (e.target.checked)
+                setRecipient({ ...recipient, category: option.value });
+            }}
+          />
+          <FormCheckLabel>{option.label}</FormCheckLabel>
+        </FormCheck>
+      ));
+    } else if (textarea) {
+      return (
+        <FormText
+          value={recipient[key]}
+          onChange={(e) =>
+            setRecipient({ ...recipient, [key]: e.target.value })
+          }
+        />
+      );
+    } else {
+      return (
+        <FormControl
+          value={recipient[key]}
+          onChange={(e) =>
+            setRecipient({ ...recipient, [key]: e.target.value })
+          }
+        />
+      );
+    }
+  };
+  const variantsFormInputCheck = (label, key, options, index) => {
+    // console.log(index);
+    if (options) {
+      return options.map((option) => (
+        <FormCheck key={option.value}>
+          <FormCheckInput
+            type="radio"
+            name="size"
+            onChange={(e) => {
+              if (e.target.checked)
+                setRecipientVariants((pre) => {
+                  pre[index].size = option.value;
+                  const newArr = [...pre];
+                  return newArr;
+                });
+            }}
+          />
+          <FormCheckLabel>{option.label}</FormCheckLabel>
+        </FormCheck>
+      ));
+    } else {
+      return (
+        <FormNumber
+          value={recipientVariants[key]}
+          onChange={
+            (e) =>
+              setRecipientVariants((pre) => {
+                pre[index][key] = e.target.value;
+                const newArr = [...pre];
+                return newArr;
+              })
+            // setRecipientVariants([
+            //   ...recipientVariants,
+            //   { [key]: e.target.value },
+            // ])
+          }
+        />
+      );
+    }
+  };
+
+  const clickToCreateProduct = () => {
+    createProduct();
+  };
+  async function createProduct() {
+    var formData = new FormData();
+    formData.append("category", recipient.category);
+    formData.append("title", recipient.title);
+    formData.append("description", recipient.description);
+    formData.append("price", recipient.price);
+    formData.append("texture", recipient.texture);
+    formData.append("wash", recipient.wash);
+    formData.append("place", recipient.place);
+    formData.append("note", recipient.note);
+    formData.append("story", recipient.story);
+    formData.append("variants", JSON.stringify(recipientVariants));
+    formData.append("main_image", recipientImage.main_image[0]);
+    for (const file of recipientImage.other_images) {
+      formData.append("other_images", file);
+      // console.log(file);
+    }
+    console.log(recipientVariants);
+    for (const value of formData.values()) {
+      console.log(value);
+    }
+    const response = await fetch(
+      `https://kelvin-wu.site/api/1.0/admin/product`,
+      {
+        body: formData,
+        // headers: new Headers({
+        //   "Content-Type": "multipart/form-data",
+        // }),
+        method: "POST",
+      }
+    );
+    console.log(response);
+  }
+
+  // const UploadFile = (e) => {
+  //   setRecipientImage({ ...recipientImage, main_image: e.target.files });
+  // };
+  // const MultipleUploadFile = (e) => {
+  //   setRecipientImage({ ...recipientImage, other_images: e.target.files });
+  // };
+
+  const removeVaraintHandler = (e) => {
+    e.preventDefault();
+    setAddVariant((pre) => {
+      if (pre.length === 1) {
+        return pre;
+      } else {
+        pre.pop();
+        const newArr = [...pre];
+        return newArr;
+      }
+    });
+  };
   return (
     <Wrapper>
       <Title>商家上架系統</Title>
@@ -268,45 +559,81 @@ function Upload() {
       <form>
         <Form>
           <FormLeft>
+            {/* 單張照片
+            <input type="file" onChange={UploadFile} />
+            多張照片
+            <input type="file" multiple onChange={MultipleUploadFile} /> */}
             <UploadCardStyled>
               {fileSrc ? (
                 <>
-                  <ClearBtn onClick={handleClear}>刪除</ClearBtn>
+                  {/* <ClearBtn onClick={handleClear}>刪除</ClearBtn> */}
                   <UploadPreview>
                     <UploadPreviewImg src={fileSrc} />
                   </UploadPreview>
                 </>
               ) : (
-                <UploadCardButton>商品照片上傳</UploadCardButton>
+                <UploadCardButton>主要商品照片上傳</UploadCardButton>
               )}
               <UploadCardInput onChange={handleUploadFile} />
             </UploadCardStyled>
-            {/* <DragBox>Drag and Drop Image here</DragBox>
-            <input
-              type="file"
-              onChange={dragNdrop}
-              // ondragover={drag()}
-              // ondrop={drop()}
-              // id="uploadFile"
-            ></input>
-            <Preview
-              ref={imgUpload}
-              // id
-            /> */}
+            <UploadCardStyled>
+              {images.length > 0 ? (
+                <MultiUploadPreview>
+                  {images.map((image, idx) => {
+                    return (
+                      <ImgBx>
+                        <MultiUploadPreviewImg key={idx} src={image} alt="" />
+                      </ImgBx>
+                    );
+                  })}
+                </MultiUploadPreview>
+              ) : (
+                <UploadCardButton>其他商品照片上傳</UploadCardButton>
+              )}
+              {/* {fileMultiSrc ? (
+                <>
+                   <ClearBtn onClick={handleMultiClear}>刪除</ClearBtn> 
+                   <MultiUploadPreview>
+                    <MultiUploadPreviewImg src={fileMultiSrc} />
+                  </MultiUploadPreview> 
+                </>
+              ) : (
+                <UploadCardButton>其他商品照片上傳</UploadCardButton>
+              )} */}
+              <UploadCardInput multiple onChange={handleMultipleUploadFile} />
+            </UploadCardStyled>
           </FormLeft>
-          <FormRight>
+          <FormCenter>
             <FormFieldSet>
               {uploadFormGroups.map(({ label, key, textarea, options }) => (
                 <FormGroup key={key}>
                   <FormLabel>{label}</FormLabel>
-                  {inputCheck(label, key, textarea, options)}
+                  {uploadFormInputCheck(label, key, textarea, options)}
                 </FormGroup>
               ))}
             </FormFieldSet>
+          </FormCenter>
+          <FormRight>
+            <VariantsCardStyled>
+              {addVariant.map((data, index) => {
+                {
+                  return variantsFormGroups.map(({ label, key, options }) => (
+                    <FormGroup key={key}>
+                      <FormLabel>{label}</FormLabel>
+                      {variantsFormInputCheck(label, key, options, index)}
+                    </FormGroup>
+                  ));
+                }
+              })}
+            </VariantsCardStyled>
+            <ButtonContainer>
+              <VariantsButton onClick={clickToAddVariant}>+</VariantsButton>
+              <VariantsButton onClick={removeVaraintHandler}>-</VariantsButton>
+            </ButtonContainer>
           </FormRight>
         </Form>
       </form>
-      <BackButton onClick={() => navigate("/")}>返回首頁</BackButton>
+      <BackButton onClick={clickToCreateProduct}>新增商品</BackButton>
     </Wrapper>
   );
 }
