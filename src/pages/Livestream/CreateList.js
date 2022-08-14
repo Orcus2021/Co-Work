@@ -101,6 +101,7 @@ const CreateList = () => {
   const [search, setSearch] = useState("");
   const [searchProducts, setSearchProducts] = useState([]);
   const [uploadImg, setUploadImg] = useState("");
+
   const nextPagingRef = useRef();
   const waypointRef = useRef();
 

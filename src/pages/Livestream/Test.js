@@ -108,6 +108,7 @@ const Test = () => {
     setStreaming(true);
     const settings = getRecorderSettings();
     // const protocol = window.location.protocol.replace("http", "wss");
+
     // const wsUrl = new URL("wss://kelvin-wu.site/rtmp");
     // wsUrl.searchParams.set("video", settings.video);
     // wsUrl.searchParams.set("audio", settings.audio);

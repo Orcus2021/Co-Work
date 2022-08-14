@@ -7,7 +7,11 @@ import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
 
 const Container = styled.div`
+<<<<<<< HEAD
   max-width: 1820px;
+=======
+  width: 1820px;
+>>>>>>> d2f10ce31c8f41f077b91ce048091da2619d020b
   margin: 0 auto;
 `;
 const VideoContainer = styled.div`
@@ -20,9 +24,12 @@ const VideoContainer = styled.div`
 `;
 const VideoBx = styled.div`
   position: relative;
+<<<<<<< HEAD
   display: flex;
   flex-direction: row;
   align-items: center;
+=======
+>>>>>>> d2f10ce31c8f41f077b91ce048091da2619d020b
   width: 1320px;
   height: 820px;
   overflow: hidden;
@@ -31,11 +38,13 @@ const VideoBx = styled.div`
   border-right: none;
   border-radius: 30px 0 0 30px;
 `;
+
 // const Video = styled.video`
 //   width: 1280px;
 //   height: 720px;
 //   background-color: black;
 // `;
+
 const BtnBx = styled.div`
   width: 100%;
   height: 60px;
@@ -153,6 +162,7 @@ const SaleProductBx = styled.div`
 const LiveStream = () => {
   const remoteVideo = useRef();
   const peerConnect = useRef();
+
   const room = "room1";
   let socket;
 
