@@ -253,10 +253,11 @@ function Header() {
   }, [category]);
 
   const profileHandler = () => {
+    console.log(userCtx.user);
     if (userCtx.user.accessToken) {
-      // 使用者頁面
+      navigate("/user");
     } else {
-      navigate("/profile/signup");
+      navigate("/profile/signin");
     }
   };
 

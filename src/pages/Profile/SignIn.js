@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { UserContext } from "../../contexts/UserContext";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -96,6 +97,7 @@ function SignIn() {
   const navigate = useNavigate();
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const userCtx = useContext(UserContext);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "email") {
@@ -112,9 +114,9 @@ function SignIn() {
       password: password,
     };
     signIn(data);
-    navigate("/");
   };
   async function signIn(data) {
+    console.log(data);
     const response = await fetch(`https://kelvin-wu.site/api/1.0/user/signin`, {
       body: JSON.stringify(data),
       headers: new Headers({
@@ -122,11 +124,22 @@ function SignIn() {
       }),
       method: "POST",
     });
-    let signInResponse = await response.json();
-    let signInData = signInResponse?.data;
-    let access_token = signInData?.access_token;
-    console.log(access_token);
-    window.localStorage.setItem("access_token", access_token);
+    if (response.ok) {
+      const resUser = await response.json();
+      const userObj = {
+        accessToken: resUser.data.access_token,
+        accessExpired: resUser.data.access_expired,
+        loginAt: resUser.data.login_at,
+        id: resUser.data.user.id,
+        provider: resUser.data.user.provider,
+        email: resUser.data.user.email,
+        picture: resUser.data.user.picture,
+      };
+      userCtx.addUser(userObj);
+      navigate("/");
+    } else {
+      throw new Error("Sing in wrong");
+    }
   }
 
   return (

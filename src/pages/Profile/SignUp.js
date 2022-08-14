@@ -144,6 +144,7 @@ function SignUp() {
         picture: resUser.data.user.picture,
       };
       userCtx.addUser(userObj);
+      navigate("/");
     }
     throw new Error("error message");
   }
