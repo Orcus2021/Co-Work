@@ -102,13 +102,14 @@ const Details = styled.div`
   justify-content: center;
 `;
 const ProductTitle = styled.p`
+  margin-bottom: 10px;
   width: 100%;
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Price = styled.p`
   width: 100%;
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Variants = styled.div`
@@ -151,11 +152,15 @@ const Size = styled.div`
   justify-content: center;
   margin-right: 20px;
   cursor: pointer;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+  }
 `;
 const Qty = styled.p`
   width: 100%;
 
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Btn = styled.button`
@@ -173,7 +178,8 @@ const AddCartBtn = styled(Btn)`
   margin-bottom: 10px;
   cursor: pointer;
   &:hover {
-    color: #000;
+    background-color: #e08386;
+    color: #99262a;
   }
 `;
 
@@ -202,7 +208,10 @@ const SaleProduct = (props) => {
           </ImgBx>
           <Details>
             <ProductTitle>{dummy.title}</ProductTitle>
-            <Price>原價:{dummy.price} 特價:100</Price>
+            <Price>
+              原價:{dummy.price} <br />
+              特價:100
+            </Price>
           </Details>
           <Variants>
             <ColorBx>
