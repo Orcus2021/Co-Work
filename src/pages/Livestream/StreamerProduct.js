@@ -189,6 +189,15 @@ const StandbyProductBx = styled.div`
   max-height: 460px;
   overflow-y: scroll;
 `;
+const StreamProductEmpty = styled.div`
+  border: 1px dashed #99262a;
+  height: 200px;
+  font-size: 20px;
+  text-align: center;
+  padding: 90px;
+  background-color: #f6dbdb;
+`;
+
 const StreamerProduct = () => {
   const [allProduct, setAllProduct] = useState(products || []);
   const [saleProduct, setSaleProduct] = useState(null);
@@ -222,7 +231,7 @@ const StreamerProduct = () => {
       <ProductContainer>
         <AddProductBx>
           <SaleTitle>拍賣區</SaleTitle>
-          {saleProduct && (
+          {saleProduct ? (
             <Product>
               <ImgBx>
                 <ProductImg src={saleProduct.main_image} />
@@ -264,6 +273,8 @@ const StreamerProduct = () => {
               </Variants>
               <RemoveBtn onClick={removeSaleHandler}>下架</RemoveBtn>
             </Product>
+          ) : (
+            <StreamProductEmpty>本次預計拍賣商品</StreamProductEmpty>
           )}
         </AddProductBx>
       </ProductContainer>

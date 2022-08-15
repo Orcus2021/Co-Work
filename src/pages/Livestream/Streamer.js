@@ -205,7 +205,7 @@ const Video = styled.video`
 const PanelBtn = styled.button`
   width: 200px;
   height: 50px;
-  font-size: 1rem;
+  font-size: 20px;
   border-radius: 30px;
   background-color: #99262a;
   color: white;
