@@ -7,7 +7,6 @@ import { UserContext } from "../../../contexts/UserContext";
 
 import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
-import onAir from "../../../assets/onair.png";
 
 const Container = styled.div`
   margin: 0 auto;

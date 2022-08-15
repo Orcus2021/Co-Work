@@ -75,14 +75,24 @@ const CameraBtn = styled(Btn)`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+    border: none;
+  }
 `;
 const LiveBtn = styled(Btn)`
   background-color: black;
+  border: none;
   color: white;
   margin-right: 10px;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+  }
 `;
 const StopBtn = styled(Btn)`
   background-color: rgb(240, 47, 47);
@@ -204,6 +214,10 @@ const PanelBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  &:hover {
+    color: white;
+    background-color: #e08386;
+  }
 `;
 
 const Streamer = () => {

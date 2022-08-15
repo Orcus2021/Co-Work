@@ -78,6 +78,7 @@ const SearchBtn = styled(Btn)`
   color: white;
   background-color: black;
   margin-bottom: 0px;
+  margin-left: 5px;
 `;
 const SelectAll = styled(Btn)`
   background-color: black;
@@ -94,7 +95,6 @@ const AddProduct = styled(Btn)`
 const UploadBtn = styled(Btn)`
   background-color: black;
   color: white;
-  margin-top: 10px;
   margin: 0 auto;
   margin-bottom: 20px;
 `;
@@ -152,6 +152,7 @@ const UploadCardStyled = styled.label`
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
   position: relative;
   cursor: pointer;
+  margin-bottom: 10px;
 `;
 const UploadPreview = styled.div`
   max-width: 100%;
@@ -169,7 +170,6 @@ const UploadCardButton = styled.span`
   border-radius: 30px;
   font-size: 17px;
   line-height: 1.24;
-  margin-bottom: 10px;
   cursor: pointer;
   &:hover {
     background-color: gray;

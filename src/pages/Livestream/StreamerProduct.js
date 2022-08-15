@@ -88,6 +88,7 @@ const ImgBx = styled.div`
   height: 100%;
   position: relative;
   overflow: hidden;
+  border-radius: 20px;
 `;
 const ProductImg = styled.img`
   position: absolute;
@@ -146,7 +147,8 @@ const SizeBx = styled.div`
 const Size = styled.div`
   width: 30px;
   height: 30px;
-  background-color: rgb(131, 152, 222);
+  background-color: #99262a;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,8 +169,8 @@ const Btn = styled.button`
   height: 40px;
 `;
 const RemoveBtn = styled(Btn)`
-  width: 80px;
-  height: 30px;
+  width: 100px;
+  height: 40px;
   background-color: #f6dbdb;
   color: #99262a;
   border: #99262a;
