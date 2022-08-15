@@ -56,7 +56,7 @@ const CategoryLinks = styled.div`
     width: 100%;
     height: 50px;
     display: flex;
-    background-color: #313538;
+    background-color: #f6dbdb;
   }
 `;
 
@@ -144,7 +144,7 @@ const PageLinks = styled.div`
     position: fixed;
     left: 0;
     bottom: 0;
-    background-color: #313538;
+    background-color: #f6dbdb;
   }
 `;
 
