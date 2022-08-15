@@ -85,7 +85,7 @@ const Video = (props) => {
   return (
     <div className="container">
       <div className="videoBx" ref={videoBx} onMouseMove={moveHandler}>
-        <video ref={videoRef} preload="true"></video>
+        <video ref={videoRef} src={film} preload="true"></video>
 
         <div
           className={controlClass}

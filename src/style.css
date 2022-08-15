@@ -2,4 +2,8 @@ div {
   font-size: 1.2rem;
   border-radius: 50%;
   height: calc(100% - 56 px);
+  display: inline-block;
+
+  object-fit: cover;
+  cursor: pointer;
 }

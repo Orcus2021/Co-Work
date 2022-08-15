@@ -1,8 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import Video from "../../../components/Video/Video";
 import { io } from "socket.io-client";
 import styled from "styled-components";
 import Picker from "emoji-picker-react";
+import { UserContext } from "../../../contexts/UserContext";
+
 import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
 
@@ -27,7 +29,6 @@ const CardStyle = styled.div`
   color: white;
   background-color: #e08386;
 `;
-
 const VideoContainer = styled.div`
   width: 100%;
   display: flex;
@@ -103,10 +104,18 @@ const ChatContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow-y: hidden;
+  overflow-y: overlay;
   border: 2.5px solid #e08386;
   border-radius: 30px 30px 0 0;
   padding: 10px;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(153, 38, 42, 0.7);
+  }
 `;
 const InputBx = styled.div`
   width: 100%;
@@ -138,21 +147,25 @@ const EnterBtn = styled.button`
 `;
 const Message = styled.p`
   flex-grow: 1;
+  line-height: 34px;
   font-size: 1.5rem;
-  letter-spacing: 5px;
-  margin-bottom: 10px;
+
   word-break: break-all;
 `;
 const UserName = styled.p`
+  line-height: 34px;
   font-size: 1.5rem;
-  letter-spacing: 5px;
   white-space: nowrap;
+  align-self: flex-start;
 `;
 const MessageBx = styled.div`
   width: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: row;
+  border-radius: 8px;
+  padding: 5px;
+  background-color: ${(props) => (props.$isSelf ? "#f6dbdb" : "transparent")};
 `;
 const EmojiIcon = styled.img`
   position: absolute;
@@ -177,6 +190,8 @@ const SaleProductBx = styled.div`
 const LiveStream = () => {
   const remoteVideo = useRef();
   const peerConnect = useRef();
+  const userCtx = useContext(UserContext);
+  const [chatroomHeight, setChatroomHeight] = useState(0);
 
   const room = "room1";
   let socket;
@@ -194,7 +209,7 @@ const LiveStream = () => {
 
   const connectIO = () => {
     //   offer socket
-    // socket = io("https://kelvin-wu.site");
+    socket = io("https://kelvin-wu.site");
     socket.on("offer", async (desc) => {
       console.log("view receive desc", desc);
       await peerConnect.current.setRemoteDescription(desc);
@@ -257,12 +272,7 @@ const LiveStream = () => {
   };
 
   const transferChatHandler = () => {
-    // console.log(chatBottom.current.scrollTop);
-    // console.log(chatBottom.current.scrollHeight);
-    chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
-    // chatBottom.current?.scrollIntoView(false);
-    // chatBottom.current.scrollBottom = 0;
-    const obj = { name: "Penny", content: input };
+    const obj = { name: userCtx.user.name, content: input, isSelf: true };
     if (input.trim().length > 0) {
       setChatContent((pre) => {
         const newContent = [...pre, obj];
@@ -270,12 +280,15 @@ const LiveStream = () => {
       });
     }
   };
-
+  useEffect(() => {
+    chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
+  }, [chatBottom, chatContent]);
   const inputHandler = (e) => {
     setInput(e.target.value);
   };
 
   const showEmoji = () => {
+    if (!userCtx.user) return;
     setChosenEmoji((pre) => !pre);
   };
 
@@ -285,6 +298,7 @@ const LiveStream = () => {
       peerConnect.current = null;
     }
   };
+  const chatPlaceholder = userCtx.user ? "與主播聊聊" : "請先登入會員";
 
   return (
     <Container>
@@ -305,7 +319,7 @@ const LiveStream = () => {
           <ChatContent ref={chatBottom}>
             {chatContent.map((content) => {
               return (
-                <MessageBx>
+                <MessageBx $isSelf={content.isSelf}>
                   <UserName>{content.name} :</UserName>
                   <Message>{content.content}</Message>
                 </MessageBx>
@@ -313,7 +327,13 @@ const LiveStream = () => {
             })}
           </ChatContent>
           <InputBx>
-            <Input type="text" value={input} onChange={inputHandler} />
+            <Input
+              type="text"
+              value={input}
+              onChange={inputHandler}
+              placeholder={chatPlaceholder}
+              disabled={!userCtx.user}
+            />
             <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
           </InputBx>
           <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>

@@ -2,7 +2,9 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import Product from "./CouponProduct/Product";
+import Modal from "../../components/Modal/Modal";
 
+import cameraIcon from "../../assets/camera.png";
 import styled from "styled-components";
 import logoutIcon from "../../assets/logout.png";
 
@@ -78,6 +80,7 @@ const UserProfileImgWrapper = styled.div`
   position: relative;
 `;
 const UserProfileImgP = styled.p`
+  position: relative;
   width: 150px;
   height: 150px;
   line-height: 150px;
@@ -253,6 +256,21 @@ const SearchResultBx = styled.div`
   padding: 10px;
   margin-bottom: 10px;
 `;
+const EditImg = styled.img`
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  right: 0;
+  bottom: 0;
+  object-fit: cover;
+  cursor: pointer;
+`;
+const Container = styled.div`
+  width: 500px;
+  height: 300px;
+  background-color: white;
+  border-radius: 8px;
+`;
 
 function User() {
   const userCtx = useContext(UserContext);
@@ -317,147 +335,160 @@ function User() {
 
   if (!userCtx.user) return;
   return (
-    <Wrapper>
-      <TitleWrapper>
-        <Title>會員頁面</Title>
-        <LogOutBtn onClick={logoutHandler}>
-          Log out
-          <LogOutImgBx>
-            <Img src={logoutIcon} />
-          </LogOutImgBx>
-        </LogOutBtn>
-      </TitleWrapper>
-      <UserWrapper>
-        <LeftWrapper>
-          <UserProfileImgWrapper>
-            {userCtx.user.picture ? (
-              <UserProfileImg as="img" src={userCtx.user?.picture} />
+    <>
+      <Wrapper>
+        <TitleWrapper>
+          <Title>會員頁面</Title>
+          <LogOutBtn onClick={logoutHandler}>
+            Log out
+            <LogOutImgBx>
+              <Img src={logoutIcon} />
+            </LogOutImgBx>
+          </LogOutBtn>
+        </TitleWrapper>
+        <UserWrapper>
+          <LeftWrapper>
+            <UserProfileImgWrapper>
+              {userCtx.user.picture ? (
+                <UserProfileImg as="img" src={userCtx.user?.picture} />
+              ) : (
+                <UserProfileImgP>
+                  {userCtx.user.name[0]}
+
+                  <EditImg src={cameraIcon}></EditImg>
+                </UserProfileImgP>
+              )}
+            </UserProfileImgWrapper>
+            <UserProfileMenu>
+              <MenuLabel
+                to="#"
+                onClick={() => {
+                  setIsCoupon(false);
+                }}
+              >
+                基本資料
+              </MenuLabel>
+              <MenuLabel to="/streamer">商品直播頁</MenuLabel>
+              <MenuLabel to="/user/upload">商品管理系統</MenuLabel>
+              <MenuLabel
+                to="#"
+                onClick={() => {
+                  setIsCoupon(true);
+                }}
+              >
+                優惠券管理系統
+              </MenuLabel>
+            </UserProfileMenu>
+          </LeftWrapper>
+          <RightWrapper>
+            {isCoupon ? (
+              <UserProfileContent>
+                <SubTitle>優惠券管理系統</SubTitle>
+                <CouponBx>
+                  <CreateCoupon>
+                    <InputBx>
+                      <CouponLabel>使用期限</CouponLabel>
+                      <CouponInput
+                        type="date"
+                        onChange={couponDateHandler}
+                        value={couponDate}
+                      />
+                    </InputBx>
+                    <InputBx>
+                      <CouponLabel>折扣</CouponLabel>
+                      <DiscountSelect onChange={couponTypeHandler}>
+                        <DiscountOption value="discountPercent">
+                          折數
+                        </DiscountOption>
+                        <DiscountOption value="discountTotal">
+                          抵扣
+                        </DiscountOption>
+                      </DiscountSelect>
+                      <CouponInput
+                        type="number"
+                        onChange={couponAmountHandler}
+                        value={couponAmount}
+                      />
+                    </InputBx>
+                    <InputBx>
+                      <CouponLabel>使用範圍</CouponLabel>
+                      <DiscountSelect onChange={couponScopeHandler}>
+                        <DiscountOption value="all">全部</DiscountOption>
+                        <DiscountOption value="women">女裝</DiscountOption>
+                        <DiscountOption value="men">男裝</DiscountOption>
+                        <DiscountOption value="accessories">
+                          配件
+                        </DiscountOption>
+                        <DiscountOption value="limit">限定</DiscountOption>
+                      </DiscountSelect>
+                      <CouponInput
+                        onChange={couponIDHandler}
+                        value={couponID}
+                        type="text"
+                        placeholder="限定產品ID"
+                      />
+                    </InputBx>
+                    <InputBx>
+                      <CouponLabel>使用次數</CouponLabel>
+                      <CouponInput
+                        onChange={couponTimesHandler}
+                        value={couponTimes}
+                        type="number"
+                      />
+                    </InputBx>
+                    <CouponBtn onClick={createCouponHandler}>新增</CouponBtn>
+                  </CreateCoupon>
+                  <SearchCoupon>
+                    <InputBx>
+                      <DiscountSelect onChange={searchSelectHandler}>
+                        <DiscountOption value="all">全部</DiscountOption>
+                        <DiscountOption value="women">女裝</DiscountOption>
+                        <DiscountOption value="men">男裝</DiscountOption>
+                        <DiscountOption value="accessories">
+                          配件
+                        </DiscountOption>
+                      </DiscountSelect>
+                      <CouponInput
+                        type="text"
+                        placeholder="搜尋產品"
+                        value={searchInput}
+                        onChange={searchInputHandler}
+                      />
+                      <SearchBtn onClick={searchHandler}>搜尋</SearchBtn>
+                    </InputBx>
+                    <SearchResultBx>
+                      <Product></Product>
+                    </SearchResultBx>
+                  </SearchCoupon>
+                </CouponBx>
+              </UserProfileContent>
             ) : (
-              <UserProfileImgP>{userCtx.user.name[0]}</UserProfileImgP>
+              <UserProfileContent>
+                <SubTitle>基本資料</SubTitle>
+                <Form>
+                  <InputGroup>
+                    <InputLabel>姓名</InputLabel>
+                    <InputControl>{userCtx.user?.name}</InputControl>
+                    <InputLabel>信箱</InputLabel>
+                    <InputControl>{userCtx.user?.email}</InputControl>
+                    <InputLabel>密碼</InputLabel>
+                    <InputControl>
+                      &hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;
+                    </InputControl>
+                  </InputGroup>
+                </Form>
+                <SubTitle>訂單管理</SubTitle>
+                <SubTitle>優惠券</SubTitle>
+                <SubTitle>邀請碼生成</SubTitle>
+              </UserProfileContent>
             )}
-          </UserProfileImgWrapper>
-          <UserProfileMenu>
-            <MenuLabel
-              to="#"
-              onClick={() => {
-                setIsCoupon(false);
-              }}
-            >
-              基本資料
-            </MenuLabel>
-            <MenuLabel to="/streamer">商品直播頁</MenuLabel>
-            <MenuLabel to="/user/upload">商品管理系統</MenuLabel>
-            <MenuLabel
-              to="#"
-              onClick={() => {
-                setIsCoupon(true);
-              }}
-            >
-              優惠券管理系統
-            </MenuLabel>
-          </UserProfileMenu>
-        </LeftWrapper>
-        <RightWrapper>
-          {isCoupon ? (
-            <UserProfileContent>
-              <SubTitle>優惠券管理系統</SubTitle>
-              <CouponBx>
-                <CreateCoupon>
-                  <InputBx>
-                    <CouponLabel>使用期限</CouponLabel>
-                    <CouponInput
-                      type="date"
-                      onChange={couponDateHandler}
-                      value={couponDate}
-                    />
-                  </InputBx>
-                  <InputBx>
-                    <CouponLabel>折扣</CouponLabel>
-                    <DiscountSelect onChange={couponTypeHandler}>
-                      <DiscountOption value="discountPercent">
-                        折數
-                      </DiscountOption>
-                      <DiscountOption value="discountTotal">
-                        抵扣
-                      </DiscountOption>
-                    </DiscountSelect>
-                    <CouponInput
-                      type="number"
-                      onChange={couponAmountHandler}
-                      value={couponAmount}
-                    />
-                  </InputBx>
-                  <InputBx>
-                    <CouponLabel>使用範圍</CouponLabel>
-                    <DiscountSelect onChange={couponScopeHandler}>
-                      <DiscountOption value="all">全部</DiscountOption>
-                      <DiscountOption value="women">女裝</DiscountOption>
-                      <DiscountOption value="men">男裝</DiscountOption>
-                      <DiscountOption value="accessories">配件</DiscountOption>
-                      <DiscountOption value="limit">限定</DiscountOption>
-                    </DiscountSelect>
-                    <CouponInput
-                      onChange={couponIDHandler}
-                      value={couponID}
-                      type="text"
-                      placeholder="限定產品ID"
-                    />
-                  </InputBx>
-                  <InputBx>
-                    <CouponLabel>使用次數</CouponLabel>
-                    <CouponInput
-                      onChange={couponTimesHandler}
-                      value={couponTimes}
-                      type="number"
-                    />
-                  </InputBx>
-                  <CouponBtn onClick={createCouponHandler}>新增</CouponBtn>
-                </CreateCoupon>
-                <SearchCoupon>
-                  <InputBx>
-                    <DiscountSelect onChange={searchSelectHandler}>
-                      <DiscountOption value="all">全部</DiscountOption>
-                      <DiscountOption value="women">女裝</DiscountOption>
-                      <DiscountOption value="men">男裝</DiscountOption>
-                      <DiscountOption value="accessories">配件</DiscountOption>
-                    </DiscountSelect>
-                    <CouponInput
-                      type="text"
-                      placeholder="搜尋產品"
-                      value={searchInput}
-                      onChange={searchInputHandler}
-                    />
-                    <SearchBtn onClick={searchHandler}>搜尋</SearchBtn>
-                  </InputBx>
-                  <SearchResultBx>
-                    <Product></Product>
-                  </SearchResultBx>
-                </SearchCoupon>
-              </CouponBx>
-            </UserProfileContent>
-          ) : (
-            <UserProfileContent>
-              <SubTitle>基本資料</SubTitle>
-              <Form>
-                <InputGroup>
-                  <InputLabel>姓名</InputLabel>
-                  <InputControl>{userCtx.user?.name}</InputControl>
-                  <InputLabel>信箱</InputLabel>
-                  <InputControl>{userCtx.user?.email}</InputControl>
-                  <InputLabel>密碼</InputLabel>
-                  <InputControl>
-                    &hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;
-                  </InputControl>
-                </InputGroup>
-              </Form>
-              <SubTitle>訂單管理</SubTitle>
-              <SubTitle>優惠券</SubTitle>
-              <SubTitle>邀請碼生成</SubTitle>
-            </UserProfileContent>
-          )}
-        </RightWrapper>
-      </UserWrapper>
-    </Wrapper>
+          </RightWrapper>
+        </UserWrapper>
+      </Wrapper>
+      {/* <Modal>
+        <Container></Container>
+      </Modal> */}
+    </>
   );
 }
 

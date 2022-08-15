@@ -249,7 +249,7 @@ const Streamer = () => {
   // connect io
   const connectIO = () => {
     //   offer socket
-    // socket = io("https://kelvin-wu.site");
+    socket = io("https://kelvin-wu.site");
 
     socket.on("offer", async (desc) => {
       console.log("main receive desc", desc);
