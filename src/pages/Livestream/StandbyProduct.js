@@ -58,7 +58,7 @@ const Product = styled.div`
   width: 100%;
   margin-bottom: 10px;
   height: 120px;
-  border-bottom: 1px solid #99262a;
+  border-bottom: 1px dashed #99262a;
   padding-bottom: 20px;
 `;
 const ImgBx = styled.div`
