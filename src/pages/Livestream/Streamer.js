@@ -8,30 +8,51 @@ import icon from "../../assets/icons8-happy.gif";
 import videoBackground from "../../assets/videoBackground.jpg";
 
 const Container = styled.div`
-  width: 90vw;
   margin: 0 auto;
+  padding: 50px 0 50px;
+  max-width: 1160px;
+
+  @media screen and (max-width: 1279px) {
+    padding: 20px 24px 236px;
+  }
+`;
+const CardStyle = styled.div`
+  width: 140px;
+  height: 40px;
+  border-radius: 20px 20px 0 0;
+  margin-left: 900px;
+  text-align: center;
+  font-size: 20px;
+  border: #e08386;
+  padding-top: 10px;
+  color: white;
+  background-color: #e08386;
 `;
 const VideoContainer = styled.div`
   width: 100%;
-  padding-top: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
+const LeftWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 const VideoBx = styled.div`
   position: relative;
   width: 100%;
   max-width: 1280px;
-  height: 820px;
+  height: 550px;
   overflow: hidden;
   padding: 20px;
-  border: 2.5px solid black;
+  border: 2.5px solid #e08386;
   border-right: none;
   border-radius: 30px 0 0 30px;
 `;
 
 const BtnBx = styled.div`
+  margin-top: 20px;
   width: 100%;
   height: 60px;
   display: flex;
@@ -51,11 +72,17 @@ const CameraBtn = styled(Btn)`
   background-color: white;
   color: black;
   margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 `;
 const LiveBtn = styled(Btn)`
   background-color: black;
   color: white;
   margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 `;
 const StopBtn = styled(Btn)`
   background-color: rgb(240, 47, 47);
@@ -65,15 +92,15 @@ const StopBtn = styled(Btn)`
 const ChatBx = styled.div`
   position: relative;
   width: 500px;
-  height: 820px;
+  height: 550px;
   max-height: 820px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  border: 2.5px solid black;
+  border: 2.5px solid #e08386;
   border-left: none;
+  border-radius: 0px 30px 30px 0px;
 `;
 const ChatContent = styled.div`
   width: 100%;
@@ -82,7 +109,7 @@ const ChatContent = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   overflow-y: scroll;
-  border: 2.5px solid black;
+  border: 2.5px solid #e08386;
   border-radius: 30px 30px 0 0;
   padding: 10px;
 `;
@@ -90,12 +117,12 @@ const InputBx = styled.div`
   width: 100%;
   min-height: 60px;
   flex-grow: 1;
-  border: 2.5px solid black;
+  border: 2.5px solid #e08386;
   border-radius: 30px 30px 0 0;
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: black;
+  background-color: #e08386;
   border-radius: 0 0 30px 30px;
   padding: 5px 5px 5px 25px;
 `;
@@ -106,6 +133,7 @@ const Input = styled.input`
   background-color: white;
   border-radius: 8px;
   font-size: 1.5rem;
+  border: #e08386;
 `;
 const EnterBtn = styled.button`
   width: 60px;
@@ -151,7 +179,6 @@ const EmojiBx = styled.div`
 const VideoWrapper = styled.div`
   position: relative;
   width: 100%;
-
   height: fit-content;
   display: flex;
   flex-direction: column;
@@ -165,6 +192,19 @@ const Video = styled.video`
   background-image: url("../../assets/videoBackground.jpg");
   background-repeat: ;
 `;
+const PanelBtn = styled.button`
+  width: 200px;
+  height: 50px;
+  font-size: 1rem;
+  border-radius: 30px;
+  background-color: #99262a;
+  color: white;
+  border: #99262a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+`;
 
 const Streamer = () => {
   const localStream = useRef();
@@ -175,6 +215,7 @@ const Streamer = () => {
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [ButtonPop, setButtonPop] = useState(false);
 
   // -------------------第二方案--------------------
   // const [connected, setConnected] = useState(false);
@@ -468,54 +509,116 @@ const Streamer = () => {
   // }, []);
 
   return (
-    <Container>
-      <VideoContainer>
-        <VideoBx>
-          <VideoWrapper>
-            <Video
-              poster={videoBackground}
-              muted
-              autoPlay
-              playsInline
-              ref={localVideo}
-            ></Video>
-          </VideoWrapper>
-
-          <BtnBx>
-            <CameraBtn onClick={createStream}>開啟鏡頭</CameraBtn>
-            {isStart ? (
-              <StopBtn onClick={closeLiveHandler}>結束</StopBtn>
-            ) : (
-              <LiveBtn onClick={initLiveStream}>直播</LiveBtn>
+    <>
+      <CreateList trigger={ButtonPop} setButtonPop={setButtonPop} />
+      <Container>
+        <PanelBtn onClick={() => setButtonPop(true)}>
+          開啟直播控制面板{"    "}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-arrows-angle-expand"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707z"
+            />
+          </svg>
+        </PanelBtn>
+        <CardStyle>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-mic-fill"
+            viewBox="0 0 16 16"
+          >
+            <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z" />
+            <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" />
+          </svg>
+          {"    "}
+          直播中
+        </CardStyle>
+        <VideoContainer>
+          {/* <LeftWrap> */}
+          <VideoBx>
+            <VideoWrapper>
+              <Video
+                poster={videoBackground}
+                muted
+                autoPlay
+                playsInline
+                ref={localVideo}
+              ></Video>
+            </VideoWrapper>
+            <BtnBx>
+              <CameraBtn onClick={createStream}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  class="bi bi-camera-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
+                  <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" />
+                </svg>
+                開啟鏡頭
+              </CameraBtn>
+              {isStart ? (
+                <StopBtn onClick={closeLiveHandler}>結束</StopBtn>
+              ) : (
+                <LiveBtn onClick={initLiveStream}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-camera-reels"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0z" />
+                    <path d="M9 6h.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 7.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 16H2a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h7zm6 8.73V7.27l-3.5 1.555v4.35l3.5 1.556zM1 8v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1z" />
+                    <path d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM7 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0z" />
+                  </svg>
+                  開始直播
+                </LiveBtn>
+              )}
+            </BtnBx>
+          </VideoBx>
+          {/* </LeftWrap> */}
+          <ChatBx>
+            <ChatContent ref={chatBottom}>
+              {chatContent.map((content) => {
+                return (
+                  <MessageBx>
+                    <UserName>{content.name} :</UserName>
+                    <Message>{content.content}</Message>
+                  </MessageBx>
+                );
+              })}
+            </ChatContent>
+            <InputBx>
+              <Input type="text" value={input} onChange={inputHandler} />
+              <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
+            </InputBx>
+            <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>
+            {chosenEmoji && (
+              <EmojiBx>
+                <Picker onEmojiClick={onEmojiClick} />
+              </EmojiBx>
             )}
-          </BtnBx>
-        </VideoBx>
-        <ChatBx>
-          <ChatContent ref={chatBottom}>
-            {chatContent.map((content) => {
-              return (
-                <MessageBx>
-                  <UserName>{content.name} :</UserName>
-                  <Message>{content.content}</Message>
-                </MessageBx>
-              );
-            })}
-          </ChatContent>
-          <InputBx>
-            <Input type="text" value={input} onChange={inputHandler} />
-            <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
-          </InputBx>
-          <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>
-          {chosenEmoji && (
-            <EmojiBx>
-              <Picker onEmojiClick={onEmojiClick} />
-            </EmojiBx>
-          )}
-        </ChatBx>
-      </VideoContainer>
-      <StreamerProduct></StreamerProduct>
-      <CreateList></CreateList>
-    </Container>
+          </ChatBx>
+        </VideoContainer>
+        {/* <CreateList></CreateList> */}
+        <StreamerProduct></StreamerProduct>
+      </Container>
+    </>
   );
 };
 
