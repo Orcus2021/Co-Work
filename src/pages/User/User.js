@@ -10,7 +10,7 @@ import styled from "styled-components";
 import logoutIcon from "../../assets/logout.png";
 
 const Wrapper = styled.div`
-  padding: 60px 20px;
+  padding: 60px 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,11 +18,14 @@ const Wrapper = styled.div`
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
+  @media screen and (max-width: 1279px) {
+    margin-bottom: 200px;
+  }
 `;
 const TitleWrapper = styled.div`
   display: flex;
   width: 100%;
-  border-bottom: 2px solid #979797;
+  border-bottom: 2px solid #e08386;
   align-items: center;
   justify-content: space-between;
 `;
@@ -31,6 +34,7 @@ const Title = styled.div`
   font-size: 24px;
   font-weight: bold;
   padding-left: 11%;
+  color: #e08386;
 `;
 const LogOutBtn = styled.div`
   background-color: #fff;
@@ -54,7 +58,7 @@ const UserWrapper = styled.div`
   }
 `;
 const LeftWrapper = styled.div`
-  border: 2px solid #979797;
+  border: 2px solid #e08386;
   border-radius: 30px;
   width: 30%;
   height: 500px;
@@ -66,8 +70,10 @@ const LeftWrapper = styled.div`
   }
 `;
 const RightWrapper = styled.div`
-  border: 2px solid #979797;
-  border-radius: 30px;
+  ${
+    "" /* border: 2px solid #979797;
+  border-radius: 30px; */
+  }
   width: 70%;
   height: 500px;
   @media screen and (max-width: 1279px) {
@@ -114,12 +120,12 @@ const MenuLabel = styled(Link)`
   cursor: pointer;
   padding: 15px 0 15px 0;
   text-decoration: none;
-  color: black;
+  color: #e08386;
   @media screen and (max-width: 1279px) {
     font-size: 16px;
   }
   &:hover {
-    background-color: #eeede7;
+    background-color: #e08386;
     color: #fff;
   }
 `;
@@ -129,7 +135,7 @@ const UserProfileContent = styled.div`
   height: 100%;
 `;
 const SubTitle = styled.div`
-  margin-top: 40px;
+  padding-top: 40px;
 `;
 const Form = styled.div`
   display: flex;
@@ -138,13 +144,18 @@ const Form = styled.div`
     width: 100%;
   }
 `;
+const InputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 20px;
+`;
 const InputLabel = styled.label`
   width: 110px;
   line-height: 19px;
   font-size: 16px;
   color: #3f3a3a;
   display: block;
-  margin-bottom: 30px;
   @media screen and (max-width: 1279px) {
     width: 100%;
   }
@@ -154,12 +165,6 @@ const InputControl = styled.p`
   height: 30px;
   line-height: 30px;
   border-radius: 8px;
-  // border: solid 1px #979797;
-  margin-bottom: 30px;
-  @media screen and (max-width: 1279px) {
-    margin-top: 10px;
-    width: 100%;
-  }
 `;
 const InputGroup = styled.div`
   display: flex;
@@ -172,6 +177,7 @@ const InputGroup = styled.div`
     font-size: 14px;
     margin-top: 20px;
     width: 100%;
+    flex-direction: column;
   }
 `;
 const LogOutImgBx = styled.span`
@@ -196,7 +202,6 @@ const CouponBx = styled.div`
 `;
 const CreateCoupon = styled.div`
   margin-right: 10px;
-
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -249,8 +254,10 @@ const SearchBtn = styled(CouponBtn)`
 `;
 const SearchResultBx = styled.div`
   margin-top: 30px;
-  border: 2px solid #979797;
-  border-radius: 30px;
+  ${
+    "" /* border: 2px solid #979797;
+  border-radius: 30px; */
+  }
   overflow-y: auto;
   width: 100%;
   flex-grow: 1;
@@ -307,7 +314,13 @@ const UseCouponBtn = styled.button`
 
   cursor: pointer;
 `;
-const UserBx = styled(CouponBx)``;
+const UserBx = styled(CouponBx)`
+  @media screen and (max-width: 1279px) {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+  }
+`;
 const UserRight = styled(SearchCoupon)``;
 
 function User() {
@@ -513,23 +526,33 @@ function User() {
                 <UserBx>
                   <Form>
                     <InputGroup>
-                      <InputLabel>姓名</InputLabel>
-                      <InputControl>{userCtx.user?.name}</InputControl>
-                      <InputLabel>信箱</InputLabel>
-                      <InputControl>{userCtx.user?.email}</InputControl>
-                      <InputLabel>密碼</InputLabel>
-                      <InputControl>
-                        &hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;
-                      </InputControl>
-                      <InputLabel>訂單編號</InputLabel>
-                      <InputControl>2131233234151</InputControl>
-                      <InputLabel>邀請碼</InputLabel>
-                      <InputControl>2131233234151</InputControl>
+                      <InputContainer>
+                        <InputLabel>姓名</InputLabel>
+                        <InputControl>{userCtx.user?.name}</InputControl>
+                      </InputContainer>
+                      <InputContainer>
+                        <InputLabel>信箱</InputLabel>
+                        <InputControl>{userCtx.user?.email}</InputControl>
+                      </InputContainer>
+                      <InputContainer>
+                        <InputLabel>密碼</InputLabel>
+                        <InputControl>
+                          &hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;
+                        </InputControl>
+                      </InputContainer>
+                      <InputContainer>
+                        <InputLabel>訂單編號</InputLabel>
+                        <InputControl>2131233234151</InputControl>
+                      </InputContainer>
+                      <InputContainer>
+                        <InputLabel>邀請碼</InputLabel>
+                        <InputControl>2131233234151</InputControl>
+                      </InputContainer>
                     </InputGroup>
                   </Form>
                   <UserRight>
-                    <SubTitle>優惠券</SubTitle>
-                    <CouponCodeBx>
+                    <SubTitle>現有優惠券</SubTitle>
+                    {/* <CouponCodeBx>
                       <Input
                         type="text"
                         placeholder="請輸入優惠碼"
@@ -537,7 +560,7 @@ function User() {
                         value={couponCode}
                       />
                       <UseCouponBtn onClick={useCodeHandler}>使用</UseCouponBtn>
-                    </CouponCodeBx>
+                    </CouponCodeBx> */}
                     <CouponList>
                       <Coupon></Coupon>
                       <Coupon></Coupon>
