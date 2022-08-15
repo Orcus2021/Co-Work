@@ -184,16 +184,17 @@ const AddCartBtn = styled(Btn)`
 `;
 
 const SaleProduct = (props) => {
+  const { product } = props;
   const [colorCode, setColorCode] = useState("");
   const [size, setSize] = useState("");
   const [qty, setQty] = useState(0);
   useEffect(() => {
-    dummy?.variants.forEach((data) => {
+    product?.variants.forEach((data) => {
       if (size === data.size && colorCode === data.color_code) {
         setQty(data.stock);
       }
     });
-  }, [size, colorCode, dummy]);
+  }, [size, colorCode, product]);
 
   const addToCartHandler = () => {
     // 加入購物車
@@ -201,21 +202,21 @@ const SaleProduct = (props) => {
   return (
     <>
       <SaleTitle>拍賣區</SaleTitle>
-      {dummy && (
-        <Product key={dummy.id}>
+      {product && (
+        <Product key={product.id}>
           <ImgBx>
-            <ProductImg src={dummy.main_image} />
+            <ProductImg src={product.main_image} />
           </ImgBx>
           <Details>
-            <ProductTitle>{dummy.title}</ProductTitle>
+            <ProductTitle>{product.title}</ProductTitle>
             <Price>
-              原價:{dummy.price} <br />
+              原價:{product.price} <br />
               特價:100
             </Price>
           </Details>
           <Variants>
             <ColorBx>
-              {dummy.colors.map((color) => {
+              {product.colors.map((color) => {
                 return (
                   <Color
                     $colorCode={`#${color.code}`}
@@ -227,7 +228,7 @@ const SaleProduct = (props) => {
               })}
             </ColorBx>
             <SizeBx>
-              {dummy.sizes.map((size) => {
+              {product.sizes.map((size) => {
                 return (
                   <Size
                     onClick={() => {

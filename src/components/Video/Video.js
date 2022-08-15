@@ -1,7 +1,5 @@
 import { useRef, useState, useEffect } from "react";
 import "./video.css";
-
-import film from "../../assets/dance.mp4";
 import playIcon from "../../assets/play.png";
 import pauseIcon from "../../assets/pause.png";
 import volumeIcon from "../../assets/volume.png";
@@ -10,7 +8,7 @@ import muteIcon from "../../assets/mute.png";
 import backIcon from "../../assets/back.png";
 
 const Video = (props) => {
-  const { onStart, videoRef } = props;
+  const { onStart, videoRef, onFlvStart, poster } = props;
   const videoBx = useRef();
   const [isPlay, setIsPlay] = useState(true);
   const [isVolume, setIsVolume] = useState(true);
@@ -59,6 +57,7 @@ const Video = (props) => {
 
   const play = () => {
     onStart();
+    // onFlvStart();
     videoRef.current.play();
     setIsPlay(false);
   };
@@ -85,7 +84,7 @@ const Video = (props) => {
   return (
     <div className="container">
       <div className="videoBx" ref={videoBx} onMouseMove={moveHandler}>
-        <video ref={videoRef} src={film} preload="true"></video>
+        <video ref={videoRef} preload="true" poster={poster}></video>
 
         <div
           className={controlClass}

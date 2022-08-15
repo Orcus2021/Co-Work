@@ -179,7 +179,8 @@ const StandbyProductBx = styled.div`
   max-height: 460px;
   overflow-y: scroll;
 `;
-const StreamerProduct = () => {
+const StreamerProduct = (props) => {
+  const { onAdd, onRemove } = props;
   const [allProduct, setAllProduct] = useState(products || []);
   const [saleProduct, setSaleProduct] = useState(null);
   const [colorCode, setColorCode] = useState("");
@@ -190,6 +191,7 @@ const StreamerProduct = () => {
     setSaleProduct(product);
   };
   const removeSaleHandler = () => {
+    onRemove();
     setSaleProduct(null);
   };
   const deleteStandbyProduct = (id) => {
@@ -259,6 +261,7 @@ const StreamerProduct = () => {
         {allProduct.map((product) => {
           return (
             <StandbyProduct
+              onAdd={onAdd}
               product={product}
               onSale={saleProductHandler}
               onDelete={deleteStandbyProduct}

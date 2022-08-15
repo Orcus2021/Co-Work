@@ -4,8 +4,10 @@ import Picker from "emoji-picker-react";
 import styled from "styled-components";
 import StreamerProduct from "./StreamerProduct";
 import CreateList from "./CreateList";
+
 import icon from "../../assets/icons8-happy.gif";
 import videoBackground from "../../assets/videoBackground.jpg";
+import loveIcon from "../../assets/love.png";
 
 const Container = styled.div`
   width: 90vw;
@@ -165,16 +167,34 @@ const Video = styled.video`
   background-image: url("../../assets/videoBackground.jpg");
   background-repeat: ;
 `;
+const LoveBx = styled.div`
+  position: absolute;
+  width: 35px;
+  bottom: 90px;
+  right: 30px;
+`;
+const LoveIcon = styled.img`
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+  cursor: pointer;
+`;
+const LoveTotal = styled.p`
+  font-size: 1rem;
+  text-align: center;
+`;
 
 const Streamer = () => {
   const localStream = useRef();
   const localVideo = useRef();
   const peerConnect = useRef();
   const chatBottom = useRef();
+  const socketRef = useRef(null);
   const [isStart, setIsStart] = useState(false);
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [loveAmount, setLoveAmount] = useState(1000);
 
   // -------------------第二方案--------------------
   // const [connected, setConnected] = useState(false);
@@ -192,8 +212,11 @@ const Streamer = () => {
   // const requestAnimationRef = useRef();
   // const nameRef = useRef();
 
-  const room = "room1";
-  let socket;
+  useEffect(() => {
+    socketRef.current = io("https://kelvin-wu.site/chatroom", {
+      autoConnect: false,
+    });
+  }, [socketRef]);
 
   const onEmojiClick = (event, emojiObject) => {
     setInput((pre) => pre + emojiObject.emoji);
@@ -207,7 +230,7 @@ const Streamer = () => {
     };
 
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    console.log(stream);
+
     localStream.current = stream;
     localVideo.current.srcObject = stream;
   };
@@ -227,7 +250,7 @@ const Streamer = () => {
     peerConnect.current.onicecandidate = (e) => {
       // socket發送 ICE
       if (e.candidate) {
-        socket.emit("candidate", {
+        socketRef.current.emit("candidate", {
           label: e.candidate.sdpMLineIndex,
           id: e.candidate.sdpMid,
           candidate: e.candidate.candidate,
@@ -244,28 +267,55 @@ const Streamer = () => {
       offerToReceiveVideo: true,
     });
     await peerConnect.current.setLocalDescription(localSDP);
-    socket.emit("offer", peerConnect.current.localDescription);
+    socketRef.current.emit("offer", peerConnect.current.localDescription);
   };
   // connect io
   const connectIO = () => {
+    console.log("init");
+    socketRef.current.connect();
     //   offer socket
-    socket = io("https://kelvin-wu.site");
+    // socketRef.current.on("offer", async (desc) => {
+    //   console.log("main receive desc", desc);
+    //   await peerConnect.current.setRemoteDescription(desc);
+    //   await createOffer();
+    // });
 
-    socket.on("offer", async (desc) => {
-      console.log("main receive desc", desc);
-      await peerConnect.current.setRemoteDescription(desc);
-      await createOffer();
+    //   ICE socket
+    // socketRef.current.on("candidate", async (data) => {
+    //   console.log("收到candidate", data);
+    //   const candidate = new RTCIceCandidate({
+    //     sdpMLineIndex: data.label,
+    //     candidate: data.candidate,
+    //   });
+    //   await peerConnect.current.addIceCandidate(candidate);
+    // });
+
+    // love socket
+    socketRef.current.on("love", (data) => {
+      // setLoveAmount(data);
+      console.log(data);
     });
-    //   candidate socket
-    socket.on("candidate", async (data) => {
-      console.log("收到candidate", data);
-      const candidate = new RTCIceCandidate({
-        sdpMLineIndex: data.label,
-        candidate: data.candidate,
+
+    // message socket
+    socketRef.current.on("message", (data) => {
+      setChatContent((pre) => {
+        const newContent = [...pre, data];
+        return newContent;
       });
-      await peerConnect.current.addIceCandidate(candidate);
+      console.log(data);
     });
-    socket.emit("join", room);
+
+    socketRef.current.on("join", (data) => {
+      // const contentObj = data;
+      // setChatContent((pre) => {
+      //   const newContent = [...pre, contentObj];
+      //   return newContent;
+      // });
+      console.log(data);
+    });
+
+    //直播主加入
+    socketRef.current.emit("streamerJoin");
   };
   // init live stream
   const initLiveStream = () => {
@@ -297,10 +347,23 @@ const Streamer = () => {
         const newContent = [...pre, obj];
         return newContent;
       });
+
+      const socketObj = { ...obj };
+      socketObj.isSelf = false;
+      socketRef.current.emit("message", socketObj);
     }
   };
   const showEmoji = () => {
     setChosenEmoji((pre) => !pre);
+  };
+
+  const addProductHandler = (data) => {
+    console.log("socketAdd", data);
+    socketRef.current.emit("product", data);
+  };
+
+  const removeSaleProductSocket = () => {
+    socketRef.current.emit("product", null);
   };
 
   // --------------第二方案-------------
@@ -489,12 +552,13 @@ const Streamer = () => {
               <LiveBtn onClick={initLiveStream}>直播</LiveBtn>
             )}
           </BtnBx>
+          <CameraBtn onClick={connectIO}>SOCKET</CameraBtn>
         </VideoBx>
         <ChatBx>
           <ChatContent ref={chatBottom}>
-            {chatContent.map((content) => {
+            {chatContent.map((content, index) => {
               return (
-                <MessageBx>
+                <MessageBx key={index}>
                   <UserName>{content.name} :</UserName>
                   <Message>{content.content}</Message>
                 </MessageBx>
@@ -511,9 +575,16 @@ const Streamer = () => {
               <Picker onEmojiClick={onEmojiClick} />
             </EmojiBx>
           )}
+          <LoveBx>
+            <LoveIcon src={loveIcon}></LoveIcon>
+            <LoveTotal>{loveAmount}</LoveTotal>
+          </LoveBx>
         </ChatBx>
       </VideoContainer>
-      <StreamerProduct></StreamerProduct>
+      <StreamerProduct
+        onAdd={addProductHandler}
+        onRemove={removeSaleProductSocket}
+      ></StreamerProduct>
       <CreateList></CreateList>
     </Container>
   );

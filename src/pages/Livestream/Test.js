@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./demo.module.css";
+import { io } from "socket.io-client";
 
 const CAMERA_CONSTRAINTS = {
   audio: true,
@@ -31,6 +32,7 @@ const getRecorderMimeType = () => {
   return `video/${settings.format}${codecs}`;
 };
 
+let socket = null;
 const Test = () => {
   const [connected, setConnected] = useState(false);
   const [cameraEnabled, setCameraEnabled] = useState(false);
@@ -107,6 +109,7 @@ const Test = () => {
   const startStreaming = () => {
     setStreaming(true);
     const settings = getRecorderSettings();
+
     // const protocol = window.location.protocol.replace("http", "wss");
 
     // const wsUrl = new URL("wss://kelvin-wu.site/rtmp");
@@ -118,22 +121,30 @@ const Test = () => {
     // if (streamKey) {
     //   wsUrl.searchParams.set("key", streamKey);
     // }
+    socket = io("wss://kelvin-wu.site/streamer");
+    socket.emit("init", { key: "test", video: "h264", audio: "opus" });
+    // wsRef.current = new WebSocket(
+    //   "wss://kelvin-wu.site/rtmp?video=h264&audio=opus&url=rtmp%3A%2F%2F18.142.201.212%3A1935%2Flive&key=test"
+    // );
 
-    wsRef.current = new WebSocket(
-      "wss://kelvin-wu.site/rtmp?video=h264&audio=opus&url=rtmp%3A%2F%2F18.142.201.212%3A1935%2Flive&key=test"
-    );
-
-    console.log(wsRef.current.readyState);
-    wsRef.current.addEventListener("open", function open() {
+    // console.log(wsRef.current.readyState);
+    if (socket) {
       console.log("open");
+      socket.connect();
       setConnected(true);
-    });
+    }
+    // wsRef.current.addEventListener("open", function open() {
+    //   console.log("open");
+    //   setConnected(true);
+    // });
+    // socket.on("close",(data)=>{
 
-    wsRef.current.addEventListener("close", () => {
-      console.log("close");
-      setConnected(false);
-      stopStreaming();
-    });
+    // })
+    // wsRef.current.addEventListener("close", () => {
+    //   console.log("close");
+    //   setConnected(false);
+    //   stopStreaming();
+    // });
 
     const videoOutputStream = canvasRef.current.captureStream(30); // 30 FPS
 
@@ -160,12 +171,12 @@ const Test = () => {
 
     mediaRecorderRef.current.addEventListener("dataavailable", (e) => {
       console.log(e.data);
-      wsRef.current.send(e.data);
+      socket.emit("message", e.data);
     });
 
     mediaRecorderRef.current.addEventListener("stop", () => {
       stopStreaming();
-      wsRef.current.close();
+      socket.close();
     });
 
     mediaRecorderRef.current.start(1000);

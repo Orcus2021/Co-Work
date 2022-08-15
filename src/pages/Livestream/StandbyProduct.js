@@ -110,9 +110,13 @@ const RemoveBtn = styled(Btn)`
   margin-bottom: 10px;
 `;
 const StandbyProduct = (props) => {
-  const { product, onSale, onDelete } = props;
+  const { product, onSale, onDelete, onAdd } = props;
   const deleteHandler = () => {
     onDelete(product.id);
+  };
+  const addProductHandler = () => {
+    onSale(product);
+    onAdd(dummy);
   };
   return (
     <Product>
@@ -121,13 +125,7 @@ const StandbyProduct = (props) => {
       </ImgBx>
       <ProductTitle>{product.title}</ProductTitle>
       <Price>原價:{product.price} 特價:100</Price>
-      <AddBtn
-        onClick={() => {
-          onSale(product);
-        }}
-      >
-        上架
-      </AddBtn>
+      <AddBtn onClick={addProductHandler}>上架</AddBtn>
       <RemoveBtn onClick={deleteHandler}>移除</RemoveBtn>
     </Product>
   );

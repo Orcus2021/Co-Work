@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import Product from "./CouponProduct/Product";
+import Coupon from "../../components/Coupon/Coupon";
 import Modal from "../../components/Modal/Modal";
 
 import cameraIcon from "../../assets/camera.png";
@@ -255,6 +256,7 @@ const SearchResultBx = styled.div`
   flex-grow: 1;
   padding: 10px;
   margin-bottom: 10px;
+  background-color: #f2f2f2;
 `;
 const EditImg = styled.img`
   position: absolute;
@@ -265,12 +267,48 @@ const EditImg = styled.img`
   object-fit: cover;
   cursor: pointer;
 `;
-const Container = styled.div`
-  width: 500px;
-  height: 300px;
-  background-color: white;
-  border-radius: 8px;
+const CouponList = styled(SearchResultBx)`
+  margin-top: 10px;
+  height: 324px;
+  overflow-y: overlay;
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(153, 38, 42, 0);
+  }
 `;
+const Input = styled.input`
+  flex-grow: 1;
+  height: 30px;
+  border-radius: 8px 0 0 8px;
+  border: solid 1px #979797;
+
+  @media screen and (max-width: 1279px) {
+    margin-top: 10px;
+    width: 100%;
+  }
+`;
+const CouponCodeBx = styled.div`
+  display: flex;
+  align-self: center;
+  width: 100%;
+  flex-direction: row;
+  margin-top: 5px;
+`;
+const UseCouponBtn = styled.button`
+  background-color: #99262a;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  color: #fff;
+  border: none;
+  border-radius: 0 8px 8px 0;
+
+  cursor: pointer;
+`;
+const UserBx = styled(CouponBx)``;
+const UserRight = styled(SearchCoupon)``;
 
 function User() {
   const userCtx = useContext(UserContext);
@@ -279,6 +317,7 @@ function User() {
   const [searchCategory, setSearchCategory] = useState("all");
   const [searchInput, setSearchInput] = useState("");
   const [searchProduct, setSearchProduct] = useState([]);
+  const [couponCode, setCouponCode] = useState("");
   // -----產生優惠券的state----
   const [couponDate, setCouponDate] = useState("");
   const [couponType, setCouponType] = useState("");
@@ -306,6 +345,12 @@ function User() {
   const searchHandler = () => {
     // 打API
     // setSearchProduct()
+  };
+  const couponCodeHandler = (e) => {
+    setCouponCode(e.target.value);
+  };
+  const useCodeHandler = () => {
+    // 打API
   };
 
   // --------產生優惠券-------
@@ -465,21 +510,42 @@ function User() {
             ) : (
               <UserProfileContent>
                 <SubTitle>基本資料</SubTitle>
-                <Form>
-                  <InputGroup>
-                    <InputLabel>姓名</InputLabel>
-                    <InputControl>{userCtx.user?.name}</InputControl>
-                    <InputLabel>信箱</InputLabel>
-                    <InputControl>{userCtx.user?.email}</InputControl>
-                    <InputLabel>密碼</InputLabel>
-                    <InputControl>
-                      &hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;
-                    </InputControl>
-                  </InputGroup>
-                </Form>
-                <SubTitle>訂單管理</SubTitle>
-                <SubTitle>優惠券</SubTitle>
-                <SubTitle>邀請碼生成</SubTitle>
+                <UserBx>
+                  <Form>
+                    <InputGroup>
+                      <InputLabel>姓名</InputLabel>
+                      <InputControl>{userCtx.user?.name}</InputControl>
+                      <InputLabel>信箱</InputLabel>
+                      <InputControl>{userCtx.user?.email}</InputControl>
+                      <InputLabel>密碼</InputLabel>
+                      <InputControl>
+                        &hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;
+                      </InputControl>
+                      <InputLabel>訂單編號</InputLabel>
+                      <InputControl>2131233234151</InputControl>
+                      <InputLabel>邀請碼</InputLabel>
+                      <InputControl>2131233234151</InputControl>
+                    </InputGroup>
+                  </Form>
+                  <UserRight>
+                    <SubTitle>優惠券</SubTitle>
+                    <CouponCodeBx>
+                      <Input
+                        type="text"
+                        placeholder="請輸入優惠碼"
+                        onChange={couponCodeHandler}
+                        value={couponCode}
+                      />
+                      <UseCouponBtn onClick={useCodeHandler}>使用</UseCouponBtn>
+                    </CouponCodeBx>
+                    <CouponList>
+                      <Coupon></Coupon>
+                      <Coupon></Coupon>
+                      <Coupon></Coupon>
+                      <Coupon></Coupon>
+                    </CouponList>
+                  </UserRight>
+                </UserBx>
               </UserProfileContent>
             )}
           </RightWrapper>

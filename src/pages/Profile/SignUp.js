@@ -98,6 +98,7 @@ function SignUp() {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const [invitationCode, setInvitationCode] = useState(null);
   const userCtx = useContext(UserContext);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -109,6 +110,9 @@ function SignUp() {
     }
     if (name === "password") {
       setPassword(value);
+    }
+    if (name === "invitationCode") {
+      setInvitationCode(value);
     }
   };
   const handleSubmit = async () => {
@@ -174,6 +178,13 @@ function SignUp() {
               type="password"
               name="password"
               value={password}
+              onChange={(e) => handleInputChange(e)}
+            />
+            <InputLabel>邀請碼</InputLabel>
+            <InputControl
+              type="text"
+              name="invitationCode"
+              value={invitationCode}
               onChange={(e) => handleInputChange(e)}
             />
           </InputGroup>

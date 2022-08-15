@@ -1,12 +1,15 @@
 import React, { useRef, useState, useContext, useEffect } from "react";
 import Video from "../../../components/Video/Video";
 import { io } from "socket.io-client";
+import flvjs from "flv.js";
 import styled from "styled-components";
 import Picker from "emoji-picker-react";
 import { UserContext } from "../../../contexts/UserContext";
 
 import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
+import loveIcon from "../../../assets/love.png";
+import videoBack from "../../../assets/videoBackground.jpg";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -186,45 +189,101 @@ const SaleProductBx = styled.div`
   margin-top: 40px;
   width: 100%;
 `;
+const LoveBx = styled.div`
+  position: absolute;
+  width: 35px;
+  bottom: 90px;
+  right: 30px;
+`;
+const LoveIcon = styled.img`
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+  cursor: pointer;
+`;
+const LoveTotal = styled.p`
+  font-size: 1rem;
+  text-align: center;
+`;
 
 const LiveStream = () => {
   const remoteVideo = useRef();
   const peerConnect = useRef();
-  const userCtx = useContext(UserContext);
-  const [chatroomHeight, setChatroomHeight] = useState(0);
-
-  const room = "room1";
-  let socket;
-
+  const socketRef = useRef(null);
   const chatBottom = useRef();
-
+  const initSocket = useRef(false);
+  const userCtx = useContext(UserContext);
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [loveAmount, setLoveAmount] = useState(1000);
+  const [saleProduct, setSaleProduct] = useState(null);
+
+  useEffect(() => {
+    socketRef.current = io("https://kelvin-wu.site/chatroom", {
+      autoConnect: false,
+    });
+  }, [socketRef]);
+
+  useEffect(() => {
+    chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
+  }, [chatBottom, chatContent]);
+
+  useEffect(() => {
+    if (userCtx.user && socketRef) {
+      console.log("message");
+      // love socket
+      socketRef.current.on("love", (data) => {
+        setLoveAmount(data);
+      });
+      // message socket
+      socketRef.current.on("message", (data) => {
+        setChatContent((pre) => {
+          const newContent = [...pre, data];
+          return newContent;
+        });
+      });
+
+      // product
+      socketRef.current.on("product", (data) => {
+        console.log("socket product", data);
+        setSaleProduct(data);
+      });
+
+      // join chatroom
+      socketRef.current.emit("join", userCtx.user?.name);
+    }
+  }, [userCtx.user, socketRef]);
+
+  const inputHandler = (e) => {
+    setInput(e.target.value);
+  };
 
   const onEmojiClick = (event, emojiObject) => {
-    setInput((pre) => pre + emojiObject.emoji);
+    setInput((pre) => pre + emojiObject.name);
+
+    console.log(emojiObject);
     setChosenEmoji(false);
   };
 
   const connectIO = () => {
+    console.log("init");
+    socketRef.current.connect();
     //   offer socket
-    socket = io("https://kelvin-wu.site");
-    socket.on("offer", async (desc) => {
-      console.log("view receive desc", desc);
-      await peerConnect.current.setRemoteDescription(desc);
-    });
+    // socketRef.current.on("offer", async (desc) => {
+    //   console.log("view receive desc", desc);
+    //   await peerConnect.current.setRemoteDescription(desc);
+    // });
 
     // ICE socket
-    socket.on("candidate", async (data) => {
-      console.log("收到candidate", data);
-      const candidate = new RTCIceCandidate({
-        sdpMLineIndex: data.label,
-        candidate: data.candidate,
-      });
-      await peerConnect.current.addIceCandidate(candidate);
-    });
-    socket.emit("join", room);
+    // socketRef.current.on("candidate", async (data) => {
+    //   console.log("收到candidate", data);
+    //   const candidate = new RTCIceCandidate({
+    //     sdpMLineIndex: data.label,
+    //     candidate: data.candidate,
+    //   });
+    //   await peerConnect.current.addIceCandidate(candidate);
+    // });
   };
 
   const initPeerConnection = () => {
@@ -241,7 +300,7 @@ const LiveStream = () => {
       console.log(e);
       // emit ICE
       if (e.candidate) {
-        socket.emit("candidate", {
+        socketRef.current.emit("candidate", {
           label: e.candidate.sdpMLineIndex,
           id: e.candidate.sdpMid,
           candidate: e.candidate.candidate,
@@ -264,11 +323,18 @@ const LiveStream = () => {
     }
     const localSDP = peerConnect.current.createAnswer();
     await peerConnect.current.setLocalDescription(localSDP);
-    socket.emit("offer", peerConnect.current.localDescription);
+    socketRef.current.emit("offer", peerConnect.current.localDescription);
   };
-  const init = async () => {
-    initPeerConnection();
-    connectIO();
+  const init = () => {
+    if (!initSocket.current) {
+      initPeerConnection();
+      connectIO();
+      initSocket.current = true;
+    }
+  };
+
+  const sendLoveHandler = () => {
+    socketRef.current.emit("love");
   };
 
   const transferChatHandler = () => {
@@ -278,13 +344,10 @@ const LiveStream = () => {
         const newContent = [...pre, obj];
         return newContent;
       });
+      const socketObj = { ...obj };
+      socketObj.isSelf = false;
+      socketRef.current.emit("message", socketObj);
     }
-  };
-  useEffect(() => {
-    chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
-  }, [chatBottom, chatContent]);
-  const inputHandler = (e) => {
-    setInput(e.target.value);
   };
 
   const showEmoji = () => {
@@ -292,10 +355,21 @@ const LiveStream = () => {
     setChosenEmoji((pre) => !pre);
   };
 
-  const closeLiveHandler = () => {
-    if (peerConnect.current) {
-      peerConnect.current.close();
-      peerConnect.current = null;
+  // const closeLiveHandler = () => {
+  //   if (peerConnect.current) {
+  //     peerConnect.current.close();
+  //     peerConnect.current = null;
+  //   }
+  // };
+
+  const flvStart = () => {
+    if (flvjs.isSupported()) {
+      let flvPlayer = flvjs.createPlayer({
+        type: "flv",
+        url: "https://kelvin-wu.site:8443/live/test.flv",
+      });
+      flvPlayer.attachMediaElement(remoteVideo.current);
+      flvPlayer.load();
     }
   };
   const chatPlaceholder = userCtx.user ? "與主播聊聊" : "請先登入會員";
@@ -305,21 +379,21 @@ const LiveStream = () => {
       <CardStyle>現正直播中</CardStyle>
       <VideoContainer>
         <VideoBx>
-          {/* <Video ref={remoteVideo} autoPlay controls playsInline></Video>
-          <BtnBx>
-            <LiveBtn onClick={init}>觀看</LiveBtn>
-            <StopBtn onClick={closeLiveHandler}>暫停</StopBtn>
-          </BtnBx> */}
-          <Video onStart={init} videoRef={remoteVideo}></Video>
+          <Video
+            onStart={init}
+            videoRef={remoteVideo}
+            onFlvStart={flvStart}
+            poster={videoBack}
+          ></Video>
           <SaleProductBx>
-            <SaleProduct></SaleProduct>
+            {saleProduct && <SaleProduct product={saleProduct}></SaleProduct>}
           </SaleProductBx>
         </VideoBx>
         <ChatBx>
           <ChatContent ref={chatBottom}>
-            {chatContent.map((content) => {
+            {chatContent.map((content, index) => {
               return (
-                <MessageBx $isSelf={content.isSelf}>
+                <MessageBx $isSelf={content.isSelf} key={index}>
                   <UserName>{content.name} :</UserName>
                   <Message>{content.content}</Message>
                 </MessageBx>
@@ -335,11 +409,19 @@ const LiveStream = () => {
               disabled={!userCtx.user}
             />
             <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
+            <EnterBtn onClick={connectIO} style={{ color: "black" }}>
+              SOCKET
+            </EnterBtn>
           </InputBx>
           <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>
+          <LoveBx>
+            <LoveIcon src={loveIcon} onClick={sendLoveHandler}></LoveIcon>
+            <LoveTotal>{loveAmount}</LoveTotal>
+          </LoveBx>
+
           {chosenEmoji && (
             <EmojiBx>
-              <Picker onEmojiClick={onEmojiClick} />
+              <Picker onEmojiClick={onEmojiClick} preload={true} />
             </EmojiBx>
           )}
         </ChatBx>
