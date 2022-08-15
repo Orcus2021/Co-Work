@@ -63,7 +63,7 @@ const ProductContainer = styled.div`
 const AddProductBx = styled.div`
   position: relative;
   width: 100%;
-  border: 2.5px solid black;
+  ${"" /* border: 2.5px solid black; */}
   padding: 20px;
   height: 281px;
 `;
@@ -71,14 +71,16 @@ const SaleTitle = styled.p`
   width: 100%;
   text-align: center;
   font-size: 1.5rem;
-  border-bottom: 1px solid black;
+  color: #99262a;
+  ${"" /* border-bottom: 1px solid #99262a; */}
+  padding-bottom: 10px;
+  margin-top: 10px;
 `;
 const Product = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
-
   height: 210px;
 `;
 const ImgBx = styled.div`
@@ -86,6 +88,7 @@ const ImgBx = styled.div`
   height: 100%;
   position: relative;
   overflow: hidden;
+  border-radius: 20px;
 `;
 const ProductImg = styled.img`
   position: absolute;
@@ -102,14 +105,13 @@ const Details = styled.div`
 `;
 const ProductTitle = styled.p`
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
+  margin-bottom: 10px;
 `;
 const Price = styled.p`
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Variants = styled.div`
@@ -145,7 +147,8 @@ const SizeBx = styled.div`
 const Size = styled.div`
   width: 30px;
   height: 30px;
-  background-color: rgb(131, 152, 222);
+  background-color: #99262a;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,8 +157,7 @@ const Size = styled.div`
 `;
 const Qty = styled.p`
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Btn = styled.button`
@@ -167,18 +169,35 @@ const Btn = styled.button`
   height: 40px;
 `;
 const RemoveBtn = styled(Btn)`
-  background-color: rgb(240, 47, 47);
-  color: white;
-  border: 2px solid rgb(240, 47, 47);
+  width: 100px;
+  height: 40px;
+  background-color: #f6dbdb;
+  color: #99262a;
+  border: #99262a;
   margin-bottom: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  &:hover {
+    background-color: red;
+    color: white;
+  }
 `;
 const StandbyProductBx = styled.div`
-  border: 2px solid black;
+  ${"" /* border: 2px solid black; */}
   width: 100%;
   padding: 20px;
   max-height: 460px;
   overflow-y: scroll;
 `;
+const StreamProductEmpty = styled.div`
+  border: 1px dashed #99262a;
+  height: 200px;
+  font-size: 20px;
+  text-align: center;
+  padding: 90px;
+  background-color: #f6dbdb;
+`;
+
 const StreamerProduct = (props) => {
   const { onAdd, onRemove } = props;
   const [allProduct, setAllProduct] = useState(products || []);
@@ -214,14 +233,17 @@ const StreamerProduct = (props) => {
       <ProductContainer>
         <AddProductBx>
           <SaleTitle>拍賣區</SaleTitle>
-          {saleProduct && (
+          {saleProduct ? (
             <Product>
               <ImgBx>
                 <ProductImg src={saleProduct.main_image} />
               </ImgBx>
               <Details>
                 <ProductTitle>{saleProduct.title}</ProductTitle>
-                <Price>原價:{saleProduct.price} 特價:100</Price>
+                <Price>
+                  原價:{saleProduct.price} <br />
+                  特價:100
+                </Price>
               </Details>
               <Variants>
                 <ColorBx>
@@ -253,6 +275,8 @@ const StreamerProduct = (props) => {
               </Variants>
               <RemoveBtn onClick={removeSaleHandler}>下架</RemoveBtn>
             </Product>
+          ) : (
+            <StreamProductEmpty>本次預計拍賣商品</StreamProductEmpty>
           )}
         </AddProductBx>
       </ProductContainer>

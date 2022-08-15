@@ -59,7 +59,7 @@ const SiteLink = styled.div`
     line-height: 20px;
     margin-bottom: 8px;
     text-align: left;
-    color: white;
+    color: #99262a;
     font-size: 14px;
   }
 
@@ -116,7 +116,7 @@ const Copywright = styled.div`
     margin-top: 7px;
     line-height: 14px;
     font-size: 10px;
-    color: #fff;
+    color: #99262a;
     width: 100%;
     text-align: center;
   }
