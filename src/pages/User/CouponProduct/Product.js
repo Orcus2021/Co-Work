@@ -65,6 +65,7 @@ const ProductBx = styled.div`
   background-color:#fff;
   cursor:pointer;
 }
+
 `;
 const ImgBx = styled.div`
   width: 30px;

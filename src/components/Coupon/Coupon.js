@@ -3,19 +3,17 @@ import styled from "styled-components";
 import logoIcon from "../../assets/logoIcon.png";
 
 const CouponBx = styled.div`
-position:relative;
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content:flex-start;
+  justify-content: flex-start;
   width: 95%;
   margin-bottom: 10px;
   height: 80px;
-  
-  border-radius:3px;
-  margin:0 auto 10px auto;
-  background-color:white; 
-}
+  border-radius: 3px;
+  margin: 0 auto 10px auto;
+  background-color: white;
 `;
 const ImgBx = styled.div`
   width: 50px;

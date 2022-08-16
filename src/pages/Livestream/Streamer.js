@@ -29,6 +29,9 @@ const CardStyle = styled.div`
   padding-top: 10px;
   color: white;
   background-color: #e08386;
+  @media screen and (max-width: 1279px) {
+    display: none;
+  }
 `;
 const VideoContainer = styled.div`
   width: 100%;
@@ -36,6 +39,9 @@ const VideoContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+  }
 `;
 const LeftWrap = styled.div`
   display: flex;
@@ -51,8 +57,11 @@ const VideoBx = styled.div`
   border: 2.5px solid #e08386;
   border-right: none;
   border-radius: 30px 0 0 30px;
+  @media screen and (max-width: 1279px) {
+    border: 0;
+    height: auto;
+  }
 `;
-
 const BtnBx = styled.div`
   margin-top: 20px;
   width: 100%;
@@ -113,6 +122,9 @@ const ChatBx = styled.div`
   border: 2.5px solid #e08386;
   border-left: none;
   border-radius: 0px 30px 30px 0px;
+  @media screen and (max-width: 1279px) {
+    border: 0;
+  }
 `;
 const ChatContent = styled.div`
   width: 100%;
