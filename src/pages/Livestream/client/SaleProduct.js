@@ -183,6 +183,12 @@ const AddCartBtn = styled(Btn)`
   }
 `;
 
+const SelectBorder = styled.div`
+  border: 1px solid black;
+  width: 32px;
+  height: 32px;
+`;
+
 const SaleProduct = (props) => {
   const { product } = props;
   const [colorCode, setColorCode] = useState("");
@@ -218,12 +224,14 @@ const SaleProduct = (props) => {
             <ColorBx>
               {product.colors.map((color) => {
                 return (
-                  <Color
-                    $colorCode={`#${color.code}`}
-                    onClick={() => {
-                      setColorCode(color.code);
-                    }}
-                  ></Color>
+                  <SelectBorder>
+                    <Color
+                      $colorCode={`#${color.code}`}
+                      onClick={() => {
+                        setColorCode(color.code);
+                      }}
+                    ></Color>
+                  </SelectBorder>
                 );
               })}
             </ColorBx>
