@@ -19,6 +19,7 @@ const Wrapper = styled.div`
 
 const MainImage = styled.img`
   width: 560px;
+  cursor: zoom-in;
 
   @media screen and (max-width: 1279px) {
     width: 100%;
