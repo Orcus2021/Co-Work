@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import useInputValidate from "../../utils/useInputValidate";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -268,7 +269,7 @@ const ImgBx = styled.div`
 
 const variantsFormGroups = [
   {
-    label: "商品色碼",
+    label: "商品色碼#",
     key: "color_code",
   },
   {
@@ -314,7 +315,7 @@ const VariantsButton = styled.button`
 const ColorCode = styled.div`
   width: 25px;
   height: 25px;
-  background-color: ${(props) => (props.$code ? props.$code : "red")};
+  background-color: #${(props) => (props.$code ? props.$code : "fff")};
   border-radius: 3px;
   border: 1px solid black;
   margin-left: 5px;
@@ -345,7 +346,7 @@ function Upload() {
   const [fileMultiSrc, setMultiSrc] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
   const [images, setImages] = useState([]);
-  const imageTypeRegex = /image\/(png|jpg|jpeg)/gm;
+  const imageTypeRegex = /image\/(jpg)/gm;
   const [addVariant, setAddVariant] = useState([1]);
   const [recipient, setRecipient] = useState({
     category: "",
@@ -365,6 +366,8 @@ function Upload() {
     main_image: "",
     other_images: "",
   });
+  // const {} = useInputValidate(isNotEmpty);
+
   // console.log(recipientVariants);
   const handleUploadFile = (e) => {
     if (!e.target.files[0]) return;
@@ -561,6 +564,21 @@ function Upload() {
   };
   async function createProduct() {
     var formData = new FormData();
+    const variantsArr = recipientVariants.map((obj) => {
+      const newObj = {
+        color_code: obj.color_code,
+        size: obj.size,
+        stock: obj.stock,
+      };
+      return newObj;
+    });
+    const colorsArr = recipientVariants.map((obj) => {
+      const newObj = {
+        code: obj.color_code,
+        name: obj.color_name,
+      };
+      return newObj;
+    });
     formData.append("category", recipient.category);
     formData.append("title", recipient.title);
     formData.append("description", recipient.description);
@@ -570,7 +588,9 @@ function Upload() {
     formData.append("place", recipient.place);
     formData.append("note", recipient.note);
     formData.append("story", recipient.story);
-    formData.append("variants", JSON.stringify(recipientVariants));
+    formData.append("colors", JSON.stringify(colorsArr));
+    //  formData.append("sizes", recipient.story);
+    formData.append("variants", JSON.stringify(variantsArr));
     formData.append("main_image", recipientImage.main_image[0]);
     for (const file of recipientImage.other_images) {
       formData.append("other_images", file);
@@ -642,7 +662,7 @@ function Upload() {
                   </UploadPreview>
                 </>
               ) : (
-                <UploadCardButton>主要商品照片上傳</UploadCardButton>
+                <UploadCardButton>主要商品照片上傳(jpg)</UploadCardButton>
               )}
               <UploadCardInput onChange={handleUploadFile} />
             </UploadCardStyled>
