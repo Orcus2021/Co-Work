@@ -35,17 +35,26 @@ const BackButton = styled.button`
 const Form = styled.div`
   display: flex;
   margin-top: 50px;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+  }
 `;
 const FormLeft = styled.div`
   display: flex;
   flex-direction: column;
   width: 300px;
   margin-right: 20px;
+  @media screen and (max-width: 1279px) {
+    margin: 0 auto;
+  }
 `;
 const FormCenter = styled.div`
   display: flex;
   width: 400px;
   margin-right: 20px;
+  @media screen and (max-width: 1279px) {
+    justify-content: center;
+  }
 `;
 const FormRight = styled.div`
   display: flex;
