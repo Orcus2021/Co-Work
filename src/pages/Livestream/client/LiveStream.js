@@ -486,9 +486,9 @@ const LiveStream = () => {
               disabled={!userCtx.user}
             />
             <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
-            <EnterBtn onClick={connectIO} style={{ color: "black" }}>
+            {/* <EnterBtn onClick={connectIO} style={{ color: "black" }}>
               SOCKET
-            </EnterBtn>
+            </EnterBtn> */}
           </InputBx>
           <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>
           <LoveBx>
