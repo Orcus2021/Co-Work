@@ -62,7 +62,8 @@ const ProductBx = styled.div`
   border-radius:8px;
   box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.3);
   margin:0 auto 10px auto;
-  
+  background-color:#fff;
+  cursor:pointer;
 }
 `;
 const ImgBx = styled.div`
@@ -88,13 +89,17 @@ const ProductTitle = styled.p`
 `;
 
 const Product = (props) => {
+  const { product, onID } = props;
+  const getIDHandler = () => {
+    onID(product.id);
+  };
   return (
-    <ProductBx>
+    <ProductBx onClick={getIDHandler}>
       <ImgBx>
-        <ProductImg src={dummy.main_image} />
+        <ProductImg src={product.main_image} />
       </ImgBx>
-      <ProductTitle>{dummy.title}</ProductTitle>
-      <ProductTitle>{dummy.id}</ProductTitle>
+      <ProductTitle>{product.title}</ProductTitle>
+      <ProductTitle>{product.id}</ProductTitle>
     </ProductBx>
   );
 };

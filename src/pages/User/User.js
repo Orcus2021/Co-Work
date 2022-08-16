@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Product from "./CouponProduct/Product";
 import Coupon from "../../components/Coupon/Coupon";
 import Modal from "../../components/Modal/Modal";
+import api from "../../utils/api";
 
 import cameraIcon from "../../assets/camera.png";
 import styled from "styled-components";
@@ -248,6 +249,7 @@ const SearchBtn = styled(CouponBtn)`
   margin-left: 10px;
 `;
 const SearchResultBx = styled.div`
+  height: 329px;
   margin-top: 30px;
   border: 2px solid #979797;
   border-radius: 30px;
@@ -257,6 +259,13 @@ const SearchResultBx = styled.div`
   padding: 10px;
   margin-bottom: 10px;
   background-color: #f2f2f2;
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(153, 38, 42, 0);
+  }
 `;
 const EditImg = styled.img`
   position: absolute;
@@ -271,13 +280,6 @@ const CouponList = styled(SearchResultBx)`
   margin-top: 10px;
   height: 324px;
   overflow-y: overlay;
-  &::-webkit-scrollbar {
-    width: 7px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 50px;
-    background-color: rgba(153, 38, 42, 0);
-  }
 `;
 const Input = styled.input`
   flex-grow: 1;
@@ -321,10 +323,14 @@ function User() {
   // -----產生優惠券的state----
   const [couponDate, setCouponDate] = useState("");
   const [couponType, setCouponType] = useState("");
-  const [couponScope, setCouponScope] = useState("");
+  const [couponScope, setCouponScope] = useState("all");
   const [couponID, setCouponID] = useState("");
   const [couponTimes, setCouponTimes] = useState("");
   const [couponAmount, setCouponAmount] = useState("");
+
+  const nextPagingRef = useRef();
+  const waypointRef = useRef();
+  const intersectionObserver = useRef(null);
 
   useEffect(() => {
     if (!userCtx.user) {
@@ -342,13 +348,67 @@ function User() {
   const searchSelectHandler = (e) => {
     setSearchCategory(e.target.value);
   };
+
+  const bottomToFetch = (category, search) => {
+    nextPagingRef.current = 0;
+    let isFetching = false;
+    const newCategory = category;
+    const newSearch = search;
+
+    intersectionObserver.current = new IntersectionObserver(async (entries) => {
+      console.log("intersection");
+      if (entries[0].intersectionRatio <= 0) return;
+      if (nextPagingRef.current === undefined) return;
+
+      if (isFetching) return;
+
+      const fetchProducts = () => {
+        console.log("test");
+        if (newSearch && newCategory) {
+          return api.getAnyProducts(
+            newCategory,
+            newSearch,
+            nextPagingRef.current
+          );
+        }
+        if (newSearch) {
+          return api.searchProducts(newSearch, nextPagingRef.current);
+        }
+        if (newCategory) {
+          console.log(newCategory);
+          return api.getProducts(newCategory, nextPagingRef.current);
+        }
+      };
+
+      isFetching = true;
+
+      const { data, next_paging } = await fetchProducts();
+      setSearchProduct((prev) => [...prev, ...data]);
+      console.log(next_paging);
+      nextPagingRef.current = next_paging;
+      isFetching = false;
+    });
+
+    intersectionObserver.current.observe(waypointRef.current);
+  };
+
   const searchHandler = () => {
     // 打API
     // setSearchProduct()
+    if (intersectionObserver) {
+      const waypoint = waypointRef.current;
+      intersectionObserver.current?.unobserve(waypoint);
+    }
+
+    setSearchProduct([]);
+    setTimeout(() => {
+      bottomToFetch(searchCategory, searchInput);
+    }, 500);
   };
   const couponCodeHandler = (e) => {
     setCouponCode(e.target.value);
   };
+
   const useCodeHandler = () => {
     // 打API
   };
@@ -376,6 +436,12 @@ function User() {
 
   const createCouponHandler = () => {
     // 打api coupon
+  };
+
+  const getIDHandler = (id) => {
+    if (couponScope == "limit") {
+      setCouponID(id);
+    }
   };
 
   if (!userCtx.user) return;
@@ -457,7 +523,7 @@ function User() {
                     </InputBx>
                     <InputBx>
                       <CouponLabel>使用範圍</CouponLabel>
-                      <DiscountSelect onChange={couponScopeHandler}>
+                      <DiscountSelect onClick={couponScopeHandler}>
                         <DiscountOption value="all">全部</DiscountOption>
                         <DiscountOption value="women">女裝</DiscountOption>
                         <DiscountOption value="men">男裝</DiscountOption>
@@ -466,12 +532,14 @@ function User() {
                         </DiscountOption>
                         <DiscountOption value="limit">限定</DiscountOption>
                       </DiscountSelect>
-                      <CouponInput
-                        onChange={couponIDHandler}
-                        value={couponID}
-                        type="text"
-                        placeholder="限定產品ID"
-                      />
+                      {couponScope == "limit" && (
+                        <CouponInput
+                          onChange={couponIDHandler}
+                          value={couponID}
+                          type="text"
+                          placeholder="限定產品ID"
+                        />
+                      )}
                     </InputBx>
                     <InputBx>
                       <CouponLabel>使用次數</CouponLabel>
@@ -502,7 +570,16 @@ function User() {
                       <SearchBtn onClick={searchHandler}>搜尋</SearchBtn>
                     </InputBx>
                     <SearchResultBx>
-                      <Product></Product>
+                      {searchProduct.map((product, index) => {
+                        return (
+                          <Product
+                            key={index}
+                            product={product}
+                            onID={getIDHandler}
+                          ></Product>
+                        );
+                      })}
+                      <div ref={waypointRef} style={{ height: "10px" }} />
                     </SearchResultBx>
                   </SearchCoupon>
                 </CouponBx>

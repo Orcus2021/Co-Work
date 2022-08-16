@@ -139,7 +139,7 @@ const CreateProduct = (props) => {
   const checkCouponHandler = () => {
     setIsCheckCoupon((pre) => !pre);
   };
-  console.log(isCheckCoupon);
+
   return (
     <Product>
       <CheckProduct

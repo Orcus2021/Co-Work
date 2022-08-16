@@ -173,6 +173,7 @@ const MessageBx = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: row;
+  background-color: ${(props) => (props.$isSelf ? "#f6dbdb" : "transparent")};
 `;
 const EmojiIcon = styled.img`
   position: absolute;
@@ -592,17 +593,17 @@ const Streamer = () => {
       <CreateList trigger={ButtonPop} setButtonPop={setButtonPop} />
       <Container>
         <PanelBtn onClick={() => setButtonPop(true)}>
-          開啟直播控制面板{"    "}
+          開啟直播控制面板
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
             height="16"
             fill="currentColor"
-            class="bi bi-arrows-angle-expand"
+            className="bi bi-arrows-angle-expand"
             viewBox="0 0 16 16"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707z"
             />
           </svg>
@@ -613,7 +614,7 @@ const Streamer = () => {
             width="16"
             height="16"
             fill="currentColor"
-            class="bi bi-mic-fill"
+            className="bi bi-mic-fill"
             viewBox="0 0 16 16"
           >
             <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z" />
@@ -641,7 +642,7 @@ const Streamer = () => {
                   width="20"
                   height="20"
                   fill="currentColor"
-                  class="bi bi-camera-fill"
+                  className="bi bi-camera-fill"
                   viewBox="0 0 16 16"
                 >
                   <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
@@ -658,7 +659,7 @@ const Streamer = () => {
                     width="16"
                     height="16"
                     fill="currentColor"
-                    class="bi bi-camera-reels"
+                    className="bi bi-camera-reels"
                     viewBox="0 0 16 16"
                   >
                     <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0z" />
@@ -673,9 +674,9 @@ const Streamer = () => {
           {/* </LeftWrap> */}
           <ChatBx>
             <ChatContent ref={chatBottom}>
-              {chatContent.map((content) => {
+              {chatContent.map((content, index) => {
                 return (
-                  <MessageBx>
+                  <MessageBx $isSelf={content.isSelf} key={index}>
                     <UserName>{content.name} :</UserName>
                     <Message>{content.content}</Message>
                   </MessageBx>
@@ -692,10 +693,17 @@ const Streamer = () => {
                 <Picker onEmojiClick={onEmojiClick} />
               </EmojiBx>
             )}
+            <LoveBx>
+              <LoveIcon src={loveIcon}></LoveIcon>
+              <LoveTotal>{loveAmount}</LoveTotal>
+            </LoveBx>
           </ChatBx>
         </VideoContainer>
-        {/* <CreateList></CreateList> */}
-        <StreamerProduct></StreamerProduct>
+
+        <StreamerProduct
+          onAdd={addProductHandler}
+          onRemove={removeSaleProductSocket}
+        ></StreamerProduct>
       </Container>
     </>
   );

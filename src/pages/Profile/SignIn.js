@@ -115,8 +115,8 @@ function SignIn() {
     };
     signIn(data);
   };
+
   async function signIn(data) {
-    console.log(data);
     const response = await fetch(`https://kelvin-wu.site/api/1.0/user/signin`, {
       body: JSON.stringify(data),
       headers: new Headers({
