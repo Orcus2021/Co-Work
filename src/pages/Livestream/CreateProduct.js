@@ -60,6 +60,10 @@ const Product = styled.div`
   height: 120px;
   border-bottom: 1px dashed #99262a;
   padding-bottom: 20px;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+    height: 200px;
+  }
 `;
 const ImgBx = styled.div`
   width: 100px;
