@@ -11,6 +11,56 @@ import SaleProduct from "./SaleProduct";
 import loveIcon from "../../../assets/love.png";
 import videoBack from "../../../assets/videoBackground.jpg";
 
+const dummy = {
+  id: 201807242222,
+  category: "men",
+  title: "經典商務西裝",
+  description: "厚薄：薄\r\n彈性：無",
+  price: 3999,
+  texture: "棉 100%",
+  wash: "手洗，溫水",
+  place: "中國",
+  note: "實品顏色依單品照為主",
+  story:
+    "O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.",
+  main_image: "https://api.appworks-school.tw/assets/201807242222/main.jpg",
+  images: [
+    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+  ],
+  variants: [
+    {
+      color_code: "334455",
+      size: "S",
+      stock: 9,
+    },
+    {
+      color_code: "334455",
+      size: "M",
+      stock: 5,
+    },
+    {
+      color_code: "334455",
+      size: "L",
+      stock: 1,
+    },
+    {
+      color_code: "334455",
+      size: "XL",
+      stock: 9,
+    },
+  ],
+  colors: [
+    {
+      code: "334455",
+      name: "深藍",
+    },
+  ],
+  sizes: ["S", "M", "L", "XL"],
+};
+
 const Container = styled.div`
   margin: 0 auto;
   padding: 50px 0 50px;
@@ -31,6 +81,9 @@ const CardStyle = styled.div`
   padding-top: 10px;
   color: white;
   background-color: #e08386;
+  @media screen and (max-width: 1279px) {
+    display: none;
+  }
 `;
 const VideoContainer = styled.div`
   width: 100%;
@@ -38,6 +91,9 @@ const VideoContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+  }
 `;
 const VideoBx = styled.div`
   background-color: white;
@@ -52,6 +108,10 @@ const VideoBx = styled.div`
   border: 2.5px solid #e08386;
   border-right: none;
   border-radius: 30px 0 0 30px;
+  @media screen and (max-width: 1279px) {
+    width: 100%;
+    border: 0;
+  }
 `;
 
 // const Video = styled.video`
@@ -99,6 +159,9 @@ const ChatBx = styled.div`
   border: 2.5px solid #e08386;
   border-left: none;
   border-radius: 0px 30px 30px 0px;
+  @media screen and (max-width: 1279px) {
+    border: 0;
+  }
 `;
 const ChatContent = styled.div`
   background-color: white;
@@ -217,7 +280,7 @@ const LiveStream = () => {
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [loveAmount, setLoveAmount] = useState(1000);
-  const [saleProduct, setSaleProduct] = useState(null);
+  const [saleProduct, setSaleProduct] = useState(dummy);
 
   useEffect(() => {
     socketRef.current = io("https://kelvin-wu.site/chatroom", {
