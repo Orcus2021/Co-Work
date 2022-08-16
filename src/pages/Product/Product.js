@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   padding: 65px 0 49px;
   display: flex;
   flex-wrap: wrap;
-
+  position: relative;
   @media screen and (max-width: 1279px) {
     padding: 0 0 32px;
   }
@@ -190,9 +190,22 @@ const Image = styled.img`
   }
 `;
 
+const ShowImage = styled.div`
+  width: 400px;
+  height: 500px;
+  border: 1px solid white;
+  position: absolute;
+  top: 205px;
+  right: 0;
+  @media screen and (max-width: 1279px) {
+    width: 0;
+  }
+`;
+
 function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
+  const [mouseIn, setMouseIn] = useState(false);
 
   useEffect(() => {
     async function getProduct() {
@@ -202,11 +215,48 @@ function Product() {
     getProduct();
   }, [id]);
 
+  // const src = product.main_image;
+  const [zoomIn, setZoomIn] = useState({
+    // backgroundImage: `url(${src})`,
+    backgroundPosition: "0% 0%",
+  });
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.target.getBoundingClientRect();
+    const x = ((e.pageX - left) / width) * 100;
+    const y = ((e.pageY - top) / height) * 100;
+    setZoomIn({
+      backgroundPosition: `${x}% ${y}%`,
+    });
+  };
+  const mouseInEvent = () => {
+    setMouseIn(true);
+  };
+  const mouseOutEvent = () => {
+    setMouseIn(false);
+  };
+
   if (!product) return null;
 
   return (
     <Wrapper>
-      <MainImage src={product.main_image} />
+      <MainImage
+        src={product.main_image}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={mouseInEvent}
+        onMouseLeave={mouseOutEvent}
+      />
+      {mouseIn && (
+        <ShowImage
+          style={{
+            ...zoomIn,
+            backgroundImage:
+              `url(` +
+              `https://kelvin-wu.site/assets/${product.id}/main.jpg` +
+              `)`,
+            backgroundSize: "300% 300%",
+          }}
+        />
+      )}
       <Details>
         <Title>{product.title}</Title>
         <ID>{product.id}</ID>

@@ -25,9 +25,12 @@ const CreateRightBx = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  ${"" /* border: 1px solid black; */}
-  padding-right:20px;
+  padding-right: 20px;
   margin-left: 40px;
+  @media screen and (max-width: 1279px) {
+    width: 40%;
+    margin-left: 5px;
+  }
 `;
 const PanelTitle = styled.div`
   padding: 10px;
@@ -46,6 +49,9 @@ const SearchInput = styled.input`
   flex-grow: 1;
   height: 100%;
   border-radius: 20px;
+  @media screen and (max-width: 1279px) {
+    width: 20%;
+  }
 `;
 const SearchInputBx = styled.div`
   margin-top: 10px;
@@ -75,6 +81,9 @@ const Btn = styled.button`
   cursor: pointer;
   height: 30px;
   margin-bottom: 10px;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.8rem;
+  }
 `;
 const SearchBtn = styled(Btn)`
   color: white;
@@ -106,6 +115,11 @@ const ProductList = styled.div`
   padding: 20px;
   border: 1px dashed #99262a;
   margin: 0 40px 20px 40px;
+  @media screen and (max-width: 1279px) {
+    width: 60%;
+    margin: 0 20px 10px 20px;
+    height: 40vh;
+  }
 `;
 const UploadLiveForm = styled.form`
   width: 100%;
