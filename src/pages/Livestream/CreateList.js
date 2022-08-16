@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import CreateProduct from "./CreateProduct";
 import api from "../../utils/api";
@@ -212,7 +212,9 @@ export default function CreateList(props) {
 
   const nextPagingRef = useRef();
   const waypointRef = useRef();
+  const intersectionObserver = useRef(null);
 
+  console.log(category);
   const allSelectHandler = () => {
     setAllSelect(true);
   };
@@ -230,8 +232,6 @@ export default function CreateList(props) {
       return productId !== id;
     });
     addProductArr.current = newArr;
-
-    console.log(addProductArr.current);
   };
   const categoryHandler = (e) => {
     setCategory(e.target.value);
@@ -239,45 +239,58 @@ export default function CreateList(props) {
   const searchValueHandler = (e) => {
     setSearch(e.target.value);
   };
-  const searchResultHandler = () => {
-    // const data = await api.getProducts(category, 0);
-    // setSearchProducts(data.data);
-    bottomToFetch(category);
-  };
-  const bottomToFetch = (select) => {
+
+  const bottomToFetch = (category, search) => {
     nextPagingRef.current = 0;
     let isFetching = false;
-    const intersectionObserver = new IntersectionObserver(async (entries) => {
+    const newCategory = category;
+    const newSearch = search;
+
+    intersectionObserver.current = new IntersectionObserver(async (entries) => {
       if (entries[0].intersectionRatio <= 0) return;
       if (nextPagingRef.current === undefined) return;
 
       if (isFetching) return;
 
-      function fetchProducts() {
-        // if (keyword) {
-        //   return api.searchProducts(keyword, nextPagingRef.current);
-        // }
-        // if (category) {
-        //   return api.getProducts(category, nextPagingRef.current);
-        // }
-        return api.getProducts(select, nextPagingRef.current);
-      }
+      const fetchProducts = () => {
+        if (newSearch && newCategory) {
+          return api.getAnyProducts(
+            newCategory,
+            newSearch,
+            nextPagingRef.current
+          );
+        }
+        if (newSearch) {
+          return api.searchProducts(newSearch, nextPagingRef.current);
+        }
+        if (newCategory) {
+          console.log(newCategory);
+          return api.getProducts(newCategory, nextPagingRef.current);
+        }
+      };
 
       isFetching = true;
-      console.log(isFetching);
+
       const { data, next_paging } = await fetchProducts();
       setSearchProducts((prev) => [...prev, ...data]);
       nextPagingRef.current = next_paging;
       isFetching = false;
     });
 
-    intersectionObserver.observe(waypointRef.current);
-    const waypoint = waypointRef.current;
-
-    return () => {
-      intersectionObserver.unobserve(waypoint);
-    };
+    intersectionObserver.current.observe(waypointRef.current);
   };
+  const searchResultHandler = () => {
+    if (intersectionObserver) {
+      const waypoint = waypointRef.current;
+      intersectionObserver.current?.unobserve(waypoint);
+    }
+
+    setSearchProducts([]);
+    setTimeout(() => {
+      bottomToFetch(category, search);
+    }, 500);
+  };
+
   const fileLoad = (e) => {
     setUploadImg(e.target.result);
     setFileSrc(e.target.result);
@@ -327,7 +340,7 @@ export default function CreateList(props) {
           </BtnWrapper> */}
           <PanelTitle>本次直播商品</PanelTitle>
           <SearchWrapper>
-            <Category onChange={categoryHandler}>
+            <Category onClick={categoryHandler}>
               <CategoryOption value="all">All</CategoryOption>
               <CategoryOption value="women">女裝</CategoryOption>
               <CategoryOption value="men">男裝</CategoryOption>
@@ -352,6 +365,7 @@ export default function CreateList(props) {
           {searchProducts.map((item) => {
             return (
               <CreateProduct
+                key={item.id}
                 isAll={allSelect}
                 onAll={setAllSelect}
                 isClear={clearAll}
@@ -362,7 +376,7 @@ export default function CreateList(props) {
               ></CreateProduct>
             );
           })}
-          <div ref={waypointRef} style={{ height: "20px" }} />
+          <div ref={waypointRef} style={{ height: "10px" }} />
         </ProductList>
         <div>
           <CloseButton onClick={() => props.setButtonPop(false)}>
@@ -371,7 +385,7 @@ export default function CreateList(props) {
               width="30"
               height="30"
               fill="currentColor"
-              class="bi bi-x-circle-fill"
+              className="bi bi-x-circle-fill"
               viewBox="0 0 16 16"
             >
               <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />

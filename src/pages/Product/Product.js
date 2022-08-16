@@ -193,7 +193,6 @@ const Image = styled.img`
 function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
-  console.log(product);
 
   useEffect(() => {
     async function getProduct() {

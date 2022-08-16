@@ -1,8 +1,20 @@
 const api = {
-  hostname: "https://api.appworks-school.tw/api/1.0",
+  hostname: "https://kelvin-wu.site/api/1.0",
   async getProducts(category, paging) {
+    console.log("category");
+
     const response = await fetch(
       `${this.hostname}/products/${category}?paging=${paging}`
+    );
+    return await response.json();
+  },
+  async getAnyProducts(category, keyword, paging) {
+    console.log("any");
+    console.log(
+      `${this.hostname}/products/${category}?paging=${paging}&keyword=${keyword}`
+    );
+    const response = await fetch(
+      `${this.hostname}/products/${category}?paging=${paging}&keyword=${keyword}`
     );
     return await response.json();
   },

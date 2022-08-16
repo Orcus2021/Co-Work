@@ -250,6 +250,7 @@ const StreamerProduct = (props) => {
                   {saleProduct.colors.map((color) => {
                     return (
                       <Color
+                        key={color.code}
                         $colorCode={`#${color.code}`}
                         onClick={() => {
                           setColorCode(color.code);
@@ -262,6 +263,7 @@ const StreamerProduct = (props) => {
                   {saleProduct.sizes.map((size) => {
                     return (
                       <Size
+                        key={size}
                         onClick={() => {
                           setSize(size);
                         }}
@@ -282,9 +284,10 @@ const StreamerProduct = (props) => {
       </ProductContainer>
       <SaleTitle>待上架區</SaleTitle>
       <StandbyProductBx>
-        {allProduct.map((product) => {
+        {allProduct.map((product, index) => {
           return (
             <StandbyProduct
+              key={index}
               onAdd={onAdd}
               product={product}
               onSale={saleProductHandler}

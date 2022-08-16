@@ -14,15 +14,9 @@ const ModalBx = styled.div`
   top: 30vh;
   left: calc(50% - 250px);
   z-index: 101;
-  animation: ${(props) => (props.$isClose ? "slide-up" : "slide-down")} 500ms
-    ease-out forwards;
+  animation: slide-down 500ms ease-out forwards;
   position: fixed;
 
-  @media screen and (max-width: 1279px) {
-    & {
-      left: calc(10% - 12.5px);
-    }
-  }
   @keyframes slide-down {
     from {
       opacity: 0;
@@ -31,17 +25,6 @@ const ModalBx = styled.div`
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  @keyframes slide-up {
-    from {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateY(-10rem);
     }
   }
 `;
@@ -53,13 +36,34 @@ const ModalContent = styled.div`
   width: 100%;
   height: 100%;
 `;
+const ModalClose = styled.div`
+  position: fixed;
+  top: 30vh;
+  left: 50%;
+  z-index: 101;
+  animation: slide-up 500ms ease-out forwards;
+  @keyframes slide-up {
+    from {
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-20rem);
+    }
+  }
+`;
 
 const ModalOverlay = (props) => {
   const { closeEffect } = props;
 
   return (
     <ModalBx>
-      <ModalContent $isClose={closeEffect}>{props.children}</ModalContent>
+      {closeEffect ? (
+        <ModalClose>{props.children}</ModalClose>
+      ) : (
+        <ModalContent>{props.children}</ModalContent>
+      )}
     </ModalBx>
   );
 };
