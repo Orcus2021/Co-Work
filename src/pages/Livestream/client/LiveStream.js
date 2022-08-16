@@ -6,7 +6,6 @@ import styled from "styled-components";
 import Picker from "emoji-picker-react";
 import { UserContext } from "../../../contexts/UserContext";
 import LoveAnimation from "../../../components/Love/Love";
-
 import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
 import loveIcon from "../../../assets/love.png";
@@ -115,38 +114,6 @@ const VideoBx = styled.div`
   }
 `;
 
-// const Video = styled.video`
-//   width: 1280px;
-//   height: 720px;
-//   background-color: black;
-// `;
-
-const BtnBx = styled.div`
-  width: 100%;
-  height: 60px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-`;
-const Btn = styled.button`
-  width: 150px;
-  font-size: 1rem;
-  border-radius: 30px;
-  border: 2px solid #e08386;
-  cursor: pointer;
-  height: 40px;
-`;
-const LiveBtn = styled(Btn)`
-  background-color: black;
-  color: white;
-  margin-right: 10px;
-`;
-const StopBtn = styled(Btn)`
-  background-color: rgb(240, 47, 47);
-  color: white;
-  border: 2px solid rgb(240, 47, 47);
-`;
 const ChatBx = styled.div`
   background-color: white;
   position: relative;

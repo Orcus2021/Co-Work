@@ -3,14 +3,16 @@ import { Outlet } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import { Reset } from "styled-reset";
 import UserProvider from "./contexts/UserContext";
-
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import CartContext from "./contexts/CartContext";
+import VideoBack from "./components/VideoBack/VideoBack";
+import Video from "./components/Video/Video";
 import PingFangTCRegular from "./fonts/PingFang-TC-Regular-2.otf";
 import PingFangTCThin from "./fonts/PingFang-TC-Thin-2.otf";
 import NotoSansTCRegular from "./fonts/NotoSansTC-Regular.otf";
 import NotoSansTCBold from "./fonts/NotoSansTC-Bold.otf";
+import loveIcon from "./assets/love.png";
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -45,6 +47,47 @@ const GlobalStyle = createGlobalStyle`
     font-family: NotoSansTC;
   }
 
+  // .love {
+  //   z-index:9999;
+  //   position:absolute;
+    
+  //   pointer-events: none;
+  //   filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.5));
+  //   animation: fadeInOut 1s linear infinite;
+  // }
+  
+  // @keyframes fadeInOut {
+  //   0%,
+  //   100% {
+  //     opacity: 0;
+  //   }
+  //   20%,
+  //   80% {
+  //     opacity: 1;
+  //   }
+  // }
+  // .love::before {
+  //   z-index:9999;
+  //   content: "";
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 100%;
+  //   background: url(${loveIcon});
+  //   background-size: cover;
+  //   animation: moveShape 1s linear infinite;
+  // }
+  
+  // @keyframes moveShape {
+  //   0% {
+  //     transform: translate(0) rotate(0deg);
+  //   }
+  //   100% {
+  //     transform: translate(10px, 100px) rotate(360deg);
+  //   }
+  // }
+  
+
+
   #root {
     min-height: 100vh;
     padding: 140px 0 115px;
@@ -55,6 +98,27 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 `;
+// document.addEventListener("mousemove", (e) => {
+//   let body = document.querySelector("body");
+//   let heart = document.createElement("span");
+//   heart.classList.add("love");
+
+//   let x = e.offsetX;
+//   let y = e.offsetY;
+//   heart.style.left = x + "px";
+//   heart.style.top = y + "px";
+
+//   let size = Math.random() * 40;
+//   heart.style.width = 20 + size + "px";
+//   heart.style.height = 20 + size + "px";
+//   let transformValue = Math.random() * 360;
+//   heart.style.transform = "rotate(" + transformValue + "deg)";
+
+//   body.appendChild(heart);
+//   setTimeout(() => {
+//     heart.remove();
+//   }, 200);
+// });
 
 function App() {
   const [cartItems, setCartItems] = useState(

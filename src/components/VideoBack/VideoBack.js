@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import ReactDOM from "react-dom";
+import { useRef, useEffect, useState } from "react";
 
 const Back = styled.div`
   position: fixed;
@@ -7,9 +8,11 @@ const Back = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 100;
-  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 98;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
 `;
+
 const ModalBx = styled.div`
   top: 30vh;
   left: calc(50% - 250px);
@@ -55,37 +58,18 @@ const ModalClose = styled.div`
   }
 `;
 
-const ModalOverlay = (props) => {
-  const { closeEffect } = props;
-
-  return (
-    <ModalBx>
-      {closeEffect ? (
-        <ModalClose>{props.children}</ModalClose>
-      ) : (
-        <ModalContent>{props.children}</ModalContent>
-      )}
-    </ModalBx>
-  );
-};
 const Backdrop = (props) => {
-  return <Back onClick={props.onClose}></Back>;
+  return <Back>{props.children}</Back>;
 };
 
-const Modal = (props) => {
-  const { onClose, closeEffect } = props;
-
+const VideoBack = (props) => {
   return (
     <>
       {ReactDOM.createPortal(
-        <Backdrop onClose={onClose}>{props.children}</Backdrop>,
-        document.getElementById("overlay")
-      )}
-      {ReactDOM.createPortal(
-        <ModalOverlay closeEffect={closeEffect}>{props.children}</ModalOverlay>,
-        document.getElementById("overlay")
+        <Backdrop>{props.children}</Backdrop>,
+        document.getElementById("mouse")
       )}
     </>
   );
 };
-export default Modal;
+export default VideoBack;

@@ -62,6 +62,16 @@ const api = {
     });
     return await response.json();
   },
+  async uploadUserImg(data, jwtToken) {
+    const response = await fetch(`${this.hostname}/user/image`, {
+      body: data,
+      headers: new Headers({
+        Authorization: `Bearer ${jwtToken}`,
+      }),
+      method: "POST",
+    });
+    return await response.json();
+  },
 };
 
 export default api;

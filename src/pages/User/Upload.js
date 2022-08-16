@@ -551,7 +551,7 @@ function Upload() {
     createProduct();
   };
   async function createProduct() {
-    var formData = new FormData();
+    let formData = new FormData();
     formData.append("category", recipient.category);
     formData.append("title", recipient.title);
     formData.append("description", recipient.description);

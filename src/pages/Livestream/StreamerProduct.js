@@ -127,14 +127,26 @@ const ColorBx = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 const Color = styled.div`
+  position: relative;
+  border-radius: 3px;
   width: 30px;
   height: 30px;
   margin-right: 20px;
   background-color: ${(props) => props.$colorCode};
   cursor: pointer;
+  &::after {
+    content: "";
+    border-radius: 3px;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+  }
 `;
 const SizeBx = styled.div`
   width: 100%;
@@ -145,6 +157,8 @@ const SizeBx = styled.div`
   margin-bottom: 10px;
 `;
 const Size = styled.div`
+  position: relative;
+  border-radius: 3px;
   width: 30px;
   height: 30px;
   background-color: #99262a;
@@ -154,6 +168,16 @@ const Size = styled.div`
   justify-content: center;
   margin-right: 20px;
   cursor: pointer;
+  &::after {
+    content: "";
+    border-radius: 3px;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+  }
 `;
 const Qty = styled.p`
   width: 100%;
@@ -247,28 +271,30 @@ const StreamerProduct = (props) => {
               </Details>
               <Variants>
                 <ColorBx>
-                  {saleProduct.colors.map((color) => {
+                  {saleProduct.colors.map((colorObj, index) => {
                     return (
                       <Color
-                        key={color.code}
-                        $colorCode={`#${color.code}`}
+                        key={index}
+                        $colorCode={`#${colorObj.code}`}
+                        $isChose={colorCode === colorObj.code}
                         onClick={() => {
-                          setColorCode(color.code);
+                          setColorCode(colorObj.code);
                         }}
                       ></Color>
                     );
                   })}
                 </ColorBx>
                 <SizeBx>
-                  {saleProduct.sizes.map((size) => {
+                  {saleProduct.sizes.map((sizeName, index) => {
                     return (
                       <Size
-                        key={size}
+                        key={index}
+                        $isChose={sizeName === size}
                         onClick={() => {
-                          setSize(size);
+                          setSize(sizeName);
                         }}
                       >
-                        {size}
+                        {sizeName}
                       </Size>
                     );
                   })}

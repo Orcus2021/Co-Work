@@ -326,11 +326,92 @@ const UserBx = styled(CouponBx)`
 
 const Container = styled.div`
   width: 400px;
-  height: 300px;
+  padding: 10px;
   background-color: #fff;
   border-radius: 3px;
 `;
 const UserRight = styled(SearchCoupon)``;
+
+const PanelTitle = styled.div`
+  padding: 10px;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #99262a;
+`;
+
+const UploadCardStyled = styled.label`
+  background-color: #fff;
+  padding: 10px;
+  width: 100%;
+  max-width: 400px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08);
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 10px;
+`;
+
+const UploadPreview = styled.div`
+  max-width: 100%;
+  max-height: 100%;
+  text-align: center;
+`;
+
+const UploadPreviewImg = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+`;
+
+const UploadCardButton = styled.span`
+  background-color: #fff;
+  border: solid 2px #e6e6e6;
+  padding: 10px 10px;
+  border-radius: 30px;
+  font-size: 17px;
+  line-height: 1.24;
+  cursor: pointer;
+  &:hover {
+    background-color: gray;
+    color: #fff;
+  }
+`;
+
+const UploadCardInput = styled.input.attrs({
+  type: "file",
+  accept: "image/png, image/jpeg",
+})`
+  opacity: 0;
+  z-index: -1;
+  position: absolute;
+`;
+const BtnWrapper = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+`;
+const Btn = styled.button`
+  width: 80px;
+  font-size: 1rem;
+  border-radius: 30px;
+  border: 2px solid black;
+  cursor: pointer;
+  height: 30px;
+  margin-bottom: 10px;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.8rem;
+  }
+`;
+
+const UploadBtn = styled(Btn)`
+  background-color: black;
+  color: white;
+  margin: 0 auto;
+  margin-bottom: 20px;
+`;
 
 function User() {
   const userCtx = useContext(UserContext);
@@ -342,6 +423,7 @@ function User() {
   const [couponCode, setCouponCode] = useState("");
   const [showImgUpload, setShowImgUpload] = useState(false);
   const [modalCloseEffect, setModalCloseEffect] = useState(false);
+  const [fileSrc, setFileSrc] = useState(null);
   // -----產生優惠券的state----
   const [couponDate, setCouponDate] = useState("");
   const [couponType, setCouponType] = useState("");
@@ -353,6 +435,7 @@ function User() {
   const nextPagingRef = useRef();
   const waypointRef = useRef();
   const intersectionObserver = useRef(null);
+  const imgFile = useRef("");
 
   useEffect(() => {
     if (!userCtx.user) {
@@ -416,7 +499,6 @@ function User() {
 
   const searchHandler = () => {
     // 打API
-    // setSearchProduct()
     if (intersectionObserver) {
       const waypoint = waypointRef.current;
       intersectionObserver.current?.unobserve(waypoint);
@@ -466,6 +548,10 @@ function User() {
     }
   };
 
+  const showUploadImgHandler = () => {
+    setShowImgUpload(true);
+  };
+
   const closeCouponBx = () => {
     setModalCloseEffect(true);
     setTimeout(() => {
@@ -473,7 +559,36 @@ function User() {
       setModalCloseEffect(false);
     }, 600);
   };
-  console.log(userCtx.user);
+
+  const uploadImgHandler = (e) => {
+    console.log("files", e.target.files);
+    imgFile.current = e.target.files;
+    const fileReader = new FileReader();
+    fileReader.onload = fileLoad;
+    fileReader.readAsDataURL(imgFile.current.item(0));
+  };
+  const fileLoad = (e) => {
+    // setUploadImg(e.target.result);
+    setFileSrc(e.target.result);
+  };
+
+  const submitImgHandler = async () => {
+    const formData = new FormData();
+    console.log(imgFile.current[0]);
+
+    formData.append("image", imgFile.current[0]);
+
+    console.log("form data", formData);
+    console.log("ref", imgFile.current);
+    console.log("token", userCtx.user.accessToken);
+    // 打API
+    const { data } = await api.uploadUserImg(
+      formData,
+      userCtx.user.accessToken
+    );
+    // console.log("res data", data);
+  };
+
   if (!userCtx.user) return;
   return (
     <>
@@ -496,7 +611,10 @@ function User() {
                 <UserProfileImgP>
                   {userCtx.user.name[0]}
 
-                  <EditImg src={cameraIcon}></EditImg>
+                  <EditImg
+                    onClick={showUploadImgHandler}
+                    src={cameraIcon}
+                  ></EditImg>
                 </UserProfileImgP>
               )}
             </UserProfileImgWrapper>
@@ -669,8 +787,28 @@ function User() {
         </UserWrapper>
       </Wrapper>
       {showImgUpload && (
-        <Modal>
-          <Container></Container>
+        <Modal onClose={closeCouponBx} closeEffect={modalCloseEffect}>
+          <Container>
+            <PanelTitle>個人照片</PanelTitle>
+            <UploadCardStyled>
+              {fileSrc ? (
+                <>
+                  {/* <ClearBtn onClick={handleClear}>刪除</ClearBtn> */}
+                  <UploadPreview>
+                    <UploadPreviewImg src={fileSrc} />
+                  </UploadPreview>
+                </>
+              ) : (
+                <UploadCardButton>選擇照片</UploadCardButton>
+              )}
+              <UploadCardInput onChange={uploadImgHandler} />
+            </UploadCardStyled>
+            <BtnWrapper>
+              <UploadBtn onClick={submitImgHandler}>上傳照片</UploadBtn>
+              <UploadBtn onClick={closeCouponBx}>關閉</UploadBtn>
+              {/* <UploadBtn onClick={clearImgHandler}>清除照片</UploadBtn> */}
+            </BtnWrapper>
+          </Container>
         </Modal>
       )}
     </>

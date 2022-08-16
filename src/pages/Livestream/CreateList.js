@@ -207,7 +207,7 @@ export default function CreateList(props) {
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [searchProducts, setSearchProducts] = useState([]);
-  const [uploadImg, setUploadImg] = useState("");
+  // const [uploadImg, setUploadImg] = useState("");
   const [fileSrc, setFileSrc] = useState(null);
 
   const nextPagingRef = useRef();
@@ -292,7 +292,7 @@ export default function CreateList(props) {
   };
 
   const fileLoad = (e) => {
-    setUploadImg(e.target.result);
+    // setUploadImg(e.target.result);
     setFileSrc(e.target.result);
   };
   const uploadImgHandler = (e) => {
@@ -305,9 +305,9 @@ export default function CreateList(props) {
   const submitImgHandler = () => {
     // 打API
   };
-  const clearImgHandler = (event) => {
-    setUploadImg("");
-  };
+  // const clearImgHandler = (event) => {
+  //   setUploadImg("");
+  // };
   return props.trigger ? (
     <>
       <CreateProductBx>

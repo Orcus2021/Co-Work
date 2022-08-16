@@ -7,6 +7,7 @@ import api from "../../utils/api";
 import getJwtToken from "../../utils/getJwtToken";
 import tappay from "../../utils/tappay";
 import Cart from "./Cart";
+import { UserContext } from "../../contexts/UserContext";
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -313,6 +314,7 @@ function Checkout() {
     time: "",
   });
   const cart = useContext(CartContext);
+  const userCtx = useContext(UserContext);
   const items = cart.getItems();
   const navigate = useNavigate();
   const cardNumberRef = useRef();
@@ -336,17 +338,22 @@ function Checkout() {
   const freight = 30;
 
   async function checkout() {
-    let jwtToken = window.localStorage.getItem("jwtToken");
+    // let jwtToken = window.localStorage.getItem("jwtToken");
+    const token = userCtx.user?.accessToken;
 
-    if (!jwtToken) {
-      try {
-        jwtToken = await getJwtToken();
-      } catch (e) {
-        window.alert(e.message);
-        return;
-      }
+    if (!userCtx.user) {
+      // try {
+      //   jwtToken = await getJwtToken();
+      // } catch (e) {
+      //   window.alert(e.message);
+      //   return;
+      // }
+      window.alert("登入不會嗎?");
+      navigate("/profile/signin");
+
+      return;
     }
-    window.localStorage.setItem("jwtToken", jwtToken);
+    // window.localStorage.setItem("jwtToken", jwtToken);
 
     if (items.length === 0) {
       window.alert("尚未選購商品");
@@ -369,24 +376,24 @@ function Checkout() {
       return;
     }
 
-    const { data } = await api.checkout(
-      {
-        prime: result.card.prime,
-        order: {
-          shipping: "delivery",
-          payment: "credit_card",
-          subtotal,
-          freight,
-          total: subtotal + freight,
-          recipient,
-          list: cart.getItems(),
-        },
-      },
-      jwtToken
-    );
-    window.alert("付款成功");
-    cart.clearItems();
-    navigate("/thankyou", { state: { orderNumber: data.number } });
+    //   const { data } = await api.checkout(
+    //     {
+    //       prime: result.card.prime,
+    //       order: {
+    //         shipping: "delivery",
+    //         payment: "credit_card",
+    //         subtotal,
+    //         freight,
+    //         total: subtotal + freight,
+    //         recipient,
+    //         list: cart.getItems(),
+    //       },
+    //     },
+    //     jwtToken
+    //   );
+    //   window.alert("付款成功");
+    //   cart.clearItems();
+    //   navigate("/thankyou", { state: { orderNumber: data.number } });
   }
 
   return (

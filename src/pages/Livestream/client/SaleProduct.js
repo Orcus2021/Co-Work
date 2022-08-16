@@ -125,14 +125,26 @@ const ColorBx = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 const Color = styled.div`
+  position: relative;
+  border-radius: 3px;
   width: 30px;
   height: 30px;
   margin-right: 20px;
   background-color: ${(props) => props.$colorCode};
   cursor: pointer;
+  &::after {
+    content: "";
+    border-radius: 3px;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+  }
 `;
 const SizeBx = styled.div`
   width: 100%;
@@ -143,6 +155,8 @@ const SizeBx = styled.div`
   margin-bottom: 10px;
 `;
 const Size = styled.div`
+  position: relative;
+  border-radius: 3px;
   width: 30px;
   height: 30px;
   background-color: #99262a;
@@ -155,6 +169,16 @@ const Size = styled.div`
   &:hover {
     background-color: #e08386;
     color: #99262a;
+  }
+  &::after {
+    content: "";
+    border-radius: 3px;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
   }
 `;
 const Qty = styled.p`
@@ -216,26 +240,30 @@ const SaleProduct = (props) => {
           </Details>
           <Variants>
             <ColorBx>
-              {product.colors.map((color) => {
+              {product.colors.map((colorObj, index) => {
                 return (
                   <Color
-                    $colorCode={`#${color.code}`}
+                    key={index}
+                    $colorCode={`#${colorObj.code}`}
+                    $isChose={colorCode === colorObj.code}
                     onClick={() => {
-                      setColorCode(color.code);
+                      setColorCode(colorObj.code);
                     }}
                   ></Color>
                 );
               })}
             </ColorBx>
             <SizeBx>
-              {product.sizes.map((size) => {
+              {product.sizes.map((sizeName, index) => {
                 return (
                   <Size
+                    key={index}
+                    $isChose={sizeName === size}
                     onClick={() => {
-                      setSize(size);
+                      setSize(sizeName);
                     }}
                   >
-                    {size}
+                    {sizeName}
                   </Size>
                 );
               })}
