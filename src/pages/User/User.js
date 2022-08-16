@@ -323,6 +323,13 @@ const UserBx = styled(CouponBx)`
     flex-direction: column;
   }
 `;
+
+const Container = styled.div`
+  width: 400px;
+  height: 300px;
+  background-color: #fff;
+  border-radius: 3px;
+`;
 const UserRight = styled(SearchCoupon)``;
 
 function User() {
@@ -333,6 +340,8 @@ function User() {
   const [searchInput, setSearchInput] = useState("");
   const [searchProduct, setSearchProduct] = useState([]);
   const [couponCode, setCouponCode] = useState("");
+  const [showImgUpload, setShowImgUpload] = useState(false);
+  const [modalCloseEffect, setModalCloseEffect] = useState(false);
   // -----產生優惠券的state----
   const [couponDate, setCouponDate] = useState("");
   const [couponType, setCouponType] = useState("");
@@ -457,6 +466,14 @@ function User() {
     }
   };
 
+  const closeCouponBx = () => {
+    setModalCloseEffect(true);
+    setTimeout(() => {
+      setShowImgUpload(false);
+      setModalCloseEffect(false);
+    }, 600);
+  };
+  console.log(userCtx.user);
   if (!userCtx.user) return;
   return (
     <>
@@ -651,9 +668,11 @@ function User() {
           </RightWrapper>
         </UserWrapper>
       </Wrapper>
-      {/* <Modal>
-        <Container></Container>
-      </Modal> */}
+      {showImgUpload && (
+        <Modal>
+          <Container></Container>
+        </Modal>
+      )}
     </>
   );
 }

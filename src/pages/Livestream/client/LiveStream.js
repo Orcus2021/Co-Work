@@ -5,6 +5,7 @@ import flvjs from "flv.js";
 import styled from "styled-components";
 import Picker from "emoji-picker-react";
 import { UserContext } from "../../../contexts/UserContext";
+import LoveAnimation from "../../../components/Love/Love";
 
 import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
@@ -279,8 +280,9 @@ const LiveStream = () => {
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
-  const [loveAmount, setLoveAmount] = useState(1000);
+  const [loveAmount, setLoveAmount] = useState(0);
   const [saleProduct, setSaleProduct] = useState(dummy);
+  const [showLove, setShowLove] = useState(false);
 
   useEffect(() => {
     socketRef.current = io("https://kelvin-wu.site/chatroom", {
@@ -318,12 +320,20 @@ const LiveStream = () => {
     }
   }, [userCtx.user, socketRef]);
 
+  useEffect(() => {
+    setShowLove(true);
+
+    const loveTimerId = setTimeout(() => {
+      setShowLove(false);
+    }, 1500);
+  }, [loveAmount]);
+
   const inputHandler = (e) => {
     setInput(e.target.value);
   };
 
   const onEmojiClick = (event, emojiObject) => {
-    setInput((pre) => pre + emojiObject.name);
+    setInput((pre) => pre + emojiObject.emoji);
 
     console.log(emojiObject);
     setChosenEmoji(false);
@@ -333,20 +343,20 @@ const LiveStream = () => {
     console.log("init");
     socketRef.current.connect();
     //   offer socket
-    // socketRef.current.on("offer", async (desc) => {
-    //   console.log("view receive desc", desc);
-    //   await peerConnect.current.setRemoteDescription(desc);
-    // });
+    socketRef.current.on("offer", async (desc) => {
+      console.log("view receive desc", desc);
+      await peerConnect.current.setRemoteDescription(desc);
+    });
 
     // ICE socket
-    // socketRef.current.on("candidate", async (data) => {
-    //   console.log("收到candidate", data);
-    //   const candidate = new RTCIceCandidate({
-    //     sdpMLineIndex: data.label,
-    //     candidate: data.candidate,
-    //   });
-    //   await peerConnect.current.addIceCandidate(candidate);
-    // });
+    socketRef.current.on("candidate", async (data) => {
+      console.log("收到candidate", data);
+      const candidate = new RTCIceCandidate({
+        sdpMLineIndex: data.label,
+        candidate: data.candidate,
+      });
+      await peerConnect.current.addIceCandidate(candidate);
+    });
   };
 
   const initPeerConnection = () => {
@@ -397,6 +407,7 @@ const LiveStream = () => {
   };
 
   const sendLoveHandler = () => {
+    // setLoveAmount((pre) => pre + 1);
     socketRef.current.emit("love");
   };
 
@@ -486,14 +497,12 @@ const LiveStream = () => {
               disabled={!userCtx.user}
             />
             <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
-            <EnterBtn onClick={connectIO} style={{ color: "black" }}>
-              SOCKET
-            </EnterBtn>
           </InputBx>
           <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>
           <LoveBx>
             <LoveIcon src={loveIcon} onClick={sendLoveHandler}></LoveIcon>
             <LoveTotal>{loveAmount}</LoveTotal>
+            {showLove && <LoveAnimation></LoveAnimation>}
           </LoveBx>
 
           {chosenEmoji && (

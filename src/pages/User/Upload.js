@@ -244,6 +244,7 @@ const uploadFormGroups = [
 ];
 
 const VariantsCardStyled = styled.label`
+  position: relative;
   background-color: #fff;
   padding: 10px;
   border-radius: 12px;
@@ -258,8 +259,12 @@ const ImgBx = styled.div`
 
 const variantsFormGroups = [
   {
+    label: "商品色碼",
+    key: "color_code",
+  },
+  {
     label: "商品顏色",
-    key: "color_id",
+    key: "color_name",
   },
   { label: "商品庫存", key: "stock" },
   {
@@ -295,7 +300,34 @@ const VariantsButton = styled.button`
   padding: 5px;
   cursor: pointer;
   margin: 20px 5px 0 5px;
-  width: 50%;
+  width: 100%;
+`;
+const ColorCode = styled.div`
+  width: 25px;
+  height: 25px;
+  background-color: ${(props) => (props.$code ? props.$code : "red")};
+  border-radius: 3px;
+  border: 1px solid black;
+  margin-left: 5px;
+`;
+const CloseBx = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  top: 0;
+  right: 0;
+  background-color: #99262a;
+  color: #fff;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+const VariantsBx = styled.div`
+  position: relative;
+  width: 100%;
 `;
 
 function Upload() {
@@ -318,7 +350,7 @@ function Upload() {
     story: "",
   });
   const [recipientVariants, setRecipientVariants] = useState([
-    { color_id: "", size: "", stock: "" },
+    { color_code: "", color_name: "", size: "", stock: "" },
   ]);
   const [recipientImage, setRecipientImage] = useState({
     main_image: "",
@@ -416,7 +448,7 @@ function Upload() {
     setAddVariant(tempArr);
     setRecipientVariants([
       ...recipientVariants,
-      { color_id: "", size: "", stock: "" },
+      { color_code: "", color_name: "", size: "", stock: "" },
     ]);
   };
 
@@ -455,7 +487,13 @@ function Upload() {
       );
     }
   };
-  const variantsFormInputCheck = (label, key, options, index) => {
+  const variantsFormInputCheck = (
+    label,
+    key,
+    options,
+    index,
+    recipientVariants
+  ) => {
     // console.log(index);
     if (options) {
       return options.map((option) => (
@@ -476,23 +514,36 @@ function Upload() {
         </FormCheck>
       ));
     } else {
-      return (
-        <FormNumber
-          value={recipientVariants[key]}
-          onChange={
-            (e) =>
+      if (key === "color_code") {
+        return (
+          <>
+            <FormNumber
+              value={recipientVariants[index][key]}
+              onChange={(e) =>
+                setRecipientVariants((pre) => {
+                  pre[index][key] = e.target.value;
+                  const newArr = [...pre];
+                  return newArr;
+                })
+              }
+            />
+            <ColorCode $code={recipientVariants[index].color_code}></ColorCode>
+          </>
+        );
+      } else {
+        return (
+          <FormNumber
+            value={recipientVariants[index][key]}
+            onChange={(e) =>
               setRecipientVariants((pre) => {
                 pre[index][key] = e.target.value;
                 const newArr = [...pre];
                 return newArr;
               })
-            // setRecipientVariants([
-            //   ...recipientVariants,
-            //   { [key]: e.target.value },
-            // ])
-          }
-        />
-      );
+            }
+          />
+        );
+      }
     }
   };
 
@@ -540,13 +591,23 @@ function Upload() {
   //   setRecipientImage({ ...recipientImage, other_images: e.target.files });
   // };
 
-  const removeVaraintHandler = (e) => {
+  const removeHandler = (index, e) => {
     e.preventDefault();
     setAddVariant((pre) => {
       if (pre.length === 1) {
         return pre;
       } else {
         pre.pop();
+        const newArr = [...pre];
+        return newArr;
+      }
+    });
+
+    setRecipientVariants((pre) => {
+      if (pre.length === 1) {
+        return pre;
+      } else {
+        pre.splice(index, 1);
         const newArr = [...pre];
         return newArr;
       }
@@ -617,18 +678,30 @@ function Upload() {
             <VariantsCardStyled>
               {addVariant.map((data, index) => {
                 {
-                  return variantsFormGroups.map(({ label, key, options }) => (
-                    <FormGroup key={key}>
-                      <FormLabel>{label}</FormLabel>
-                      {variantsFormInputCheck(label, key, options, index)}
-                    </FormGroup>
-                  ));
+                  return (
+                    <VariantsBx>
+                      {variantsFormGroups.map(({ label, key, options }) => (
+                        <FormGroup key={key}>
+                          <FormLabel>{label}</FormLabel>
+                          {variantsFormInputCheck(
+                            label,
+                            key,
+                            options,
+                            index,
+                            recipientVariants
+                          )}
+                        </FormGroup>
+                      ))}
+                      <CloseBx onClick={removeHandler.bind(null, index)}>
+                        X
+                      </CloseBx>
+                    </VariantsBx>
+                  );
                 }
               })}
             </VariantsCardStyled>
             <ButtonContainer>
               <VariantsButton onClick={clickToAddVariant}>+</VariantsButton>
-              <VariantsButton onClick={removeVaraintHandler}>-</VariantsButton>
             </ButtonContainer>
           </FormRight>
         </Form>

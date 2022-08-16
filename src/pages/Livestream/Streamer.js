@@ -4,6 +4,7 @@ import Picker from "emoji-picker-react";
 import styled from "styled-components";
 import StreamerProduct from "./StreamerProduct";
 import CreateList from "./CreateList";
+import LoveAnimation from "../../components/Love/Love";
 
 import icon from "../../assets/icons8-happy.gif";
 import videoBackground from "../../assets/videoBackground.jpg";
@@ -136,6 +137,13 @@ const ChatContent = styled.div`
   border: 2.5px solid #e08386;
   border-radius: 30px 30px 0 0;
   padding: 10px;
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(153, 38, 42, 0.7);
+  }
 `;
 const InputBx = styled.div`
   width: 100%;
@@ -263,8 +271,9 @@ const Streamer = () => {
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
-  const [loveAmount, setLoveAmount] = useState(1000);
+  const [loveAmount, setLoveAmount] = useState(0);
   const [ButtonPop, setButtonPop] = useState(false);
+  const [showLove, setShowLove] = useState(false);
 
   // -------------------第二方案--------------------
   // const [connected, setConnected] = useState(false);
@@ -287,6 +296,13 @@ const Streamer = () => {
       autoConnect: false,
     });
   }, [socketRef]);
+  useEffect(() => {
+    setShowLove(true);
+
+    const loveTimerId = setTimeout(() => {
+      setShowLove(false);
+    }, 1500);
+  }, [loveAmount]);
 
   const onEmojiClick = (event, emojiObject) => {
     setInput((pre) => pre + emojiObject.emoji);
@@ -344,26 +360,25 @@ const Streamer = () => {
     console.log("init");
     socketRef.current.connect();
     //   offer socket
-    // socketRef.current.on("offer", async (desc) => {
-    //   console.log("main receive desc", desc);
-    //   await peerConnect.current.setRemoteDescription(desc);
-    //   await createOffer();
-    // });
+    socketRef.current.on("offer", async (desc) => {
+      console.log("main receive desc", desc);
+      await peerConnect.current.setRemoteDescription(desc);
+      await createOffer();
+    });
 
     //   ICE socket
-    // socketRef.current.on("candidate", async (data) => {
-    //   console.log("收到candidate", data);
-    //   const candidate = new RTCIceCandidate({
-    //     sdpMLineIndex: data.label,
-    //     candidate: data.candidate,
-    //   });
-    //   await peerConnect.current.addIceCandidate(candidate);
-    // });
+    socketRef.current.on("candidate", async (data) => {
+      console.log("收到candidate", data);
+      const candidate = new RTCIceCandidate({
+        sdpMLineIndex: data.label,
+        candidate: data.candidate,
+      });
+      await peerConnect.current.addIceCandidate(candidate);
+    });
 
     // love socket
     socketRef.current.on("love", (data) => {
-      // setLoveAmount(data);
-      console.log(data);
+      setLoveAmount(data);
     });
 
     // message socket
@@ -372,9 +387,8 @@ const Streamer = () => {
         const newContent = [...pre, data];
         return newContent;
       });
-      console.log(data);
     });
-
+    //觀眾加入通知
     socketRef.current.on("join", (data) => {
       // const contentObj = data;
       // setChatContent((pre) => {
@@ -411,7 +425,7 @@ const Streamer = () => {
   const transferChatHandler = () => {
     chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
 
-    const obj = { name: "Penny", content: input };
+    const obj = { name: "Penny", content: input, isSelf: true };
     if (input.trim().length > 0) {
       setChatContent((pre) => {
         const newContent = [...pre, obj];
@@ -708,6 +722,7 @@ const Streamer = () => {
             <LoveBx>
               <LoveIcon src={loveIcon}></LoveIcon>
               <LoveTotal>{loveAmount}</LoveTotal>
+              {showLove && <LoveAnimation></LoveAnimation>}
             </LoveBx>
           </ChatBx>
         </VideoContainer>

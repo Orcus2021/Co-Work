@@ -7,17 +7,15 @@ div {
   object-fit: cover;
   cursor: pointer;
   position: absolute;
-  width: 50px;
-  height: 50px;
-  background-color: #f2f2f2;
-  display: flex;
-  align-self: center;
-  justify-content: center;
-  flex-direction: column;
-  flex-grow: 1;
-  position: absolute;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
   background-color: #99262a;
-  font-size: 1rem;
   color: #fff;
-  border-radius: 8px;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
 }
