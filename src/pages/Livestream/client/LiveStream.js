@@ -108,7 +108,7 @@ const VideoBx = styled.div`
   border-right: none;
   border-radius: 30px 0 0 30px;
   @media screen and (max-width: 1279px) {
-    width: 100%;
+    width: 90%;
     border: 0;
   }
 `;
@@ -128,6 +128,7 @@ const ChatBx = styled.div`
   border-radius: 0px 30px 30px 0px;
   @media screen and (max-width: 1279px) {
     border: 0;
+    width: 90%;
   }
 `;
 const ChatContent = styled.div`
