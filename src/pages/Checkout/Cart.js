@@ -319,6 +319,7 @@ const CouponTitle = styled(Price)`
   padding-left: 0;
   text-align: center;
 `;
+
 function Cart() {
   const cart = useContext(CartContext);
   const [couponCode, setCouponCode] = useState("");

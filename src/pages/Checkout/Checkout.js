@@ -8,6 +8,7 @@ import getJwtToken from "../../utils/getJwtToken";
 import tappay from "../../utils/tappay";
 import Cart from "./Cart";
 import { UserContext } from "../../contexts/UserContext";
+import Modal from "../../components/Modal/Modal";
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -305,6 +306,18 @@ const recipientFormGroups = [
   },
 ];
 
+const OrderNumberBox = styled.div`
+  width: 460px;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  text-align: center;
+  padding: 30px;
+  border-radius: 8px;
+  background-color: #f2f2f2;
+  font-size: 1.5rem;
+`;
+
 function Checkout() {
   const [recipient, setRecipient] = useState({
     name: "",
@@ -320,7 +333,11 @@ function Checkout() {
   const cardNumberRef = useRef();
   const cardExpirationDateRef = useRef();
   const cardCCVRef = useRef();
+  const [showOrderNumberBx, setShowOrderNumberBx] = useState(false);
+  const [modalCloseEffect, setModalCloseEffect] = useState(false);
+
   console.log(cardNumberRef.current);
+
   useEffect(() => {
     tappay.setupSDK();
     tappay.setupCard(
@@ -337,7 +354,20 @@ function Checkout() {
 
   const freight = 30;
 
+  const closeCouponBx = () => {
+    setModalCloseEffect(true);
+    setTimeout(() => {
+      setShowOrderNumberBx(false);
+      setModalCloseEffect(false);
+    }, 600);
+    navigate("/");
+  };
+  const couponBxHandler = () => {
+    setShowOrderNumberBx((pre) => !pre);
+  };
+
   async function checkout() {
+    couponBxHandler();
     // let jwtToken = window.localStorage.getItem("jwtToken");
     const token = userCtx.user?.accessToken;
 
@@ -479,6 +509,18 @@ function Checkout() {
         <PriceValue>{subtotal + freight}</PriceValue>
       </TotalPrice>
       <CheckoutButton onClick={checkout}>確認付款</CheckoutButton>
+      {showOrderNumberBx && (
+        <Modal onClose={closeCouponBx} closeEffect={modalCloseEffect}>
+          <OrderNumberBox>
+            訂購成功！
+            <br />
+            <br />
+            您的訂單編號為：XXXXXX
+            <br />
+            Thank you for shopping with us!
+          </OrderNumberBox>
+        </Modal>
+      )}
     </Wrapper>
   );
 }
