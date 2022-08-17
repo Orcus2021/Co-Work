@@ -266,6 +266,7 @@ const Streamer = () => {
   const localVideo = useRef();
   const peerConnect = useRef();
   const chatBottom = useRef();
+  const viewers = useRef({});
   const socketRef = useRef(null);
   const [isStart, setIsStart] = useState(false);
   const [chatContent, setChatContent] = useState([]);
@@ -353,15 +354,21 @@ const Streamer = () => {
       offerToReceiveVideo: true,
     });
     await peerConnect.current.setLocalDescription(localSDP);
-    socketRef.current.emit("offer", peerConnect.current.localDescription);
+    socketRef.current.emit(
+      "answer",
+      socketRef.current.id,
+      peerConnect.current.localDescription
+    );
   };
   // connect io
   const connectIO = () => {
     console.log("init");
     socketRef.current.connect();
     //   offer socket
-    socketRef.current.on("offer", async (desc) => {
+    socketRef.current.on("offer", async (id, desc) => {
       console.log("main receive desc", desc);
+      initPeerConnection();
+      viewers.current[id] = peerConnect.current;
       await peerConnect.current.setRemoteDescription(desc);
       await createOffer();
     });
@@ -389,13 +396,9 @@ const Streamer = () => {
       });
     });
     //觀眾加入通知
-    socketRef.current.on("join", (data) => {
-      // const contentObj = data;
-      // setChatContent((pre) => {
-      //   const newContent = [...pre, contentObj];
-      //   return newContent;
-      // });
-      console.log(data);
+    socketRef.current.on("join", (data, id) => {
+      // viewers.current[id] = "id";
+      console.log(data, id);
     });
 
     //直播主加入
@@ -405,7 +408,7 @@ const Streamer = () => {
   const initLiveStream = () => {
     if (localStream.current) {
       connectIO();
-      initPeerConnection();
+
       setIsStart(true);
     }
   };
@@ -449,170 +452,6 @@ const Streamer = () => {
   const removeSaleProductSocket = () => {
     socketRef.current.emit("product", null);
   };
-
-  // --------------第二方案-------------
-
-  // const CAMERA_CONSTRAINTS = {
-  //   audio: true,
-  //   video: true,
-  // };
-
-  // const getRecorderSettings = () => {
-  //   const settings = {};
-  //   if (MediaRecorder.isTypeSupported("video/mp4")) {
-  //     settings.format = "mp4";
-  //     settings.video = "h264";
-  //     settings.audio = "aac";
-  //   } else {
-  //     settings.format = "webm";
-  //     settings.audio = "opus";
-  //     settings.video = MediaRecorder.isTypeSupported("video/webm;codecs=h264")
-  //       ? "h264"
-  //       : "vp8";
-  //   }
-  //   return settings;
-  // };
-
-  // const getRecorderMimeType = () => {
-  //   const settings = getRecorderSettings();
-  //   const codecs =
-  //     settings.format === "webm"
-  //       ? `;codecs="${settings.video}, ${settings.audio}"`
-  //       : "";
-  //   return `video/${settings.format}${codecs}`;
-  // };
-
-  // const enableCamera = async () => {
-  //   inputStreamRef.current = await navigator.mediaDevices.getUserMedia(
-  //     CAMERA_CONSTRAINTS
-  //   );
-
-  //   videoRef.current.srcObject = inputStreamRef.current;
-
-  //   await videoRef.current.play();
-
-  //   canvasRef.current.height = videoRef.current.clientHeight;
-  //   canvasRef.current.width = videoRef.current.clientWidth;
-
-  //   requestAnimationRef.current = requestAnimationFrame(updateCanvas);
-
-  //   setCameraEnabled(true);
-  // };
-
-  // const updateCanvas = () => {
-  //   if (videoRef.current.ended || videoRef.current.paused) {
-  //     return;
-  //   }
-
-  //   const ctx = canvasRef.current.getContext("2d");
-
-  //   ctx.drawImage(
-  //     videoRef.current,
-  //     0,
-  //     0,
-  //     videoRef.current.clientWidth,
-  //     videoRef.current.clientHeight
-  //   );
-
-  //   ctx.fillStyle = "#FB3C4E";
-  //   ctx.font = "50px Akkurat";
-  //   const date = new Date();
-  //   const dateText = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date
-  //     .getMilliseconds()
-  //     .toString()
-  //     .padStart(3, "0")}`;
-  //   ctx.fillText(
-  //     `${nameRef.current}${dateText}`,
-  //     10,
-  //     50,
-  //     canvasRef.current.width - 20
-  //   );
-
-  //   requestAnimationRef.current = requestAnimationFrame(updateCanvas);
-  // };
-
-  // const stopStreaming = () => {
-  //   if (mediaRecorderRef.current.state === "recording") {
-  //     mediaRecorderRef.current.stop();
-  //   }
-
-  //   setStreaming(false);
-  // };
-
-  // const startStreaming = () => {
-  //   setStreaming(true);
-  //   const settings = getRecorderSettings();
-  //   // const protocol = window.location.protocol.replace("http", "wss");
-  //   // const wsUrl = new URL("wss://kelvin-wu.site/rtmp");
-  //   // wsUrl.searchParams.set("video", settings.video);
-  //   // wsUrl.searchParams.set("audio", settings.audio);
-  //   // if (streamUrl) {
-  //   //   wsUrl.searchParams.set("url", streamUrl);
-  //   // }
-  //   // if (streamKey) {
-  //   //   wsUrl.searchParams.set("key", streamKey);
-  //   // }
-
-  //   wsRef.current = new WebSocket(
-  //     "wss://kelvin-wu.site/rtmp?video=h264&audio=opus&url=rtmp%3A%2F%2F18.142.201.212%3A1935%2Flive&key=test"
-  //   );
-
-  //   console.log(wsRef.current.readyState);
-  //   wsRef.current.addEventListener("open", function open() {
-  //     console.log("open");
-  //     setConnected(true);
-  //   });
-
-  //   wsRef.current.addEventListener("close", () => {
-  //     console.log("close");
-  //     setConnected(false);
-  //     stopStreaming();
-  //   });
-
-  //   const videoOutputStream = canvasRef.current.captureStream(30); // 30 FPS
-
-  //   // Let's do some extra work to get audio to join the party.
-  //   // https://hacks.mozilla.org/2016/04/record-almost-everything-in-the-browser-with-mediarecorder/
-  //   const audioStream = new MediaStream();
-  //   const audioTracks = inputStreamRef.current.getAudioTracks();
-  //   audioTracks.forEach(function (track) {
-  //     audioStream.addTrack(track);
-  //   });
-
-  //   const outputStream = new MediaStream();
-  //   [audioStream, videoOutputStream].forEach(function (s) {
-  //     s.getTracks().forEach(function (t) {
-  //       outputStream.addTrack(t);
-  //     });
-  //   });
-
-  //   mediaRecorderRef.current = new MediaRecorder(outputStream, {
-  //     mimeType: getRecorderMimeType(),
-  //     videoBitsPerSecond: 3000000,
-  //     audioBitsPerSecond: 64000,
-  //   });
-
-  //   mediaRecorderRef.current.addEventListener("dataavailable", (e) => {
-  //     wsRef.current.send(e.data);
-  //   });
-
-  //   mediaRecorderRef.current.addEventListener("stop", () => {
-  //     stopStreaming();
-  //     wsRef.current.close();
-  //   });
-
-  //   mediaRecorderRef.current.start(1000);
-  // };
-
-  // useEffect(() => {
-  //   nameRef.current = textOverlay;
-  // }, [textOverlay]);
-
-  // useEffect(() => {
-  //   return () => {
-  //     cancelAnimationFrame(requestAnimationRef.current);
-  //   };
-  // }, []);
 
   return (
     <>
