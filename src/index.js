@@ -28,7 +28,7 @@ root.render(
         <Route path="user" element={<User />} />
         <Route path="user/upload" element={<Upload />} />
         <Route path="streamer" element={<Streamer />} />
-        <Route path="liveStream" element={<LiveStream />} />
+        <Route path="liveStream" element={<div />} />
         <Route path="test" element={<Test />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

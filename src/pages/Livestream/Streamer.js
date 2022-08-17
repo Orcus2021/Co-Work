@@ -5,10 +5,13 @@ import styled from "styled-components";
 import StreamerProduct from "./StreamerProduct";
 import CreateList from "./CreateList";
 import LoveAnimation from "../../components/Love/Love";
-
+import { UserContext } from "../../contexts/UserContext";
 import icon from "../../assets/icons8-happy.gif";
 import videoBackground from "../../assets/videoBackground.jpg";
 import loveIcon from "../../assets/love.png";
+import logoIcon from "../../assets/logoIcon.png";
+import remindIcon from "../../assets/come.gif";
+import remindSound from "../../assets/babyshark.mp3";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -184,7 +187,7 @@ const Message = styled.p`
   flex-grow: 1;
   font-size: 1.5rem;
   letter-spacing: 5px;
-  margin-bottom: 10px;
+
   word-break: break-all;
 `;
 const UserName = styled.p`
@@ -195,7 +198,8 @@ const UserName = styled.p`
 const MessageBx = styled.div`
   width: 100%;
   display: flex;
-  align-items: flex-start;
+  padding: 5px;
+  align-items: center;
   flex-direction: row;
   background-color: ${(props) => (props.$isSelf ? "#f6dbdb" : "transparent")};
 `;
@@ -265,14 +269,51 @@ const PanelBtn = styled.button`
     transition: 1s;
   }
 `;
+const ImgBx = styled.div`
+  position: relative;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #f8f0f0;
+  margin-right: 10px;
+`;
+const Img = styled.img`
+  position: absolute;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+`;
+const RemindIcon = styled.img`
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  object-fit: cover;
+`;
+const RemindText = styled.span`
+  position: absolute;
+  color: black;
+  font-size: 1.5rem;
+  top: 140px;
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
+`;
 
 const Streamer = () => {
   const localStream = useRef();
   const localVideo = useRef();
   const peerConnect = useRef();
   const chatBottom = useRef();
+  const audioRef = useRef();
   const viewers = useRef({});
   const socketRef = useRef(null);
+  const userCtx = useContext(UserContext);
   const [isStart, setIsStart] = useState(false);
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
@@ -280,6 +321,7 @@ const Streamer = () => {
   const [loveAmount, setLoveAmount] = useState(0);
   const [ButtonPop, setButtonPop] = useState(false);
   const [showLove, setShowLove] = useState(false);
+  const [remindMsg, setRemindMsg] = useState("");
 
   // -------------------第二方案--------------------
   // const [connected, setConnected] = useState(false);
@@ -302,6 +344,7 @@ const Streamer = () => {
       autoConnect: false,
     });
   }, [socketRef]);
+
   useEffect(() => {
     setShowLove(true);
 
@@ -401,9 +444,14 @@ const Streamer = () => {
       });
     });
     //觀眾加入通知
-    socketRef.current.on("join", (data, id) => {
+    socketRef.current.on("join", (data) => {
       // viewers.current[id] = "id";
-      console.log(data, id);
+      setRemindMsg(data);
+      audioRef.current.play();
+      setTimeout(() => {
+        setRemindMsg("");
+      }, 7000);
+      console.log(data);
     });
 
     //直播主加入
@@ -430,10 +478,11 @@ const Streamer = () => {
   const inputHandler = (e) => {
     setInput(e.target.value);
   };
+
   const transferChatHandler = () => {
     chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
 
-    const obj = { name: "Penny", content: input, isSelf: true };
+    const obj = { img: userCtx.user?.picture, content: input, isSelf: true };
     if (input.trim().length > 0) {
       setChatContent((pre) => {
         const newContent = [...pre, obj];
@@ -443,6 +492,7 @@ const Streamer = () => {
       const socketObj = { ...obj };
       socketObj.isSelf = false;
       socketRef.current.emit("message", socketObj);
+      setInput("");
     }
   };
   const showEmoji = () => {
@@ -450,7 +500,6 @@ const Streamer = () => {
   };
 
   const addProductHandler = (data) => {
-    console.log("socketAdd", data);
     socketRef.current.emit("product", data);
   };
 
@@ -490,7 +539,6 @@ const Streamer = () => {
             <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z" />
             <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" />
           </svg>
-          {"    "}
           直播中
         </CardStyle>
         <VideoContainer>
@@ -547,12 +595,23 @@ const Streamer = () => {
               {chatContent.map((content, index) => {
                 return (
                   <MessageBx $isSelf={content.isSelf} key={index}>
-                    <UserName>{content.name} :</UserName>
+                    <UserName>
+                      <ImgBx>
+                        <Img src={content.img ? content.img : logoIcon}></Img>
+                      </ImgBx>
+                    </UserName>
                     <Message>{content.content}</Message>
                   </MessageBx>
                 );
               })}
             </ChatContent>
+            {remindMsg && (
+              <>
+                <RemindIcon src={remindIcon}></RemindIcon>
+                <RemindText>{remindMsg}加入聊天室</RemindText>
+              </>
+            )}
+            <audio src={remindSound} ref={audioRef}></audio>
             <InputBx>
               <Input type="text" value={input} onChange={inputHandler} />
               <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>

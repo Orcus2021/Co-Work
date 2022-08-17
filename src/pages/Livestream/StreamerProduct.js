@@ -235,6 +235,13 @@ const StandbyProductBx = styled.div`
   padding: 20px;
   max-height: 460px;
   overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(153, 38, 42, 0.7);
+  }
 `;
 const StreamProductEmpty = styled.div`
   border: 1px dashed #99262a;

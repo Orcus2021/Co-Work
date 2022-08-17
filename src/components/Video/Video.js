@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import film from "../../assets/dance.mp4";
 import "./video.css";
 import playIcon from "../../assets/play.png";
 import pauseIcon from "../../assets/pause.png";
@@ -6,9 +7,12 @@ import volumeIcon from "../../assets/volume.png";
 import fullIcon from "../../assets/fullfill.png";
 import muteIcon from "../../assets/mute.png";
 import backIcon from "../../assets/back.png";
+import pupIcon from "../../assets/popup.png";
+import LiveStream from "../../pages/Livestream/client/LiveStream";
 
 const Video = (props) => {
-  const { onStart, videoRef, onFlvStart, poster } = props;
+  const { onStart, videoRef, poster, onPopUp, viewStatue } = props;
+
   const videoBx = useRef();
   const [isPlay, setIsPlay] = useState(true);
   const [isVolume, setIsVolume] = useState(true);
@@ -18,6 +22,7 @@ const Video = (props) => {
   const [controlHover, setControlHover] = useState(false);
   const [isMove, setIsMove] = useState(0);
   const controlClass = `control ${showControl ? "" : "hide"}`;
+
   useEffect(() => {
     setShowControl(true);
     if (!controlHover) {
@@ -27,6 +32,7 @@ const Video = (props) => {
       };
     }
   }, [isMove, controlHover]);
+
   const moveHandler = (e) => {
     setIsMove(e.clientX);
   };
@@ -81,10 +87,20 @@ const Video = (props) => {
     }
     setVolumeChange(e.target.value);
   };
+  useEffect(() => {
+    if (viewStatue === "hide") {
+      setIsVolume(false);
+    } else {
+      setIsVolume(true);
+    }
+    const newVolume = videoRef.current.volume * 100;
+    setVolumeChange(newVolume);
+  }, [viewStatue, videoRef]);
+
   return (
     <div className="container">
       <div className="videoBx" ref={videoBx} onMouseMove={moveHandler}>
-        <video ref={videoRef} preload="true" poster={poster}></video>
+        <video ref={videoRef} preload="true" poster={poster} src={film}></video>
 
         <div
           className={controlClass}
@@ -144,6 +160,11 @@ const Video = (props) => {
               min="0"
               max="100"
             />
+          </div>
+          <div className="popUpBx" onClick={onPopUp}>
+            <div className="imgBx">
+              <img src={pupIcon} />
+            </div>
           </div>
           {isFullScreen ? (
             <div className="screen" onClick={exitFullScreenHandler}>

@@ -1,15 +1,18 @@
 import React, { useRef, useState, useContext, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Video from "../../../components/Video/Video";
 import { io } from "socket.io-client";
-import flvjs from "flv.js";
+// import flvjs from "flv.js";
 import styled from "styled-components";
 import Picker from "emoji-picker-react";
 import { UserContext } from "../../../contexts/UserContext";
 import LoveAnimation from "../../../components/Love/Love";
+
 import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
 import loveIcon from "../../../assets/love.png";
 import videoBack from "../../../assets/videoBackground.jpg";
+import logoIcon from "../../../assets/logoIcon.png";
 
 const dummy = {
   id: 201807242222,
@@ -62,12 +65,21 @@ const dummy = {
 };
 
 const Container = styled.div`
-  margin: 0 auto;
-  padding: 50px 0 50px;
+  ${(props) => {
+    if (props.$isMode === "show") {
+      return "position:relative;margin: 0 auto;padding: 50px 0 50px;";
+    } else if (props.$isMode === "hide") {
+      return "position:absolute; top:-100%;";
+    } else if (props.$isMode === "pop") {
+      return "position:fixed; right:0;bottom:0; z-index:9999;overflow:hidden;background-color: transparent;";
+    }
+  }}
+  pointer-events: none;
   max-width: 1160px;
 
   @media screen and (max-width: 1279px) {
-    padding: 20px 24px 236px;
+    padding: ${(props) =>
+      props.$isMode === "pop" ? "0px 0 70px 0;" : " 20px 24px 236px;"};
   }
 `;
 const CardStyle = styled.div`
@@ -91,6 +103,7 @@ const VideoContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  background-color: transparent;
   @media screen and (max-width: 1279px) {
     flex-direction: column;
   }
@@ -101,14 +114,17 @@ const VideoBx = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 800px;
-  height: 750px;
-  padding: 20px;
-  border: 2.5px solid #e08386;
+  background-color: transparent;
+  pointer-events:auto;
+  width:${(props) => (props.$isMode === "pop" ? "500px;" : "800px;")}
+  height:${(props) => (props.$isMode === "pop" ? "300px;" : "750px;")} 
+  padding:${(props) => (props.$isMode === "pop" ? "0px;" : "20px;")} 
+  border:${(props) =>
+    props.$isMode === "pop" ? "none;" : " 2.5px solid #e08386;"} 
   border-right: none;
   border-radius: 30px 0 0 30px;
   @media screen and (max-width: 1279px) {
-    width: 90%;
+    width:${(props) => (props.$isMode === "pop" ? "500px;" : "90%;")} 
     border: 0;
   }
 `;
@@ -120,7 +136,7 @@ const ChatBx = styled.div`
   height: 750px;
   max-height: 750px;
   padding: 20px;
-  display: flex;
+  display: ${(props) => (props.$isMode === "pop" ? "none" : "flex")};
   flex-direction: column;
   align-items: center;
   border: 2.5px solid #e08386;
@@ -219,6 +235,7 @@ const EmojiBx = styled.div`
 const SaleProductBx = styled.div`
   margin-top: 40px;
   width: 100%;
+  ${(props) => (props.$isMode === "pop" ? "display:none;" : "")}
 `;
 const LoveBx = styled.div`
   position: absolute;
@@ -236,6 +253,23 @@ const LoveTotal = styled.p`
   font-size: 1rem;
   text-align: center;
 `;
+const ImgBx = styled.div`
+  position: relative;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #f8f0f0;
+  margin-right: 10px;
+`;
+const Img = styled.img`
+  position: absolute;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+`;
 
 const LiveStream = () => {
   const remoteVideo = useRef();
@@ -245,12 +279,27 @@ const LiveStream = () => {
   const chatBottom = useRef();
   const initSocket = useRef(false);
   const userCtx = useContext(UserContext);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [loveAmount, setLoveAmount] = useState(0);
   const [saleProduct, setSaleProduct] = useState(dummy);
   const [showLove, setShowLove] = useState(false);
+  const [viewStatue, setViewStatue] = useState("hide");
+
+  useEffect(() => {
+    if (location.pathname.includes("liveStream")) {
+      setViewStatue("show");
+      remoteVideo.current.volume = 0.5;
+    } else if (viewStatue === "pop") {
+      return;
+    } else {
+      setViewStatue("hide");
+      remoteVideo.current.volume = 0;
+    }
+  }, [location, viewStatue]);
 
   useEffect(() => {
     socketRef.current = io("https://kelvin-wu.site/chatroom", {
@@ -392,7 +441,7 @@ const LiveStream = () => {
   };
 
   const transferChatHandler = () => {
-    const obj = { name: userCtx.user.name, content: input, isSelf: true };
+    const obj = { img: userCtx.user.picture, content: input, isSelf: true };
     if (input.trim().length > 0) {
       setChatContent((pre) => {
         const newContent = [...pre, obj];
@@ -401,6 +450,7 @@ const LiveStream = () => {
       const socketObj = { ...obj };
       socketObj.isSelf = false;
       socketRef.current.emit("message", socketObj);
+      setInput("");
     }
   };
 
@@ -409,27 +459,27 @@ const LiveStream = () => {
     setChosenEmoji((pre) => !pre);
   };
 
-  // const closeLiveHandler = () => {
-  //   if (peerConnect.current) {
-  //     peerConnect.current.close();
-  //     peerConnect.current = null;
-  //   }
-  // };
-
-  const flvStart = () => {
-    if (flvjs.isSupported()) {
-      let flvPlayer = flvjs.createPlayer({
-        type: "flv",
-        url: "https://kelvin-wu.site:8443/live/test.flv",
-      });
-      flvPlayer.attachMediaElement(remoteVideo.current);
-      flvPlayer.load();
+  const popUp = () => {
+    if (viewStatue === "pop") {
+      setViewStatue("show");
+      navigate("/liveStream");
+    } else {
+      setViewStatue("pop");
+      navigate("/");
     }
   };
+
+  const closeLiveHandler = () => {
+    if (peerConnect.current) {
+      peerConnect.current.close();
+      peerConnect.current = null;
+    }
+  };
+
   const chatPlaceholder = userCtx.user ? "與主播聊聊" : "請先登入會員";
 
   return (
-    <Container>
+    <Container $isMode={viewStatue}>
       <CardStyle>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -445,23 +495,29 @@ const LiveStream = () => {
         直播中
       </CardStyle>
       <VideoContainer>
-        <VideoBx>
+        <VideoBx $isMode={viewStatue} VideoBx={viewStatue}>
           <Video
             onStart={init}
             videoRef={remoteVideo}
-            onFlvStart={flvStart}
+            // onFlvStart={flvStart}
             poster={videoBack}
+            onPopUp={popUp}
+            viewStatue={viewStatue}
           ></Video>
-          <SaleProductBx>
+          <SaleProductBx $isMode={viewStatue}>
             {saleProduct && <SaleProduct product={saleProduct}></SaleProduct>}
           </SaleProductBx>
         </VideoBx>
-        <ChatBx>
+        <ChatBx $isMode={viewStatue}>
           <ChatContent ref={chatBottom}>
             {chatContent.map((content, index) => {
               return (
                 <MessageBx $isSelf={content.isSelf} key={index}>
-                  <UserName>{content.name} :</UserName>
+                  <UserName>
+                    <ImgBx>
+                      <Img src={content.img ? content.img : logoIcon}></Img>
+                    </ImgBx>
+                  </UserName>
                   <Message>{content.content}</Message>
                 </MessageBx>
               );
