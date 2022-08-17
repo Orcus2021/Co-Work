@@ -41,6 +41,7 @@ const GlobalStyle = createGlobalStyle`
 
   * {
     box-sizing: border-box;
+        text-decoration: none;
   }
 
   body {
@@ -90,7 +91,7 @@ const GlobalStyle = createGlobalStyle`
 
   #root {
     min-height: 100vh;
-    padding: 140px 0 115px;
+    padding: 100px 0 115px;
     position: relative;
 
     @media screen and (max-width: 1279px) {

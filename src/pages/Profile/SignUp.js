@@ -75,6 +75,7 @@ const SignInbtn = styled.button`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 
@@ -90,6 +91,7 @@ const SignUpButton = styled.button`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 

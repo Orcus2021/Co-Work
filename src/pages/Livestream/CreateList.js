@@ -30,6 +30,7 @@ const CreateRightBx = styled.div`
   @media screen and (max-width: 1279px) {
     width: 40%;
     margin-left: 5px;
+    margin-top: 10vh;
   }
 `;
 const PanelTitle = styled.div`
@@ -37,6 +38,9 @@ const PanelTitle = styled.div`
   text-align: center;
   font-size: 1.2rem;
   color: #99262a;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.8rem;
+  }
 `;
 const SearchWrapper = styled.div`
   display: flex;
@@ -82,7 +86,7 @@ const Btn = styled.button`
   height: 30px;
   margin-bottom: 10px;
   @media screen and (max-width: 1279px) {
-    font-size: 0.8rem;
+    font-size: 0.5rem;
   }
 `;
 const SearchBtn = styled(Btn)`
@@ -190,6 +194,10 @@ const UploadCardButton = styled.span`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
+  }
+  @media screen and (max-width: 1279px) {
+    font-size: 0.8rem;
   }
 `;
 const CloseButton = styled.button`

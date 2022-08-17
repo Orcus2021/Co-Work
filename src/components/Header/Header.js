@@ -15,12 +15,12 @@ const Wrapper = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  height: 140px;
+  height: 100px;
   width: 100%;
   padding: 0 54px 0 60px;
-  border-bottom: 40px solid #f6dbdb;
+  background-color: #f6dbdb;
+  ${"" /* border-bottom: 40px solid #f6dbdb; */}
   z-index: 99;
-  background-color: white;
   display: flex;
   align-items: center;
   font-family: PingFangTC;
@@ -38,6 +38,7 @@ const Logo = styled(Link)`
   height: 48px;
   background-image: url(${logo});
   background-size: contain;
+  background-repeat: no-repeat;
 
   @media screen and (max-width: 1279px) {
     width: 129px;
@@ -62,12 +63,12 @@ const CategoryLinks = styled.div`
 
 const CategoryLink = styled(Link)`
   font-size: 20px;
-  letter-spacing: 30px;
-  padding-left: 39px;
-  padding-right: 11px;
+  letter-spacing: 20px;
+  padding-left: 25px;
+  padding-right: 3px;
   position: relative;
   text-decoration: none;
-  color: ${(props) => (props.$isActive ? "#8b572a" : "#3f3a3a")};
+  color: ${(props) => (props.$isActive ? "#99262a" : "#3f3a3a")};
 
   @media screen and (max-width: 1279px) {
     font-size: 16px;
@@ -80,7 +81,7 @@ const CategoryLink = styled(Link)`
   }
 
   &:hover {
-    color: #8b572a;
+    color: #99262a;
 
     @media screen and (max-width: 1279px) {
       color: white;
@@ -100,6 +101,7 @@ const CategoryLink = styled(Link)`
 `;
 
 const SearchInput = styled.input`
+  background-color: #f6dbdb;
   height: 40px;
   width: 214px;
   border: none;
@@ -114,7 +116,7 @@ const SearchInput = styled.input`
   background-repeat: no-repeat;
   font-size: 20px;
   line-height: 24px;
-  color: #8b572a;
+  color: #99262a;
 
   @media screen and (max-width: 1279px) {
     width: 0;
@@ -209,7 +211,7 @@ const PageLinkIconNumber = styled.div`
   right: 0;
   width: 24px;
   height: 24px;
-  background-color: #8b572a;
+  background-color: #99262a;
   color: white;
   border-radius: 50%;
   text-align: center;

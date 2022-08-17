@@ -8,6 +8,8 @@ import getJwtToken from "../../utils/getJwtToken";
 import tappay from "../../utils/tappay";
 import Cart from "./Cart";
 import { UserContext } from "../../contexts/UserContext";
+import Modal from "../../components/Modal/Modal";
+import back from "./back.jpg";
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -149,7 +151,7 @@ const FormControl = styled.input`
 const FormText = styled.div`
   line-height: 19px;
   font-size: 16px;
-  color: #8b572a;
+  color: #99262a;
   margin-top: 10px;
   width: 100%;
   text-align: right;
@@ -257,14 +259,20 @@ const CheckoutButton = styled.button`
   width: 240px;
   height: 60px;
   margin-top: 50px;
-  border: solid 1px #979797;
-  background-color: black;
+  background-color: #99262a;
   color: white;
+  border-radius: 30px;
+  border: none;
   font-size: 20px;
   letter-spacing: 4px;
   margin-left: auto;
   display: block;
   cursor: pointer;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+    transition: 1s;
+  }
 
   @media screen and (max-width: 1279px) {
     width: 100%;
@@ -305,6 +313,25 @@ const recipientFormGroups = [
   },
 ];
 
+const OrderNumberBox = styled.div`
+  width: 500px;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  text-align: center;
+  padding: 30px;
+  border-radius: 8px;
+  background-color: #f2f2f2;
+  font-size: 1.5rem;
+`;
+
+const BackImg = styled.div`
+  width: 400px;
+  height: auto;
+  margin: 20px;
+  ${"" /* background-image: url(${back}); */}
+`;
+
 function Checkout() {
   const [recipient, setRecipient] = useState({
     name: "",
@@ -320,7 +347,11 @@ function Checkout() {
   const cardNumberRef = useRef();
   const cardExpirationDateRef = useRef();
   const cardCCVRef = useRef();
+  const [showOrderNumberBx, setShowOrderNumberBx] = useState(false);
+  const [modalCloseEffect, setModalCloseEffect] = useState(false);
+
   console.log(cardNumberRef.current);
+
   useEffect(() => {
     tappay.setupSDK();
     tappay.setupCard(
@@ -337,7 +368,20 @@ function Checkout() {
 
   const freight = 30;
 
+  const closeCouponBx = () => {
+    setModalCloseEffect(true);
+    setTimeout(() => {
+      setShowOrderNumberBx(false);
+      setModalCloseEffect(false);
+    }, 600);
+    navigate("/");
+  };
+  const couponBxHandler = () => {
+    setShowOrderNumberBx((pre) => !pre);
+  };
+
   async function checkout() {
+    couponBxHandler();
     // let jwtToken = window.localStorage.getItem("jwtToken");
     const token = userCtx.user?.accessToken;
 
@@ -479,6 +523,22 @@ function Checkout() {
         <PriceValue>{subtotal + freight}</PriceValue>
       </TotalPrice>
       <CheckoutButton onClick={checkout}>確認付款</CheckoutButton>
+      {showOrderNumberBx && (
+        <Modal onClose={closeCouponBx} closeEffect={modalCloseEffect}>
+          <OrderNumberBox>
+            訂購成功！
+            <br />
+            <br />
+            您的訂單編號為：XXXXXX
+            <br />
+            <BackImg>
+              <img src={back} style={{ width: "100%", height: "100%" }} />
+            </BackImg>
+            <br />
+            Thank you for shopping with us!
+          </OrderNumberBox>
+        </Modal>
+      )}
     </Wrapper>
   );
 }

@@ -83,11 +83,17 @@ const ProductTitle = styled.p`
   flex-grow: 1;
   font-size: 1rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.5rem;
+  }
 `;
 const Price = styled.p`
   flex-grow: 1;
   font-size: 1.5rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.5rem;
+  }
 `;
 const CheckProduct = styled.input`
   width: 20px;
@@ -100,6 +106,9 @@ const InitPrice = styled.p`
   font-size: 1rem;
   text-align: center;
   flex-grow: 1;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.5rem;
+  }
 `;
 const CouponBx = styled.div`
   width: 100%;
@@ -110,6 +119,9 @@ const CouponBx = styled.div`
 `;
 const CouponLabel = styled.label`
   font-size: 1rem;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.5rem;
+  }
 `;
 const CouponInput = styled.input`
   width: 100px;

@@ -59,6 +59,9 @@ const ProductContainer = styled.div`
   flex-direction: column;
   align-items: center;
   height: 281px;
+  @media screen and (max-width: 1279px) {
+    height: 500px;
+  }
 `;
 const AddProductBx = styled.div`
   position: relative;
@@ -66,6 +69,9 @@ const AddProductBx = styled.div`
   ${"" /* border: 2.5px solid black; */}
   padding: 20px;
   height: 281px;
+  @media screen and (max-width: 1279px) {
+    height: 400px;
+  }
 `;
 const SaleTitle = styled.p`
   width: 100%;
@@ -82,6 +88,10 @@ const Product = styled.div`
   align-items: center;
   width: 100%;
   height: 210px;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+    height: 400px;
+  }
 `;
 const ImgBx = styled.div`
   width: 150px;
@@ -102,20 +112,26 @@ const Details = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const ProductTitle = styled.p`
   width: 100%;
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-align: center;
   margin-bottom: 10px;
 `;
 const Price = styled.p`
   width: 100%;
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const Variants = styled.div`
-  width: 300px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -128,6 +144,9 @@ const ColorBx = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 15px;
+`;
+const Label = styled.div`
+  padding-right: 10px;
 `;
 const Color = styled.div`
   position: relative;
@@ -145,7 +164,7 @@ const Color = styled.div`
     position: absolute;
     top: -5px;
     left: -5px;
-    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#eeeeee")};
   }
 `;
 const SizeBx = styled.div`
@@ -176,13 +195,16 @@ const Size = styled.div`
     position: absolute;
     top: -5px;
     left: -5px;
-    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#eeeeee")};
   }
 `;
 const Qty = styled.p`
   width: 100%;
   font-size: 1rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const Btn = styled.button`
   width: 150px;
@@ -204,6 +226,7 @@ const RemoveBtn = styled(Btn)`
   &:hover {
     background-color: red;
     color: white;
+    transition: 1s;
   }
 `;
 const StandbyProductBx = styled.div`
@@ -271,6 +294,7 @@ const StreamerProduct = (props) => {
               </Details>
               <Variants>
                 <ColorBx>
+                  <Label>顏色</Label>
                   {saleProduct.colors.map((colorObj, index) => {
                     return (
                       <Color
@@ -285,6 +309,7 @@ const StreamerProduct = (props) => {
                   })}
                 </ColorBx>
                 <SizeBx>
+                  <Label>尺寸</Label>
                   {saleProduct.sizes.map((sizeName, index) => {
                     return (
                       <Size
@@ -299,7 +324,7 @@ const StreamerProduct = (props) => {
                     );
                   })}
                 </SizeBx>
-                <Qty>數量:{qty}件</Qty>
+                <Qty>商品數量: {qty}件</Qty>
               </Variants>
               <RemoveBtn onClick={removeSaleHandler}>下架</RemoveBtn>
             </Product>

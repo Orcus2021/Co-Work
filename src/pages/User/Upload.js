@@ -31,6 +31,7 @@ const BackButton = styled.button`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 const Form = styled.div`
@@ -91,6 +92,7 @@ const UploadCardButton = styled.span`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 const UploadCardInput = styled.input.attrs({
@@ -137,6 +139,10 @@ const ClearBtn = styled.button`
   transform: translate(-50%, -50%);
   padding: 5px;
   cursor: pointer;
+`;
+const ImageReminder = styled.div`
+  margin-top: 10px;
+  font-size: 0.8rem;
 `;
 
 const FormFieldSet = styled.fieldset`
@@ -343,10 +349,9 @@ const VariantsBx = styled.div`
 function Upload() {
   const navigate = useNavigate();
   const [fileSrc, setFileSrc] = useState(null);
-  const [fileMultiSrc, setMultiSrc] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
   const [images, setImages] = useState([]);
-  const imageTypeRegex = /image\/(jpg)/gm;
+  const imageTypeRegex = /image\/(png|jpg|jpeg)/gm;
   const [addVariant, setAddVariant] = useState([1]);
   const [recipient, setRecipient] = useState({
     category: "",
@@ -366,6 +371,7 @@ function Upload() {
     main_image: "",
     other_images: "",
   });
+  const isNotEmpty = (value) => value.trim() !== "";
   // const {} = useInputValidate(isNotEmpty);
 
   // console.log(recipientVariants);
@@ -379,10 +385,6 @@ function Upload() {
     // e.target.value = "";
     setRecipientImage({ ...recipientImage, main_image: e.target.files });
   };
-  // const handleClear = (e) => {
-  //   e.preventDefault();
-  //   setFileSrc(null);
-  // };
   const handleMultipleUploadFile = (e) => {
     setRecipientImage({ ...recipientImage, other_images: e.target.files });
     const { files } = e.target;
@@ -397,17 +399,6 @@ function Upload() {
       setImageFiles(validImageFiles);
       return;
     }
-    // if (!e.target.files) return;
-    // var files = e.target.files;
-    // for (var i = 0, f; (f = files[i]); i++) {
-    //   // Only process image files.
-    //   var reader = new FileReader();
-    //   reader.onload = function () {
-    //     setMultiSrc(reader.result);
-    //   };
-    //   reader.readAsDataURL(f);
-    //   console.log(f);
-    // }
   };
 
   useEffect(() => {
@@ -439,19 +430,6 @@ function Upload() {
       });
     };
   }, [imageFiles]);
-
-  //   var reader = new FileReader();
-  //   reader.onload = function () {
-  //     setMultiSrc(reader.result);
-  //   };
-  //   reader?.readAsDataURL(e?.target?.files[0]);
-  //   console.log(fileMultiSrc);
-  //   e.target.value = "";
-  // };
-  // const handleMultiClear = (e) => {
-  //   e.preventDefault();
-  //   setMultiSrc(null);
-  // };
 
   const clickToAddVariant = (e) => {
     e.preventDefault();
@@ -560,7 +538,24 @@ function Upload() {
   };
 
   const clickToCreateProduct = () => {
-    createProduct();
+    if (images.length > 0) {
+      createProduct();
+      alert("已上架新商品");
+    } else if (
+      images.length == 0 ||
+      recipient.category == "" ||
+      recipient.title == "" ||
+      recipient.description == "" ||
+      recipient.price == "" ||
+      recipient.texture == "" ||
+      recipient.wash == "" ||
+      recipient.place == "" ||
+      recipient.story == "" ||
+      recipientVariants[0].color_code == "" ||
+      recipientVariants[0].size == ""
+    ) {
+      alert("請完整填寫商品資訊");
+    }
   };
   async function createProduct() {
     let formData = new FormData();
@@ -651,20 +646,15 @@ function Upload() {
       <form>
         <Form>
           <FormLeft>
-            {/* 單張照片
-            <input type="file" onChange={UploadFile} />
-            多張照片
-            <input type="file" multiple onChange={MultipleUploadFile} /> */}
             <UploadCardStyled>
               {fileSrc ? (
                 <>
-                  {/* <ClearBtn onClick={handleClear}>刪除</ClearBtn> */}
                   <UploadPreview>
                     <UploadPreviewImg src={fileSrc} />
                   </UploadPreview>
                 </>
               ) : (
-                <UploadCardButton>主要商品照片上傳(jpg)</UploadCardButton>
+                <UploadCardButton>主要商品照片上傳</UploadCardButton>
               )}
               <UploadCardInput onChange={handleUploadFile} />
             </UploadCardStyled>
@@ -682,18 +672,9 @@ function Upload() {
               ) : (
                 <UploadCardButton>其他商品照片上傳</UploadCardButton>
               )}
-              {/* {fileMultiSrc ? (
-                <>
-                   <ClearBtn onClick={handleMultiClear}>刪除</ClearBtn> 
-                   <MultiUploadPreview>
-                    <MultiUploadPreviewImg src={fileMultiSrc} />
-                  </MultiUploadPreview> 
-                </>
-              ) : (
-                <UploadCardButton>其他商品照片上傳</UploadCardButton>
-              )} */}
               <UploadCardInput multiple onChange={handleMultipleUploadFile} />
             </UploadCardStyled>
+            <ImageReminder>*請至少各選擇一張照片</ImageReminder>
           </FormLeft>
           <FormCenter>
             <FormFieldSet>

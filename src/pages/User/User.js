@@ -126,6 +126,7 @@ const MenuLabel = styled(Link)`
     font-size: 16px;
   }
   &:hover {
+    transition: 1s;
     background-color: #e08386;
     color: #fff;
   }

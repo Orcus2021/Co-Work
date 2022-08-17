@@ -80,6 +80,10 @@ const Product = styled.div`
   align-items: center;
   width: 100%;
   height: 210px;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+    height: 400px;
+  }
 `;
 const ImgBx = styled.div`
   border-radius: 30px;
@@ -100,17 +104,23 @@ const Details = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const ProductTitle = styled.p`
   margin-bottom: 10px;
   width: 100%;
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-align: center;
 `;
 const Price = styled.p`
   width: 100%;
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const Variants = styled.div`
   width: 300px;
@@ -126,6 +136,9 @@ const ColorBx = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 15px;
+`;
+const Label = styled.div`
+  padding-right: 10px;
 `;
 const Color = styled.div`
   position: relative;
@@ -143,7 +156,7 @@ const Color = styled.div`
     position: absolute;
     top: -5px;
     left: -5px;
-    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#eeeeee")};
   }
 `;
 const SizeBx = styled.div`
@@ -169,6 +182,7 @@ const Size = styled.div`
   &:hover {
     background-color: #e08386;
     color: #99262a;
+    transition: 1s;
   }
   &::after {
     content: "";
@@ -178,14 +192,16 @@ const Size = styled.div`
     position: absolute;
     top: -5px;
     left: -5px;
-    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#eeeeee")};
   }
 `;
 const Qty = styled.p`
   width: 100%;
-
   font-size: 1rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const Btn = styled.button`
   width: 150px;
@@ -204,6 +220,7 @@ const AddCartBtn = styled(Btn)`
   &:hover {
     background-color: #e08386;
     color: #99262a;
+    transition: 1s;
   }
 `;
 
@@ -246,6 +263,7 @@ const SaleProduct = (props) => {
           </Details>
           <Variants>
             <ColorBx>
+              <Label>顏色</Label>
               {product.colors.map((colorObj, index) => {
                 return (
                   <Color
@@ -260,6 +278,7 @@ const SaleProduct = (props) => {
               })}
             </ColorBx>
             <SizeBx>
+              <Label>尺寸</Label>
               {product.sizes.map((sizeName, index) => {
                 return (
                   <Size
@@ -274,7 +293,7 @@ const SaleProduct = (props) => {
                 );
               })}
             </SizeBx>
-            <Qty>數量:{qty}件</Qty>
+            <Qty>商品數量: {qty}件</Qty>
           </Variants>
           <AddCartBtn onClick={addToCartHandler}>加入購物車</AddCartBtn>
         </Product>

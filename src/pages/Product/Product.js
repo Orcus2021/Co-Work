@@ -6,7 +6,7 @@ import api from "../../utils/api";
 import ProductVariants from "./ProductVariants";
 
 const Wrapper = styled.div`
-  max-width: 960px;
+  max-width: 1030px;
   margin: 0 auto;
   padding: 65px 0 49px;
   display: flex;
@@ -133,7 +133,7 @@ const StoryTitle = styled.div`
   line-height: 30px;
   font-size: 20px;
   letter-spacing: 4px;
-  color: #8b572a;
+  color: #99262a;
   display: flex;
   align-items: center;
 
@@ -192,8 +192,8 @@ const Image = styled.img`
 `;
 
 const ShowImage = styled.div`
-  width: 400px;
-  height: 500px;
+  width: 460px;
+  height: 560px;
   border: 1px solid white;
   position: absolute;
   top: 205px;
@@ -250,11 +250,8 @@ function Product() {
         <ShowImage
           style={{
             ...zoomIn,
-            backgroundImage:
-              `url(` +
-              `https://kelvin-wu.site/assets/${product.id}/main.jpg` +
-              `)`,
-            backgroundSize: "300% 300%",
+            backgroundImage: `url(` + `${product.main_image}`,
+            backgroundSize: "250% 250%",
           }}
         />
       )}

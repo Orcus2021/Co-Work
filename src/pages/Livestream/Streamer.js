@@ -59,6 +59,7 @@ const VideoBx = styled.div`
   border-right: none;
   border-radius: 30px 0 0 30px;
   @media screen and (max-width: 1279px) {
+    width: 90%;
     border: 0;
     height: auto;
   }
@@ -91,6 +92,7 @@ const CameraBtn = styled(Btn)`
     background-color: #e08386;
     color: #99262a;
     border: none;
+    transition: 1s;
   }
 `;
 const LiveBtn = styled(Btn)`
@@ -104,6 +106,7 @@ const LiveBtn = styled(Btn)`
   &:hover {
     background-color: #e08386;
     color: #99262a;
+    transition: 1s;
   }
 `;
 const StopBtn = styled(Btn)`
@@ -125,6 +128,7 @@ const ChatBx = styled.div`
   border-radius: 0px 30px 30px 0px;
   @media screen and (max-width: 1279px) {
     border: 0;
+    width: 90%;
   }
 `;
 const ChatContent = styled.div`
@@ -258,6 +262,7 @@ const PanelBtn = styled.button`
   &:hover {
     color: white;
     background-color: #e08386;
+    transition: 1s;
   }
 `;
 
