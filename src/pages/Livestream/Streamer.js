@@ -92,6 +92,7 @@ const CameraBtn = styled(Btn)`
     background-color: #e08386;
     color: #99262a;
     border: none;
+    transition: 1s;
   }
 `;
 const LiveBtn = styled(Btn)`
@@ -105,6 +106,7 @@ const LiveBtn = styled(Btn)`
   &:hover {
     background-color: #e08386;
     color: #99262a;
+    transition: 1s;
   }
 `;
 const StopBtn = styled(Btn)`
@@ -260,6 +262,7 @@ const PanelBtn = styled.button`
   &:hover {
     color: white;
     background-color: #e08386;
+    transition: 1s;
   }
 `;
 

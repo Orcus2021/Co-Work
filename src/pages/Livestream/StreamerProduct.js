@@ -226,6 +226,7 @@ const RemoveBtn = styled(Btn)`
   &:hover {
     background-color: red;
     color: white;
+    transition: 1s;
   }
 `;
 const StandbyProductBx = styled.div`

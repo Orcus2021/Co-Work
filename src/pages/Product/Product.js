@@ -133,7 +133,7 @@ const StoryTitle = styled.div`
   line-height: 30px;
   font-size: 20px;
   letter-spacing: 4px;
-  color: #8b572a;
+  color: #99262a;
   display: flex;
   align-items: center;
 

@@ -150,7 +150,7 @@ const FormControl = styled.input`
 const FormText = styled.div`
   line-height: 19px;
   font-size: 16px;
-  color: #8b572a;
+  color: #99262a;
   margin-top: 10px;
   width: 100%;
   text-align: right;
@@ -258,14 +258,20 @@ const CheckoutButton = styled.button`
   width: 240px;
   height: 60px;
   margin-top: 50px;
-  border: solid 1px #979797;
-  background-color: black;
+  background-color: #99262a;
   color: white;
+  border-radius: 30px;
+  border: none;
   font-size: 20px;
   letter-spacing: 4px;
   margin-left: auto;
   display: block;
   cursor: pointer;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+    transition: 1s;
+  }
 
   @media screen and (max-width: 1279px) {
     width: 100%;

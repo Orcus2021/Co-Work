@@ -194,6 +194,7 @@ const UploadCardButton = styled.span`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
   @media screen and (max-width: 1279px) {
     font-size: 0.8rem;

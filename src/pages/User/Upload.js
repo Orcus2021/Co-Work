@@ -31,6 +31,7 @@ const BackButton = styled.button`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 const Form = styled.div`
@@ -91,6 +92,7 @@ const UploadCardButton = styled.span`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 const UploadCardInput = styled.input.attrs({

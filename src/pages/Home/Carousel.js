@@ -77,14 +77,14 @@ const Dots = styled.div`
 const Dot = styled.div`
   width: 10px;
   height: 10px;
-  background-color: ${(props) => (props.$isActive ? "#8b572a" : "white")};
+  background-color: ${(props) => (props.$isActive ? "#99262a" : "white")};
   border-radius: 50%;
   cursor: pointer;
 
   @media screen and (max-width: 1279px) {
     width: 4px;
     height: 4px;
-    background-color: ${(props) => (props.$isActive ? "#8b572a" : "white")};
+    background-color: ${(props) => (props.$isActive ? "#99262a" : "white")};
   }
 
   & + & {

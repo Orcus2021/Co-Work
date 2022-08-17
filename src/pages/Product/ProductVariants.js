@@ -80,7 +80,7 @@ const QuantitySelector = styled.div`
 `;
 
 const Quantity = styled.div`
-  color: #8b572a;
+  color: #99262a;
 `;
 
 const Button = styled.div`

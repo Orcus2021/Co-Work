@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
 const Content = styled.div`
   max-width: 1200px;
-  height: 115px;
+  height: 80px;
   padding-left: 24px;
   padding-right: 20px;
   margin: 0 auto;

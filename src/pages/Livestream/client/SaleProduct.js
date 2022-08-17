@@ -182,6 +182,7 @@ const Size = styled.div`
   &:hover {
     background-color: #e08386;
     color: #99262a;
+    transition: 1s;
   }
   &::after {
     content: "";
@@ -219,6 +220,7 @@ const AddCartBtn = styled(Btn)`
   &:hover {
     background-color: #e08386;
     color: #99262a;
+    transition: 1s;
   }
 `;
 

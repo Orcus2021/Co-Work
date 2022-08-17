@@ -105,6 +105,7 @@ const AddBtn = styled(Btn)`
   &:hover {
     background-color: #e08386;
     color: #99262a;
+    transition: 1s;
   }
 `;
 const RemoveBtn = styled(Btn)`
@@ -118,6 +119,7 @@ const RemoveBtn = styled(Btn)`
   &:hover {
     background-color: red;
     color: white;
+    transition: 1s;
   }
 `;
 
