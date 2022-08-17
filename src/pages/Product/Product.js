@@ -250,10 +250,7 @@ function Product() {
         <ShowImage
           style={{
             ...zoomIn,
-            backgroundImage:
-              `url(` +
-              `https://kelvin-wu.site/assets/${product.id}/main.jpg` +
-              `)`,
+            backgroundImage: `url(` + `${product.main_image}`,
             backgroundSize: "300% 300%",
           }}
         />
