@@ -143,7 +143,7 @@ const Color = styled.div`
     position: absolute;
     top: -5px;
     left: -5px;
-    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#eeeeee")};
   }
 `;
 const SizeBx = styled.div`
@@ -178,7 +178,7 @@ const Size = styled.div`
     position: absolute;
     top: -5px;
     left: -5px;
-    border: 1px solid ${(props) => (props.$isChose ? "black" : "#aaa")};
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#eeeeee")};
   }
 `;
 const Qty = styled.p`
