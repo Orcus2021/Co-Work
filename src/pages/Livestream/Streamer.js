@@ -507,6 +507,12 @@ const Streamer = () => {
     socketRef.current.emit("product", null);
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" || e.which === 13) {
+      transferChatHandler();
+    }
+  };
+
   return (
     <>
       <CreateList trigger={ButtonPop} setButtonPop={setButtonPop} />
@@ -613,7 +619,12 @@ const Streamer = () => {
             )}
             <audio src={remindSound} ref={audioRef}></audio>
             <InputBx>
-              <Input type="text" value={input} onChange={inputHandler} />
+              <Input
+                type="text"
+                value={input}
+                onChange={inputHandler}
+                onKeyPress={(e) => handleKeyPress(e)}
+              />
               <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
             </InputBx>
             <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>

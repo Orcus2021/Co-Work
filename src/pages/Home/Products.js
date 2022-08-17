@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
-
 import api from "../../utils/api";
+import Loading from "../../components/Love/Loading";
 
 const Wrapper = styled.div`
   max-width: 1200px;
@@ -97,6 +97,7 @@ function Products() {
   const nextPagingRef = useRef();
   const waypointRef = useRef();
   const [searchParams] = useSearchParams();
+  const [showLoading, setShowLoading] = useState(false);
 
   const keyword = searchParams.get("keyword");
   const category = searchParams.get("category");
@@ -125,7 +126,9 @@ function Products() {
 
       isFetching = true;
       console.log(isFetching);
+      setShowLoading(true);
       const { data, next_paging } = await fetchProducts();
+      setShowLoading(false);
       setProducts((prev) => [...prev, ...data]);
       nextPagingRef.current = next_paging;
       isFetching = false;
@@ -142,6 +145,7 @@ function Products() {
   return (
     <>
       <Wrapper>
+        {showLoading ? <Loading /> : ""}
         {products.map(({ id, main_image, colors, title, price }) => (
           <Product key={id} to={`/products/${id}`}>
             <ProductImage src={main_image} />

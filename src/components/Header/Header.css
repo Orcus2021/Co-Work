@@ -1,0 +1,13 @@
+.active {
+  top: 0;
+  z-index: 100;
+  position: fixed;
+  /* transition: top 1s,background 1s; */
+  transition: 0.5s;
+}
+.hidden {
+  top: -145px;
+  z-index: 100;
+  position: fixed;
+  transition: 1s;
+}

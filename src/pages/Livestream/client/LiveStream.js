@@ -71,10 +71,10 @@ const Container = styled.div`
     } else if (props.$isMode === "hide") {
       return "position:absolute; top:-100%;";
     } else if (props.$isMode === "pop") {
-      return "position:fixed; right:0;bottom:0; z-index:9999;overflow:hidden;background-color: transparent;";
+      return "position:fixed; right:0;bottom:0; z-index:9999;overflow:hidden;background-color: transparent;pointer-events: none;";
     }
   }}
-  pointer-events: none;
+
   max-width: 1160px;
 
   @media screen and (max-width: 1279px) {
@@ -478,6 +478,12 @@ const LiveStream = () => {
 
   const chatPlaceholder = userCtx.user ? "與主播聊聊" : "請先登入會員";
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" || e.which === 13) {
+      transferChatHandler();
+    }
+  };
+
   return (
     <Container $isMode={viewStatue}>
       <CardStyle>
@@ -530,6 +536,7 @@ const LiveStream = () => {
               onChange={inputHandler}
               placeholder={chatPlaceholder}
               disabled={!userCtx.user}
+              onKeyPress={(e) => handleKeyPress(e)}
             />
             <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
           </InputBx>

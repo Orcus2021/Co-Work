@@ -760,7 +760,7 @@ function User() {
                       </InputContainer>
                       <InputContainer>
                         <InputLabel>邀請碼</InputLabel>
-                        <InputControl>2131233234151</InputControl>
+                        <InputControl>{userCtx.user?.promoCode}</InputControl>
                       </InputContainer>
                     </InputGroup>
                   </Form>

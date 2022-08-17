@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { UserContext } from "../../contexts/UserContext";
+import Loading from "../../components/Love/Loading";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -100,6 +101,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const userCtx = useContext(UserContext);
+  const [showLoading, setShowLoading] = useState(false);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "email") {
@@ -120,6 +122,7 @@ function SignIn() {
       return;
     }
     try {
+      setShowLoading(true);
       await signIn(data);
     } catch (error) {
       window.alert(`${error}`);
@@ -145,17 +148,44 @@ function SignIn() {
         email: resUser.data.user.email,
         picture: resUser.data.user.picture,
         name: resUser.data.user.name,
+        promoCode: resUser.data.user.promo_code,
+        role: resUser.data.user.role,
       };
       userCtx.addUser(userObj);
-      navigate("/");
+      setTimeout(() => {
+        setShowLoading(false);
+        navigate("/");
+      }, 1500);
     } else {
       const error = await response.json();
       throw new Error(error.error);
     }
   }
 
+  const handleKeyPress = async (e) => {
+    if (e.key === "Enter" || e.which === 13) {
+      // console.log("enter key pressed");
+      const data = {
+        provider: "native",
+        email: email,
+        password: password,
+      };
+      if (email.length <= 0 || password.length <= 0) {
+        window.alert("請輸入正確帳號密碼");
+        return;
+      }
+      try {
+        setShowLoading(true);
+        await signIn(data);
+      } catch (error) {
+        window.alert(`${error}`);
+      }
+    }
+  };
+
   return (
     <Wrapper>
+      {showLoading ? <Loading /> : ""}
       <Title>會員登入</Title>
       <form>
         <Form>
@@ -173,6 +203,7 @@ function SignIn() {
               name="password"
               value={password}
               onChange={(e) => handleInputChange(e)}
+              onKeyPress={(e) => handleKeyPress(e)}
             />
           </InputGroup>
         </Form>
