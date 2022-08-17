@@ -172,7 +172,7 @@ const InputGroup = styled.div`
   align-items: center;
   flex-wrap: wrap;
   margin-top: 30px;
-  width: 400px;
+  width: 360px;
   @media screen and (max-width: 1279px) {
     line-height: 17px;
     font-size: 14px;
@@ -200,6 +200,9 @@ const CouponBx = styled.div`
   flex-direction: row;
   width: 100%;
   height: 100%;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+  }
 `;
 const CreateCoupon = styled.div`
   margin-right: 10px;

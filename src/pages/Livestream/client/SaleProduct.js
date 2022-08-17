@@ -207,6 +207,12 @@ const AddCartBtn = styled(Btn)`
   }
 `;
 
+const SelectBorder = styled.div`
+  border: 1px solid black;
+  width: 32px;
+  height: 32px;
+`;
+
 const SaleProduct = (props) => {
   const { product } = props;
   const [colorCode, setColorCode] = useState("");

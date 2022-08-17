@@ -103,7 +103,6 @@ const VideoBx = styled.div`
   align-items: center;
   width: 800px;
   height: 750px;
-  overflow: scroll;
   padding: 20px;
   border: 2.5px solid #e08386;
   border-right: none;
