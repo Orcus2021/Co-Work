@@ -1,25 +1,26 @@
-import { useContext, useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
+import styled from "styled-components";
 
-import logo from './logo.png';
-import search from './search.png';
-import cart from './cart.png';
-import cartMobile from './cart-mobile.png';
-import profile from './profile.png';
-import profileMobile from './profile-mobile.png';
-import CartContext from '../../contexts/CartContext';
+import logo from "./logo.png";
+import search from "./search.png";
+import cart from "./cart.png";
+import cartMobile from "./cart-mobile.png";
+import profile from "./profile.png";
+import profileMobile from "./profile-mobile.png";
+import CartContext from "../../contexts/CartContext";
 
 const Wrapper = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  height: 140px;
+  height: 100px;
   width: 100%;
   padding: 0 54px 0 60px;
-  border-bottom: 40px solid #313538;
+  background-color: #f6dbdb;
+  ${"" /* border-bottom: 40px solid #f6dbdb; */}
   z-index: 99;
-  background-color: white;
   display: flex;
   align-items: center;
   font-family: PingFangTC;
@@ -37,6 +38,7 @@ const Logo = styled(Link)`
   height: 48px;
   background-image: url(${logo});
   background-size: contain;
+  background-repeat: no-repeat;
 
   @media screen and (max-width: 1279px) {
     width: 129px;
@@ -55,31 +57,31 @@ const CategoryLinks = styled.div`
     width: 100%;
     height: 50px;
     display: flex;
-    background-color: #313538;
+    background-color: #f6dbdb;
   }
 `;
 
 const CategoryLink = styled(Link)`
   font-size: 20px;
-  letter-spacing: 30px;
-  padding-left: 39px;
-  padding-right: 11px;
+  letter-spacing: 20px;
+  padding-left: 25px;
+  padding-right: 3px;
   position: relative;
   text-decoration: none;
-  color: ${(props) => (props.$isActive ? '#8b572a' : '#3f3a3a')};
+  color: ${(props) => (props.$isActive ? "#99262a" : "#3f3a3a")};
 
   @media screen and (max-width: 1279px) {
     font-size: 16px;
     letter-spacing: normal;
     padding: 0;
     text-align: center;
-    color: ${(props) => (props.$isActive ? 'white' : '#828282')};
+    color: ${(props) => (props.$isActive ? "white" : "#828282")};
     line-height: 50px;
     flex-grow: 1;
   }
 
   &:hover {
-    color: #8b572a;
+    color: #99262a;
 
     @media screen and (max-width: 1279px) {
       color: white;
@@ -87,7 +89,7 @@ const CategoryLink = styled(Link)`
   }
 
   & + &::before {
-    content: '|';
+    content: "|";
     position: absolute;
     left: 0;
     color: #3f3a3a;
@@ -99,6 +101,7 @@ const CategoryLink = styled(Link)`
 `;
 
 const SearchInput = styled.input`
+  background-color: #f6dbdb;
   height: 40px;
   width: 214px;
   border: none;
@@ -113,7 +116,7 @@ const SearchInput = styled.input`
   background-repeat: no-repeat;
   font-size: 20px;
   line-height: 24px;
-  color: #8b572a;
+  color: #99262a;
 
   @media screen and (max-width: 1279px) {
     width: 0;
@@ -143,7 +146,7 @@ const PageLinks = styled.div`
     position: fixed;
     left: 0;
     bottom: 0;
-    background-color: #313538;
+    background-color: #f6dbdb;
   }
 `;
 
@@ -167,7 +170,7 @@ const PageLink = styled(Link)`
 
   & + &::before {
     @media screen and (max-width: 1279px) {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       width: 1px;
@@ -208,7 +211,7 @@ const PageLinkIconNumber = styled.div`
   right: 0;
   width: 24px;
   height: 24px;
-  background-color: #8b572a;
+  background-color: #99262a;
   color: white;
   border-radius: 50%;
   text-align: center;
@@ -226,29 +229,38 @@ const PageLinkText = styled.div`
 
 const categories = [
   {
-    name: 'women',
-    displayText: '女裝',
+    name: "women",
+    displayText: "女裝",
   },
   {
-    name: 'men',
-    displayText: '男裝',
+    name: "men",
+    displayText: "男裝",
   },
   {
-    name: 'accessories',
-    displayText: '配件',
+    name: "accessories",
+    displayText: "配件",
   },
 ];
 
 function Header() {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const category = searchParams.get('category');
+  const userCtx = useContext(UserContext);
+  const category = searchParams.get("category");
   const { getItems } = useContext(CartContext);
 
   useEffect(() => {
-    if (category) setInputValue('');
+    if (category) setInputValue("");
   }, [category]);
+
+  const profileHandler = () => {
+    if (userCtx.user?.accessToken) {
+      navigate("/user");
+    } else {
+      navigate("/profile/signin");
+    }
+  };
 
   return (
     <Wrapper>
@@ -263,10 +275,13 @@ function Header() {
             {displayText}
           </CategoryLink>
         ))}
+        <CategoryLink key="liveStream" to={"liveStream"}>
+          直播
+        </CategoryLink>
       </CategoryLinks>
       <SearchInput
         onKeyPress={(e) => {
-          if (e.key === 'Enter') {
+          if (e.key === "Enter") {
             navigate(`/?keyword=${inputValue}`);
           }
         }}
@@ -280,7 +295,7 @@ function Header() {
           </PageLinkCartIcon>
           <PageLinkText>購物車</PageLinkText>
         </PageLink>
-        <PageLink to="/profile">
+        <PageLink as="div" onClick={profileHandler}>
           <PageLinkProfileIcon icon={profile} />
           <PageLinkText>會員</PageLinkText>
         </PageLink>

@@ -1,8 +1,20 @@
 const api = {
-  hostname: 'https://api.appworks-school.tw/api/1.0',
+  hostname: "https://kelvin-wu.site/api/1.0",
   async getProducts(category, paging) {
+    console.log("category");
+
     const response = await fetch(
       `${this.hostname}/products/${category}?paging=${paging}`
+    );
+    return await response.json();
+  },
+  async getAnyProducts(category, keyword, paging) {
+    console.log("any");
+    console.log(
+      `${this.hostname}/products/${category}?paging=${paging}&keyword=${keyword}`
+    );
+    const response = await fetch(
+      `${this.hostname}/products/${category}?paging=${paging}&keyword=${keyword}`
     );
     return await response.json();
   },
@@ -24,10 +36,10 @@ const api = {
     const response = await fetch(`${this.hostname}/order/checkout`, {
       body: JSON.stringify(data),
       headers: new Headers({
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       }),
-      method: 'POST',
+      method: "POST",
     });
     return await response.json();
   },
@@ -35,18 +47,28 @@ const api = {
     const response = await fetch(`${this.hostname}/user/signin`, {
       body: JSON.stringify(data),
       headers: new Headers({
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       }),
-      method: 'POST',
+      method: "POST",
     });
     return await response.json();
   },
   async getProfile(jwtToken) {
     const response = await fetch(`${this.hostname}/user/profile`, {
       headers: new Headers({
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${jwtToken}`,
       }),
+    });
+    return await response.json();
+  },
+  async uploadUserImg(data, jwtToken) {
+    const response = await fetch(`${this.hostname}/user/image`, {
+      body: data,
+      headers: new Headers({
+        Authorization: `Bearer ${jwtToken}`,
+      }),
+      method: "POST",
     });
     return await response.json();
   },

@@ -1,14 +1,14 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import line from './line.png';
-import facebook from './facebook.png';
-import twitter from './twitter.png';
+import line from "./line.png";
+import facebook from "./facebook.png";
+import twitter from "./twitter.png";
 
 const Wrapper = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: #313538;
+  background-color: #f6dbdb;
   font-family: PingFangTC;
 
   @media screen and (max-width: 1279px) {
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
 const Content = styled.div`
   max-width: 1200px;
-  height: 115px;
+  height: 80px;
   padding-left: 24px;
   padding-right: 20px;
   margin: 0 auto;
@@ -51,7 +51,7 @@ const SiteLink = styled.div`
   width: 134px;
   text-align: center;
   position: relative;
-  color: #f5f5f5;
+  color: #99262a;
   cursor: pointer;
 
   @media screen and (max-width: 1279px) {
@@ -59,17 +59,17 @@ const SiteLink = styled.div`
     line-height: 20px;
     margin-bottom: 8px;
     text-align: left;
-    color: white;
+    color: #99262a;
     font-size: 14px;
   }
 
   & + &::before {
-    content: '|';
+    content: "|";
     position: absolute;
     left: 0;
 
     @media screen and (max-width: 1279px) {
-      content: '';
+      content: "";
     }
   }
 `;
@@ -109,14 +109,14 @@ const Copywright = styled.div`
   margin-left: 30px;
   line-height: 17px;
   font-size: 12px;
-  color: #828282;
+  color: #99262a;
 
   @media screen and (max-width: 1279px) {
     margin-left: 0;
     margin-top: 7px;
     line-height: 14px;
     font-size: 10px;
-    color: #828282;
+    color: #99262a;
     width: 100%;
     text-align: center;
   }
@@ -127,7 +127,7 @@ function Footer() {
     <Wrapper>
       <Content>
         <SiteLinks>
-          {['關於 Stylish', '服務條款', '隱私政策', '聯絡我們', 'FAQ'].map(
+          {["關於 Stylish", "服務條款", "隱私政策", "聯絡我們", "FAQ"].map(
             (text, index) => (
               <SiteLink key={index}>{text}</SiteLink>
             )

@@ -58,15 +58,19 @@ const Product = styled.div`
   width: 100%;
   margin-bottom: 10px;
   height: 120px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px dashed #99262a;
   padding-bottom: 20px;
-}
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+    height: 200px;
+  }
 `;
 const ImgBx = styled.div`
   width: 100px;
   height: 100%;
   position: relative;
   overflow: hidden;
+  border-radius: 20px;
 `;
 
 const ProductImg = styled.img`
@@ -77,27 +81,34 @@ const ProductImg = styled.img`
 `;
 const ProductTitle = styled.p`
   flex-grow: 1;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.5rem;
+  }
 `;
 const Price = styled.p`
   flex-grow: 1;
-
   font-size: 1.5rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.5rem;
+  }
 `;
 const CheckProduct = styled.input`
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
 `;
 const RightBx = styled.div`
   width: 300px;
 `;
 const InitPrice = styled.p`
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-align: center;
   flex-grow: 1;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.5rem;
+  }
 `;
 const CouponBx = styled.div`
   width: 100%;
@@ -107,7 +118,10 @@ const CouponBx = styled.div`
   justify-content: center;
 `;
 const CouponLabel = styled.label`
-  font-size: 1.2rem;
+  font-size: 1rem;
+  @media screen and (max-width: 1279px) {
+    font-size: 0.5rem;
+  }
 `;
 const CouponInput = styled.input`
   width: 100px;
@@ -141,7 +155,7 @@ const CreateProduct = (props) => {
   const checkCouponHandler = () => {
     setIsCheckCoupon((pre) => !pre);
   };
-  console.log(isCheckCoupon);
+
   return (
     <Product>
       <CheckProduct

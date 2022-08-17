@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
 import App from "./App";
 import Checkout from "./pages/Checkout/Checkout";
 import Home from "./pages/Home/Home";

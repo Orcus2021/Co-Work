@@ -69,17 +69,24 @@ const SaleTitle = styled.p`
   width: 100%;
   text-align: center;
   font-size: 1.5rem;
-  border-bottom: 1px solid black;
+  color: #99262a;
+  border-bottom: 1px solid #99262a;
+  padding-bottom: 10px;
 `;
 const Product = styled.div`
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
-
   height: 210px;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+    height: 400px;
+  }
 `;
 const ImgBx = styled.div`
+  border-radius: 30px;
   width: 150px;
   height: 100%;
   position: relative;
@@ -97,18 +104,23 @@ const Details = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const ProductTitle = styled.p`
+  margin-bottom: 10px;
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-align: center;
 `;
 const Price = styled.p`
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const Variants = styled.div`
   width: 300px;
@@ -123,14 +135,29 @@ const ColorBx = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+`;
+const Label = styled.div`
+  padding-right: 10px;
 `;
 const Color = styled.div`
+  position: relative;
+  border-radius: 3px;
   width: 30px;
   height: 30px;
   margin-right: 20px;
   background-color: ${(props) => props.$colorCode};
   cursor: pointer;
+  &::after {
+    content: "";
+    border-radius: 3px;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#eeeeee")};
+  }
 `;
 const SizeBx = styled.div`
   width: 100%;
@@ -141,20 +168,40 @@ const SizeBx = styled.div`
   margin-bottom: 10px;
 `;
 const Size = styled.div`
+  position: relative;
+  border-radius: 3px;
   width: 30px;
   height: 30px;
-  background-color: rgb(131, 152, 222);
+  background-color: #99262a;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 20px;
   cursor: pointer;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+    transition: 1s;
+  }
+  &::after {
+    content: "";
+    border-radius: 3px;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    border: 1px solid ${(props) => (props.$isChose ? "black" : "#eeeeee")};
+  }
 `;
 const Qty = styled.p`
   width: 100%;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
+  @media screen and (max-width: 1279px) {
+    padding-bottom: 10px;
+  }
 `;
 const Btn = styled.button`
   width: 150px;
@@ -165,23 +212,36 @@ const Btn = styled.button`
   height: 40px;
 `;
 const AddCartBtn = styled(Btn)`
-  background-color: rgb(240, 47, 47);
+  background-color: #99262a;
   color: white;
-  border: 2px solid rgb(240, 47, 47);
+  border: #99262a;
   margin-bottom: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+    transition: 1s;
+  }
+`;
+
+const SelectBorder = styled.div`
+  border: 1px solid black;
+  width: 32px;
+  height: 32px;
 `;
 
 const SaleProduct = (props) => {
+  const { product } = props;
   const [colorCode, setColorCode] = useState("");
   const [size, setSize] = useState("");
   const [qty, setQty] = useState(0);
   useEffect(() => {
-    dummy?.variants.forEach((data) => {
+    product?.variants.forEach((data) => {
       if (size === data.size && colorCode === data.color_code) {
         setQty(data.stock);
       }
     });
-  }, [size, colorCode, dummy]);
+  }, [size, colorCode, product]);
 
   const addToCartHandler = () => {
     // 加入購物車
@@ -189,42 +249,51 @@ const SaleProduct = (props) => {
   return (
     <>
       <SaleTitle>拍賣區</SaleTitle>
-      {dummy && (
-        <Product key={dummy.id}>
+      {product && (
+        <Product key={product.id}>
           <ImgBx>
-            <ProductImg src={dummy.main_image} />
+            <ProductImg src={product.main_image} />
           </ImgBx>
           <Details>
-            <ProductTitle>{dummy.title}</ProductTitle>
-            <Price>原價:{dummy.price} 特價:100</Price>
+            <ProductTitle>{product.title}</ProductTitle>
+            <Price>
+              原價:{product.price} <br />
+              特價:100
+            </Price>
           </Details>
           <Variants>
             <ColorBx>
-              {dummy.colors.map((color) => {
+              <Label>顏色</Label>
+              {product.colors.map((colorObj, index) => {
                 return (
                   <Color
-                    $colorCode={`#${color.code}`}
+                    key={index}
+                    $colorCode={`#${colorObj.code}`}
+                    $isChose={colorCode === colorObj.code}
                     onClick={() => {
-                      setColorCode(color.code);
+                      setColorCode(colorObj.code);
                     }}
                   ></Color>
                 );
               })}
             </ColorBx>
             <SizeBx>
-              {dummy.sizes.map((size) => {
+              <Label>尺寸</Label>
+              {product.sizes.map((sizeName, index) => {
                 return (
                   <Size
+                    key={index}
+                    $isChose={sizeName === size}
                     onClick={() => {
-                      setSize(size);
+                      setSize(sizeName);
                     }}
                   >
-                    {size}
+                    {sizeName}
                   </Size>
                 );
               })}
             </SizeBx>
-            <Qty>數量:{qty}件</Qty>
+            <Qty>商品數量: {qty}件</Qty>
           </Variants>
           <AddCartBtn onClick={addToCartHandler}>加入購物車</AddCartBtn>
         </Product>

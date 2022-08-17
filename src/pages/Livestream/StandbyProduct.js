@@ -58,17 +58,16 @@ const Product = styled.div`
   width: 100%;
   margin-bottom: 10px;
   height: 120px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px dashed #99262a;
   padding-bottom: 20px;
-}
 `;
 const ImgBx = styled.div`
   width: 100px;
   height: 100%;
   position: relative;
   overflow: hidden;
+  border-radius: 20px;
 `;
-
 const ProductImg = styled.img`
   position: absolute;
   width: 100%;
@@ -77,14 +76,12 @@ const ProductImg = styled.img`
 `;
 const ProductTitle = styled.p`
   flex-grow: 1;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Price = styled.p`
   flex-grow: 1;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-align: center;
 `;
 const Btn = styled.button`
@@ -97,22 +94,43 @@ const Btn = styled.button`
 `;
 
 const AddBtn = styled(Btn)`
-  background-color: black;
+  width: 80px;
+  height: 30px;
+  background-color: #99262a;
   color: white;
-  border: 2px solid rgb(240, 47, 47);
+  border: #99262a;
   margin-bottom: 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #e08386;
+    color: #99262a;
+    transition: 1s;
+  }
+`;
+const RemoveBtn = styled(Btn)`
+  width: 80px;
+  height: 30px;
+  background-color: #f6dbdb;
+  color: #99262a;
+  border: #99262a;
+  margin-bottom: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: red;
+    color: white;
+    transition: 1s;
+  }
 `;
 
-const RemoveBtn = styled(Btn)`
-  background-color: rgb(240, 47, 47);
-  color: white;
-  border: 2px solid rgb(240, 47, 47);
-  margin-bottom: 10px;
-`;
 const StandbyProduct = (props) => {
-  const { product, onSale, onDelete } = props;
+  const { product, onSale, onDelete, onAdd } = props;
   const deleteHandler = () => {
     onDelete(product.id);
+  };
+  const addProductHandler = () => {
+    onSale(product);
+    onAdd(dummy);
   };
   return (
     <Product>
@@ -121,13 +139,7 @@ const StandbyProduct = (props) => {
       </ImgBx>
       <ProductTitle>{product.title}</ProductTitle>
       <Price>原價:{product.price} 特價:100</Price>
-      <AddBtn
-        onClick={() => {
-          onSale(product);
-        }}
-      >
-        上架
-      </AddBtn>
+      <AddBtn onClick={addProductHandler}>上架</AddBtn>
       <RemoveBtn onClick={deleteHandler}>移除</RemoveBtn>
     </Product>
   );

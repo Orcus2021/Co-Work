@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
+import { UserContext } from "../../contexts/UserContext";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -74,6 +75,7 @@ const SignInbtn = styled.button`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 
@@ -89,6 +91,7 @@ const SignUpButton = styled.button`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 
@@ -97,6 +100,8 @@ function SignUp() {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const [invitationCode, setInvitationCode] = useState(null);
+  const userCtx = useContext(UserContext);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "name") {
@@ -107,6 +112,9 @@ function SignUp() {
     }
     if (name === "password") {
       setPassword(value);
+    }
+    if (name === "invitationCode") {
+      setInvitationCode(value);
     }
   };
   const handleSubmit = async () => {
@@ -131,7 +139,18 @@ function SignUp() {
     });
     console.log(response);
     if (response.ok) {
-      return await response.json();
+      const resUser = await response.json();
+      const userObj = {
+        accessToken: resUser.data.access_token,
+        accessExpired: resUser.data.access_expired,
+        loginAt: resUser.data.login_at,
+        id: resUser.data.user.id,
+        provider: resUser.data.user.provider,
+        email: resUser.data.user.email,
+        picture: resUser.data.user.picture,
+      };
+      userCtx.addUser(userObj);
+      navigate("/");
     }
     throw new Error("error message");
   }
@@ -161,6 +180,13 @@ function SignUp() {
               type="password"
               name="password"
               value={password}
+              onChange={(e) => handleInputChange(e)}
+            />
+            <InputLabel>邀請碼</InputLabel>
+            <InputControl
+              type="text"
+              name="invitationCode"
+              value={invitationCode}
               onChange={(e) => handleInputChange(e)}
             />
           </InputGroup>

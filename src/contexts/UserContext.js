@@ -7,12 +7,12 @@ export const UserContext = createContext({
 });
 
 const UserProvider = (props) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const addUserHandler = (user) => {
     setUser(user);
   };
   const removeUserHandler = () => {
-    setUser({});
+    setUser(null);
   };
 
   const initUser = {

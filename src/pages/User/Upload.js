@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import useInputValidate from "../../utils/useInputValidate";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -30,22 +31,32 @@ const BackButton = styled.button`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 const Form = styled.div`
   display: flex;
   margin-top: 50px;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+  }
 `;
 const FormLeft = styled.div`
   display: flex;
   flex-direction: column;
   width: 300px;
   margin-right: 20px;
+  @media screen and (max-width: 1279px) {
+    margin: 0 auto;
+  }
 `;
 const FormCenter = styled.div`
   display: flex;
   width: 400px;
   margin-right: 20px;
+  @media screen and (max-width: 1279px) {
+    justify-content: center;
+  }
 `;
 const FormRight = styled.div`
   display: flex;
@@ -81,6 +92,7 @@ const UploadCardButton = styled.span`
   &:hover {
     background-color: gray;
     color: #fff;
+    transition: 1s;
   }
 `;
 const UploadCardInput = styled.input.attrs({
@@ -127,6 +139,10 @@ const ClearBtn = styled.button`
   transform: translate(-50%, -50%);
   padding: 5px;
   cursor: pointer;
+`;
+const ImageReminder = styled.div`
+  margin-top: 10px;
+  font-size: 0.8rem;
 `;
 
 const FormFieldSet = styled.fieldset`
@@ -244,6 +260,7 @@ const uploadFormGroups = [
 ];
 
 const VariantsCardStyled = styled.label`
+  position: relative;
   background-color: #fff;
   padding: 10px;
   border-radius: 12px;
@@ -258,8 +275,12 @@ const ImgBx = styled.div`
 
 const variantsFormGroups = [
   {
+    label: "商品色碼#",
+    key: "color_code",
+  },
+  {
     label: "商品顏色",
-    key: "color_id",
+    key: "color_name",
   },
   { label: "商品庫存", key: "stock" },
   {
@@ -295,13 +316,39 @@ const VariantsButton = styled.button`
   padding: 5px;
   cursor: pointer;
   margin: 20px 5px 0 5px;
-  width: 50%;
+  width: 100%;
+`;
+const ColorCode = styled.div`
+  width: 25px;
+  height: 25px;
+  background-color: #${(props) => (props.$code ? props.$code : "fff")};
+  border-radius: 3px;
+  border: 1px solid black;
+  margin-left: 5px;
+`;
+const CloseBx = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  top: 0;
+  right: 0;
+  background-color: #99262a;
+  color: #fff;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+const VariantsBx = styled.div`
+  position: relative;
+  width: 100%;
 `;
 
 function Upload() {
   const navigate = useNavigate();
   const [fileSrc, setFileSrc] = useState(null);
-  const [fileMultiSrc, setMultiSrc] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
   const [images, setImages] = useState([]);
   const imageTypeRegex = /image\/(png|jpg|jpeg)/gm;
@@ -318,12 +365,15 @@ function Upload() {
     story: "",
   });
   const [recipientVariants, setRecipientVariants] = useState([
-    { color_id: "", size: "", stock: "" },
+    { color_code: "", color_name: "", size: "", stock: "" },
   ]);
   const [recipientImage, setRecipientImage] = useState({
     main_image: "",
     other_images: "",
   });
+  const isNotEmpty = (value) => value.trim() !== "";
+  // const {} = useInputValidate(isNotEmpty);
+
   // console.log(recipientVariants);
   const handleUploadFile = (e) => {
     if (!e.target.files[0]) return;
@@ -335,10 +385,6 @@ function Upload() {
     // e.target.value = "";
     setRecipientImage({ ...recipientImage, main_image: e.target.files });
   };
-  // const handleClear = (e) => {
-  //   e.preventDefault();
-  //   setFileSrc(null);
-  // };
   const handleMultipleUploadFile = (e) => {
     setRecipientImage({ ...recipientImage, other_images: e.target.files });
     const { files } = e.target;
@@ -353,17 +399,6 @@ function Upload() {
       setImageFiles(validImageFiles);
       return;
     }
-    // if (!e.target.files) return;
-    // var files = e.target.files;
-    // for (var i = 0, f; (f = files[i]); i++) {
-    //   // Only process image files.
-    //   var reader = new FileReader();
-    //   reader.onload = function () {
-    //     setMultiSrc(reader.result);
-    //   };
-    //   reader.readAsDataURL(f);
-    //   console.log(f);
-    // }
   };
 
   useEffect(() => {
@@ -396,19 +431,6 @@ function Upload() {
     };
   }, [imageFiles]);
 
-  //   var reader = new FileReader();
-  //   reader.onload = function () {
-  //     setMultiSrc(reader.result);
-  //   };
-  //   reader?.readAsDataURL(e?.target?.files[0]);
-  //   console.log(fileMultiSrc);
-  //   e.target.value = "";
-  // };
-  // const handleMultiClear = (e) => {
-  //   e.preventDefault();
-  //   setMultiSrc(null);
-  // };
-
   const clickToAddVariant = (e) => {
     e.preventDefault();
     let tempArr = [...addVariant];
@@ -416,7 +438,7 @@ function Upload() {
     setAddVariant(tempArr);
     setRecipientVariants([
       ...recipientVariants,
-      { color_id: "", size: "", stock: "" },
+      { color_code: "", color_name: "", size: "", stock: "" },
     ]);
   };
 
@@ -455,7 +477,13 @@ function Upload() {
       );
     }
   };
-  const variantsFormInputCheck = (label, key, options, index) => {
+  const variantsFormInputCheck = (
+    label,
+    key,
+    options,
+    index,
+    recipientVariants
+  ) => {
     // console.log(index);
     if (options) {
       return options.map((option) => (
@@ -476,31 +504,78 @@ function Upload() {
         </FormCheck>
       ));
     } else {
-      return (
-        <FormNumber
-          value={recipientVariants[key]}
-          onChange={
-            (e) =>
+      if (key === "color_code") {
+        return (
+          <>
+            <FormNumber
+              value={recipientVariants[index][key]}
+              onChange={(e) =>
+                setRecipientVariants((pre) => {
+                  pre[index][key] = e.target.value;
+                  const newArr = [...pre];
+                  return newArr;
+                })
+              }
+            />
+            <ColorCode $code={recipientVariants[index].color_code}></ColorCode>
+          </>
+        );
+      } else {
+        return (
+          <FormNumber
+            value={recipientVariants[index][key]}
+            onChange={(e) =>
               setRecipientVariants((pre) => {
                 pre[index][key] = e.target.value;
                 const newArr = [...pre];
                 return newArr;
               })
-            // setRecipientVariants([
-            //   ...recipientVariants,
-            //   { [key]: e.target.value },
-            // ])
-          }
-        />
-      );
+            }
+          />
+        );
+      }
     }
   };
 
   const clickToCreateProduct = () => {
-    createProduct();
+    if (images.length > 0) {
+      createProduct();
+      alert("已上架新商品");
+    } else if (
+      images.length == 0 ||
+      recipient.category == "" ||
+      recipient.title == "" ||
+      recipient.description == "" ||
+      recipient.price == "" ||
+      recipient.texture == "" ||
+      recipient.wash == "" ||
+      recipient.place == "" ||
+      recipient.story == "" ||
+      recipientVariants[0].color_code == "" ||
+      recipientVariants[0].size == ""
+    ) {
+      alert("請完整填寫商品資訊");
+    }
   };
   async function createProduct() {
-    var formData = new FormData();
+    let formData = new FormData();
+
+    const variantsArr = recipientVariants.map((obj) => {
+      const newObj = {
+        color_code: obj.color_code,
+        size: obj.size,
+        stock: obj.stock,
+      };
+      return newObj;
+    });
+    const colorsArr = recipientVariants.map((obj) => {
+      const newObj = {
+        code: obj.color_code,
+        name: obj.color_name,
+      };
+      return newObj;
+    });
+
     formData.append("category", recipient.category);
     formData.append("title", recipient.title);
     formData.append("description", recipient.description);
@@ -510,7 +585,9 @@ function Upload() {
     formData.append("place", recipient.place);
     formData.append("note", recipient.note);
     formData.append("story", recipient.story);
-    formData.append("variants", JSON.stringify(recipientVariants));
+    formData.append("colors", JSON.stringify(colorsArr));
+    //  formData.append("sizes", recipient.story);
+    formData.append("variants", JSON.stringify(variantsArr));
     formData.append("main_image", recipientImage.main_image[0]);
     for (const file of recipientImage.other_images) {
       formData.append("other_images", file);
@@ -540,13 +617,23 @@ function Upload() {
   //   setRecipientImage({ ...recipientImage, other_images: e.target.files });
   // };
 
-  const removeVaraintHandler = (e) => {
+  const removeHandler = (index, e) => {
     e.preventDefault();
     setAddVariant((pre) => {
       if (pre.length === 1) {
         return pre;
       } else {
         pre.pop();
+        const newArr = [...pre];
+        return newArr;
+      }
+    });
+
+    setRecipientVariants((pre) => {
+      if (pre.length === 1) {
+        return pre;
+      } else {
+        pre.splice(index, 1);
         const newArr = [...pre];
         return newArr;
       }
@@ -559,14 +646,9 @@ function Upload() {
       <form>
         <Form>
           <FormLeft>
-            {/* 單張照片
-            <input type="file" onChange={UploadFile} />
-            多張照片
-            <input type="file" multiple onChange={MultipleUploadFile} /> */}
             <UploadCardStyled>
               {fileSrc ? (
                 <>
-                  {/* <ClearBtn onClick={handleClear}>刪除</ClearBtn> */}
                   <UploadPreview>
                     <UploadPreviewImg src={fileSrc} />
                   </UploadPreview>
@@ -590,18 +672,9 @@ function Upload() {
               ) : (
                 <UploadCardButton>其他商品照片上傳</UploadCardButton>
               )}
-              {/* {fileMultiSrc ? (
-                <>
-                   <ClearBtn onClick={handleMultiClear}>刪除</ClearBtn> 
-                   <MultiUploadPreview>
-                    <MultiUploadPreviewImg src={fileMultiSrc} />
-                  </MultiUploadPreview> 
-                </>
-              ) : (
-                <UploadCardButton>其他商品照片上傳</UploadCardButton>
-              )} */}
               <UploadCardInput multiple onChange={handleMultipleUploadFile} />
             </UploadCardStyled>
+            <ImageReminder>*請至少各選擇一張照片</ImageReminder>
           </FormLeft>
           <FormCenter>
             <FormFieldSet>
@@ -617,18 +690,30 @@ function Upload() {
             <VariantsCardStyled>
               {addVariant.map((data, index) => {
                 {
-                  return variantsFormGroups.map(({ label, key, options }) => (
-                    <FormGroup key={key}>
-                      <FormLabel>{label}</FormLabel>
-                      {variantsFormInputCheck(label, key, options, index)}
-                    </FormGroup>
-                  ));
+                  return (
+                    <VariantsBx>
+                      {variantsFormGroups.map(({ label, key, options }) => (
+                        <FormGroup key={key}>
+                          <FormLabel>{label}</FormLabel>
+                          {variantsFormInputCheck(
+                            label,
+                            key,
+                            options,
+                            index,
+                            recipientVariants
+                          )}
+                        </FormGroup>
+                      ))}
+                      <CloseBx onClick={removeHandler.bind(null, index)}>
+                        X
+                      </CloseBx>
+                    </VariantsBx>
+                  );
                 }
               })}
             </VariantsCardStyled>
             <ButtonContainer>
               <VariantsButton onClick={clickToAddVariant}>+</VariantsButton>
-              <VariantsButton onClick={removeVaraintHandler}>-</VariantsButton>
             </ButtonContainer>
           </FormRight>
         </Form>

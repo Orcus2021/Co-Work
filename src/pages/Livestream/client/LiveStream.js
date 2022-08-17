@@ -1,86 +1,155 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
+import Video from "../../../components/Video/Video";
 import { io } from "socket.io-client";
+import flvjs from "flv.js";
 import styled from "styled-components";
 import Picker from "emoji-picker-react";
+import { UserContext } from "../../../contexts/UserContext";
+import LoveAnimation from "../../../components/Love/Love";
 import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
+import loveIcon from "../../../assets/love.png";
+import videoBack from "../../../assets/videoBackground.jpg";
+
+const dummy = {
+  id: 201807242222,
+  category: "men",
+  title: "經典商務西裝",
+  description: "厚薄：薄\r\n彈性：無",
+  price: 3999,
+  texture: "棉 100%",
+  wash: "手洗，溫水",
+  place: "中國",
+  note: "實品顏色依單品照為主",
+  story:
+    "O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.",
+  main_image: "https://api.appworks-school.tw/assets/201807242222/main.jpg",
+  images: [
+    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+  ],
+  variants: [
+    {
+      color_code: "334455",
+      size: "S",
+      stock: 9,
+    },
+    {
+      color_code: "334455",
+      size: "M",
+      stock: 5,
+    },
+    {
+      color_code: "334455",
+      size: "L",
+      stock: 1,
+    },
+    {
+      color_code: "334455",
+      size: "XL",
+      stock: 9,
+    },
+  ],
+  colors: [
+    {
+      code: "334455",
+      name: "深藍",
+    },
+  ],
+  sizes: ["S", "M", "L", "XL"],
+};
 
 const Container = styled.div`
-  width: 1820px;
   margin: 0 auto;
+  padding: 50px 0 50px;
+  max-width: 1160px;
+
+  @media screen and (max-width: 1279px) {
+    padding: 20px 24px 236px;
+  }
+`;
+const CardStyle = styled.div`
+  width: 140px;
+  height: 40px;
+  border-radius: 20px 20px 0 0;
+  margin-left: 50px;
+  text-align: center;
+  font-size: 20px;
+  border: #e08386;
+  padding-top: 10px;
+  color: white;
+  background-color: #e08386;
+  @media screen and (max-width: 1279px) {
+    display: none;
+  }
 `;
 const VideoContainer = styled.div`
   width: 100%;
-  padding-top: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+  }
 `;
 const VideoBx = styled.div`
+  background-color: white;
   position: relative;
-  width: 1320px;
-  height: 820px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 800px;
+  height: 750px;
   padding: 20px;
-  border: 2.5px solid black;
+  border: 2.5px solid #e08386;
   border-right: none;
   border-radius: 30px 0 0 30px;
+  @media screen and (max-width: 1279px) {
+    width: 90%;
+    border: 0;
+  }
 `;
-const Video = styled.video`
-  width: 1280px;
-  height: 720px;
-  background-color: black;
-`;
-const BtnBx = styled.div`
-  width: 100%;
-  height: 60px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-`;
-const Btn = styled.button`
-  width: 150px;
-  font-size: 1rem;
-  border-radius: 30px;
-  border: 2px solid black;
-  cursor: pointer;
-  height: 40px;
-`;
-const LiveBtn = styled(Btn)`
-  background-color: black;
-  color: white;
-  margin-right: 10px;
-`;
-const StopBtn = styled(Btn)`
-  background-color: rgb(240, 47, 47);
-  color: white;
-  border: 2px solid rgb(240, 47, 47);
-`;
+
 const ChatBx = styled.div`
+  background-color: white;
   position: relative;
-  width: 500px;
-  height: 820px;
-  max-height: 820px;
+  width: 400px;
+  height: 750px;
+  max-height: 750px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  border: 2.5px solid black;
+  border: 2.5px solid #e08386;
   border-left: none;
+  border-radius: 0px 30px 30px 0px;
+  @media screen and (max-width: 1279px) {
+    border: 0;
+    width: 90%;
+  }
 `;
 const ChatContent = styled.div`
+  background-color: white;
   width: 100%;
-  height: 715px;
+  height: 750px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow-y: scroll;
-  border: 2.5px solid black;
+  overflow-y: overlay;
+  border: 2.5px solid #e08386;
   border-radius: 30px 30px 0 0;
   padding: 10px;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(153, 38, 42, 0.7);
+  }
 `;
 const InputBx = styled.div`
   width: 100%;
@@ -88,7 +157,7 @@ const InputBx = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: black;
+  background-color: #e08386;
   border-radius: 0 0 30px 30px;
   padding: 5px 5px 5px 25px;
 `;
@@ -98,6 +167,7 @@ const Input = styled.input`
   outline: none;
   background-color: white;
   border-radius: 8px;
+  border: #e08386;
   font-size: 1.5rem;
 `;
 const EnterBtn = styled.button`
@@ -111,21 +181,25 @@ const EnterBtn = styled.button`
 `;
 const Message = styled.p`
   flex-grow: 1;
+  line-height: 34px;
   font-size: 1.5rem;
-  letter-spacing: 5px;
-  margin-bottom: 10px;
+
   word-break: break-all;
 `;
 const UserName = styled.p`
+  line-height: 34px;
   font-size: 1.5rem;
-  letter-spacing: 5px;
   white-space: nowrap;
+  align-self: flex-start;
 `;
 const MessageBx = styled.div`
   width: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: row;
+  border-radius: 8px;
+  padding: 5px;
+  background-color: ${(props) => (props.$isSelf ? "#f6dbdb" : "transparent")};
 `;
 const EmojiIcon = styled.img`
   position: absolute;
@@ -143,37 +217,106 @@ const EmojiBx = styled.div`
 `;
 
 const SaleProductBx = styled.div`
+  margin-top: 40px;
   width: 100%;
+`;
+const LoveBx = styled.div`
+  position: absolute;
+  width: 35px;
+  bottom: 90px;
+  right: 30px;
+`;
+const LoveIcon = styled.img`
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+  cursor: pointer;
+`;
+const LoveTotal = styled.p`
+  font-size: 1rem;
+  text-align: center;
 `;
 
 const LiveStream = () => {
   const remoteVideo = useRef();
   const peerConnect = useRef();
-  const [test, setTest] = useState(0);
-  const room = "room1";
-  let socket;
-
+  const socketRef = useRef(null);
   const chatBottom = useRef();
-
+  const initSocket = useRef(false);
+  const userCtx = useContext(UserContext);
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [loveAmount, setLoveAmount] = useState(0);
+  const [saleProduct, setSaleProduct] = useState(dummy);
+  const [showLove, setShowLove] = useState(false);
+
+  useEffect(() => {
+    socketRef.current = io("https://kelvin-wu.site/chatroom", {
+      autoConnect: false,
+    });
+  }, [socketRef]);
+
+  useEffect(() => {
+    chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
+  }, [chatBottom, chatContent]);
+
+  useEffect(() => {
+    if (userCtx.user && socketRef) {
+      console.log("message");
+      // love socket
+      socketRef.current.on("love", (data) => {
+        setLoveAmount(data);
+      });
+      // message socket
+      socketRef.current.on("message", (data) => {
+        setChatContent((pre) => {
+          const newContent = [...pre, data];
+          return newContent;
+        });
+      });
+
+      // product
+      socketRef.current.on("product", (data) => {
+        console.log("socket product", data);
+        setSaleProduct(data);
+      });
+
+      // join chatroom
+      socketRef.current.emit("join", userCtx.user?.name);
+    }
+  }, [userCtx.user, socketRef]);
+
+  useEffect(() => {
+    setShowLove(true);
+
+    const loveTimerId = setTimeout(() => {
+      setShowLove(false);
+    }, 1500);
+  }, [loveAmount]);
+
+  const inputHandler = (e) => {
+    setInput(e.target.value);
+  };
 
   const onEmojiClick = (event, emojiObject) => {
     setInput((pre) => pre + emojiObject.emoji);
+
+    console.log(emojiObject);
     setChosenEmoji(false);
   };
 
   const connectIO = () => {
+    console.log("init");
+    socketRef.current.connect();
     //   offer socket
-    // socket = io("https://kelvin-wu.site");
-    socket.on("offer", async (desc) => {
+    socketRef.current.on("offer", async (desc) => {
       console.log("view receive desc", desc);
       await peerConnect.current.setRemoteDescription(desc);
     });
 
     // ICE socket
-    socket.on("candidate", async (data) => {
+    socketRef.current.on("candidate", async (data) => {
       console.log("收到candidate", data);
       const candidate = new RTCIceCandidate({
         sdpMLineIndex: data.label,
@@ -181,7 +324,6 @@ const LiveStream = () => {
       });
       await peerConnect.current.addIceCandidate(candidate);
     });
-    socket.emit("join", room);
   };
 
   const initPeerConnection = () => {
@@ -198,7 +340,7 @@ const LiveStream = () => {
       console.log(e);
       // emit ICE
       if (e.candidate) {
-        socket.emit("candidate", {
+        socketRef.current.emit("candidate", {
           label: e.candidate.sdpMLineIndex,
           id: e.candidate.sdpMid,
           candidate: e.candidate.candidate,
@@ -221,68 +363,91 @@ const LiveStream = () => {
     }
     const localSDP = peerConnect.current.createAnswer();
     await peerConnect.current.setLocalDescription(localSDP);
-    socket.emit("offer", peerConnect.current.localDescription);
+    socketRef.current.emit("offer", peerConnect.current.localDescription);
   };
-  const init = async () => {
-    initPeerConnection();
-    connectIO();
+  const init = () => {
+    if (!initSocket.current) {
+      initPeerConnection();
+      connectIO();
+      initSocket.current = true;
+    }
+  };
+
+  const sendLoveHandler = () => {
+    // setLoveAmount((pre) => pre + 1);
+    socketRef.current.emit("love");
   };
 
   const transferChatHandler = () => {
-    // console.log(chatBottom.current.scrollTop);
-    // console.log(chatBottom.current.scrollHeight);
-    chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
-    // chatBottom.current?.scrollIntoView(false);
-    // chatBottom.current.scrollBottom = 0;
-    const obj = { name: "Penny", content: input };
+    const obj = { name: userCtx.user.name, content: input, isSelf: true };
     if (input.trim().length > 0) {
       setChatContent((pre) => {
         const newContent = [...pre, obj];
         return newContent;
       });
+      const socketObj = { ...obj };
+      socketObj.isSelf = false;
+      socketRef.current.emit("message", socketObj);
     }
-  };
-
-  const inputHandler = (e) => {
-    setInput(e.target.value);
   };
 
   const showEmoji = () => {
+    if (!userCtx.user) return;
     setChosenEmoji((pre) => !pre);
   };
 
-  const closeLiveHandler = () => {
-    if (peerConnect.current) {
-      peerConnect.current.close();
-      peerConnect.current = null;
+  // const closeLiveHandler = () => {
+  //   if (peerConnect.current) {
+  //     peerConnect.current.close();
+  //     peerConnect.current = null;
+  //   }
+  // };
+
+  const flvStart = () => {
+    if (flvjs.isSupported()) {
+      let flvPlayer = flvjs.createPlayer({
+        type: "flv",
+        url: "https://kelvin-wu.site:8443/live/test.flv",
+      });
+      flvPlayer.attachMediaElement(remoteVideo.current);
+      flvPlayer.load();
     }
   };
-  // const testAAAAA = async () => {
-  //   const constraints = {
-  //     audio: true,
-  //     video: { width: 460, height: 600 },
-  //   };
+  const chatPlaceholder = userCtx.user ? "與主播聊聊" : "請先登入會員";
 
-  //   const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  //   console.log(stream);
-
-  //   remoteVideo.current.srcObject = stream;
-  // };
   return (
     <Container>
+      <CardStyle>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          className="bi bi-mic-fill"
+          viewBox="0 0 16 16"
+        >
+          <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z" />
+          <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" />
+        </svg>
+        直播中
+      </CardStyle>
       <VideoContainer>
         <VideoBx>
-          <Video ref={remoteVideo} autoPlay controls playsInline></Video>
-          <BtnBx>
-            <LiveBtn onClick={init}>觀看</LiveBtn>
-            <StopBtn onClick={closeLiveHandler}>暫停</StopBtn>
-          </BtnBx>
+          <Video
+            onStart={init}
+            videoRef={remoteVideo}
+            onFlvStart={flvStart}
+            poster={videoBack}
+          ></Video>
+          <SaleProductBx>
+            {saleProduct && <SaleProduct product={saleProduct}></SaleProduct>}
+          </SaleProductBx>
         </VideoBx>
         <ChatBx>
           <ChatContent ref={chatBottom}>
-            {chatContent.map((content) => {
+            {chatContent.map((content, index) => {
               return (
-                <MessageBx>
+                <MessageBx $isSelf={content.isSelf} key={index}>
                   <UserName>{content.name} :</UserName>
                   <Message>{content.content}</Message>
                 </MessageBx>
@@ -290,20 +455,29 @@ const LiveStream = () => {
             })}
           </ChatContent>
           <InputBx>
-            <Input type="text" value={input} onChange={inputHandler} />
+            <Input
+              type="text"
+              value={input}
+              onChange={inputHandler}
+              placeholder={chatPlaceholder}
+              disabled={!userCtx.user}
+            />
             <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
           </InputBx>
           <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>
+          <LoveBx>
+            <LoveIcon src={loveIcon} onClick={sendLoveHandler}></LoveIcon>
+            <LoveTotal>{loveAmount}</LoveTotal>
+            {showLove && <LoveAnimation></LoveAnimation>}
+          </LoveBx>
+
           {chosenEmoji && (
             <EmojiBx>
-              <Picker onEmojiClick={onEmojiClick} />
+              <Picker onEmojiClick={onEmojiClick} preload={true} />
             </EmojiBx>
           )}
         </ChatBx>
       </VideoContainer>
-      <SaleProductBx>
-        <SaleProduct></SaleProduct>
-      </SaleProductBx>
     </Container>
   );
 };

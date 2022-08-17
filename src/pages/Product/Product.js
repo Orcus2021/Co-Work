@@ -6,12 +6,12 @@ import api from "../../utils/api";
 import ProductVariants from "./ProductVariants";
 
 const Wrapper = styled.div`
-  max-width: 960px;
+  max-width: 1030px;
   margin: 0 auto;
   padding: 65px 0 49px;
   display: flex;
   flex-wrap: wrap;
-
+  position: relative;
   @media screen and (max-width: 1279px) {
     padding: 0 0 32px;
   }
@@ -19,6 +19,7 @@ const Wrapper = styled.div`
 
 const MainImage = styled.img`
   width: 560px;
+  cursor: zoom-in;
 
   @media screen and (max-width: 1279px) {
     width: 100%;
@@ -132,7 +133,7 @@ const StoryTitle = styled.div`
   line-height: 30px;
   font-size: 20px;
   letter-spacing: 4px;
-  color: #8b572a;
+  color: #99262a;
   display: flex;
   align-items: center;
 
@@ -190,10 +191,22 @@ const Image = styled.img`
   }
 `;
 
+const ShowImage = styled.div`
+  width: 460px;
+  height: 560px;
+  border: 1px solid white;
+  position: absolute;
+  top: 205px;
+  right: 0;
+  @media screen and (max-width: 1279px) {
+    width: 0;
+  }
+`;
+
 function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
-  console.log(product);
+  const [mouseIn, setMouseIn] = useState(false);
 
   useEffect(() => {
     async function getProduct() {
@@ -203,11 +216,45 @@ function Product() {
     getProduct();
   }, [id]);
 
+  // const src = product.main_image;
+  const [zoomIn, setZoomIn] = useState({
+    // backgroundImage: `url(${src})`,
+    backgroundPosition: "0% 0%",
+  });
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.target.getBoundingClientRect();
+    const x = ((e.pageX - left) / width) * 100;
+    const y = ((e.pageY - top) / height) * 100;
+    setZoomIn({
+      backgroundPosition: `${x}% ${y}%`,
+    });
+  };
+  const mouseInEvent = () => {
+    setMouseIn(true);
+  };
+  const mouseOutEvent = () => {
+    setMouseIn(false);
+  };
+
   if (!product) return null;
 
   return (
     <Wrapper>
-      <MainImage src={product.main_image} />
+      <MainImage
+        src={product.main_image}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={mouseInEvent}
+        onMouseLeave={mouseOutEvent}
+      />
+      {mouseIn && (
+        <ShowImage
+          style={{
+            ...zoomIn,
+            backgroundImage: `url(` + `${product.main_image}`,
+            backgroundSize: "250% 250%",
+          }}
+        />
+      )}
       <Details>
         <Title>{product.title}</Title>
         <ID>{product.id}</ID>
