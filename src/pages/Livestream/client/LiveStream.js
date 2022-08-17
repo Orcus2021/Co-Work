@@ -71,14 +71,15 @@ const Container = styled.div`
     } else if (props.$isMode === "hide") {
       return "position:absolute; top:-100%;";
     } else if (props.$isMode === "pop") {
-      return "position:fixed; right:0;bottom:0; z-index:9999;";
+      return "position:fixed; right:0;bottom:0; z-index:9999;overflow:hidden;background-color: transparent;";
     }
   }}
-
+  pointer-events: none;
   max-width: 1160px;
 
   @media screen and (max-width: 1279px) {
-    padding: 20px 24px 236px;
+    padding: ${(props) =>
+      props.$isMode === "pop" ? "0px 0 70px 0;" : " 20px 24px 236px;"};
   }
 `;
 const CardStyle = styled.div`
@@ -102,6 +103,7 @@ const VideoContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  background-color: transparent;
   @media screen and (max-width: 1279px) {
     flex-direction: column;
   }
@@ -112,14 +114,17 @@ const VideoBx = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 800px;
-  height: 750px;
-  padding: 20px;
-  border: 2.5px solid #e08386;
+  background-color: transparent;
+  pointer-events:auto;
+  width:${(props) => (props.$isMode === "pop" ? "500px;" : "800px;")}
+  height:${(props) => (props.$isMode === "pop" ? "300px;" : "750px;")} 
+  padding:${(props) => (props.$isMode === "pop" ? "0px;" : "20px;")} 
+  border:${(props) =>
+    props.$isMode === "pop" ? "none;" : " 2.5px solid #e08386;"} 
   border-right: none;
   border-radius: 30px 0 0 30px;
   @media screen and (max-width: 1279px) {
-    width: 90%;
+    width:${(props) => (props.$isMode === "pop" ? "500px;" : "90%;")} 
     border: 0;
   }
 `;
@@ -230,6 +235,7 @@ const EmojiBx = styled.div`
 const SaleProductBx = styled.div`
   margin-top: 40px;
   width: 100%;
+  ${(props) => (props.$isMode === "pop" ? "display:none;" : "")}
 `;
 const LoveBx = styled.div`
   position: absolute;
@@ -489,7 +495,7 @@ const LiveStream = () => {
         直播中
       </CardStyle>
       <VideoContainer>
-        <VideoBx $isMode={viewStatue}>
+        <VideoBx $isMode={viewStatue} VideoBx={viewStatue}>
           <Video
             onStart={init}
             videoRef={remoteVideo}
@@ -498,7 +504,7 @@ const LiveStream = () => {
             onPopUp={popUp}
             viewStatue={viewStatue}
           ></Video>
-          <SaleProductBx>
+          <SaleProductBx $isMode={viewStatue}>
             {saleProduct && <SaleProduct product={saleProduct}></SaleProduct>}
           </SaleProductBx>
         </VideoBx>
