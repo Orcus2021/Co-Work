@@ -240,6 +240,7 @@ const LoveTotal = styled.p`
 const LiveStream = () => {
   const remoteVideo = useRef();
   const peerConnect = useRef();
+  const streamer = useRef();
   const socketRef = useRef(null);
   const chatBottom = useRef();
   const initSocket = useRef(false);
@@ -263,9 +264,9 @@ const LiveStream = () => {
 
   useEffect(() => {
     if (userCtx.user && socketRef) {
-      console.log("message");
       // love socket
       socketRef.current.on("love", (data) => {
+        console.log("love amount", data);
         setLoveAmount(data);
       });
       // message socket
@@ -278,12 +279,10 @@ const LiveStream = () => {
 
       // product
       socketRef.current.on("product", (data) => {
-        console.log("socket product", data);
         setSaleProduct(data);
       });
 
       // join chatroom
-      socketRef.current.emit("join", userCtx.user?.name);
     }
   }, [userCtx.user, socketRef]);
 
@@ -302,27 +301,36 @@ const LiveStream = () => {
   const onEmojiClick = (event, emojiObject) => {
     setInput((pre) => pre + emojiObject.emoji);
 
-    console.log(emojiObject);
     setChosenEmoji(false);
   };
 
   const connectIO = () => {
     console.log("init");
     socketRef.current.connect();
-    //   offer socket
-    socketRef.current.on("offer", async (desc) => {
-      console.log("view receive desc", desc);
-      await peerConnect.current.setRemoteDescription(desc);
+
+    //   answer socket
+    socketRef.current.on("answer", async (id, desc) => {
+      // console.log("view receive desc", desc);
+      if (streamer.current === id) {
+        await peerConnect.current.setRemoteDescription(desc);
+      }
     });
 
     // ICE socket
     socketRef.current.on("candidate", async (data) => {
-      console.log("收到candidate", data);
-      const candidate = new RTCIceCandidate({
-        sdpMLineIndex: data.label,
-        candidate: data.candidate,
-      });
-      await peerConnect.current.addIceCandidate(candidate);
+      // console.log("收到candidate", data);
+      if (data.id === streamer.current) {
+        const candidate = new RTCIceCandidate({
+          sdpMLineIndex: data.label,
+          candidate: data.candidate,
+        });
+        await peerConnect.current.addIceCandidate(candidate);
+      }
+    });
+
+    // join socket
+    socketRef.current.emit("join", userCtx.user?.name, (streamerID) => {
+      streamer.current = streamerID.streamerID;
     });
   };
 
@@ -337,12 +345,12 @@ const LiveStream = () => {
 
     // 找尋到 ICE 候選位置後，送去 Server 與另一位配對
     peerConnect.current.onicecandidate = (e) => {
-      console.log(e);
+      // console.log(e);
       // emit ICE
       if (e.candidate) {
         socketRef.current.emit("candidate", {
           label: e.candidate.sdpMLineIndex,
-          id: e.candidate.sdpMid,
+          id: socketRef.current.id,
           candidate: e.candidate.candidate,
         });
       }
@@ -350,10 +358,9 @@ const LiveStream = () => {
     createAnswer();
     // 監聽視訊流
     peerConnect.current.onaddstream = ({ stream }) => {
-      console.log("收到stream", stream);
+      // console.log("收到stream", stream);
       // 接收流並顯示遠端視訊
       remoteVideo.current.srcObject = stream;
-      console.log(remoteVideo.current.srcObject);
     };
   };
 
@@ -363,7 +370,11 @@ const LiveStream = () => {
     }
     const localSDP = peerConnect.current.createAnswer();
     await peerConnect.current.setLocalDescription(localSDP);
-    socketRef.current.emit("offer", peerConnect.current.localDescription);
+    socketRef.current.emit(
+      "offer",
+      socketRef.current.id,
+      peerConnect.current.localDescription
+    );
   };
   const init = () => {
     if (!initSocket.current) {
@@ -375,7 +386,9 @@ const LiveStream = () => {
 
   const sendLoveHandler = () => {
     // setLoveAmount((pre) => pre + 1);
-    socketRef.current.emit("love");
+    socketRef.current.emit("love", (love) => {
+      setLoveAmount(love.love);
+    });
   };
 
   const transferChatHandler = () => {
