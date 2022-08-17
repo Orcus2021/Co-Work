@@ -9,6 +9,7 @@ import tappay from "../../utils/tappay";
 import Cart from "./Cart";
 import { UserContext } from "../../contexts/UserContext";
 import Modal from "../../components/Modal/Modal";
+import back from "./back.jpg";
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -313,7 +314,7 @@ const recipientFormGroups = [
 ];
 
 const OrderNumberBox = styled.div`
-  width: 460px;
+  width: 500px;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
@@ -322,6 +323,13 @@ const OrderNumberBox = styled.div`
   border-radius: 8px;
   background-color: #f2f2f2;
   font-size: 1.5rem;
+`;
+
+const BackImg = styled.div`
+  width: 400px;
+  height: auto;
+  margin: 20px;
+  ${"" /* background-image: url(${back}); */}
 `;
 
 function Checkout() {
@@ -522,6 +530,10 @@ function Checkout() {
             <br />
             <br />
             您的訂單編號為：XXXXXX
+            <br />
+            <BackImg>
+              <img src={back} style={{ width: "100%", height: "100%" }} />
+            </BackImg>
             <br />
             Thank you for shopping with us!
           </OrderNumberBox>

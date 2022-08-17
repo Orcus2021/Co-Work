@@ -140,6 +140,10 @@ const ClearBtn = styled.button`
   padding: 5px;
   cursor: pointer;
 `;
+const ImageReminder = styled.div`
+  margin-top: 10px;
+  font-size: 0.8rem;
+`;
 
 const FormFieldSet = styled.fieldset`
   margin-bottom: 50px;
@@ -534,7 +538,24 @@ function Upload() {
   };
 
   const clickToCreateProduct = () => {
-    createProduct();
+    if (images.length > 0) {
+      createProduct();
+      alert("已上架新商品");
+    } else if (
+      images.length == 0 ||
+      recipient.category == "" ||
+      recipient.title == "" ||
+      recipient.description == "" ||
+      recipient.price == "" ||
+      recipient.texture == "" ||
+      recipient.wash == "" ||
+      recipient.place == "" ||
+      recipient.story == "" ||
+      recipientVariants[0].color_code == "" ||
+      recipientVariants[0].size == ""
+    ) {
+      alert("請完整填寫商品資訊");
+    }
   };
   async function createProduct() {
     let formData = new FormData();
@@ -653,6 +674,7 @@ function Upload() {
               )}
               <UploadCardInput multiple onChange={handleMultipleUploadFile} />
             </UploadCardStyled>
+            <ImageReminder>*請至少各選擇一張照片</ImageReminder>
           </FormLeft>
           <FormCenter>
             <FormFieldSet>
