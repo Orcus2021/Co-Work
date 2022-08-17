@@ -97,10 +97,10 @@ const SignUpButton = styled.button`
 
 function SignUp() {
   const navigate = useNavigate();
-  const [name, setName] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [invitationCode, setInvitationCode] = useState(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [invitationCode, setInvitationCode] = useState("");
   const userCtx = useContext(UserContext);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -123,8 +123,16 @@ function SignUp() {
       email: email,
       password: password,
     };
-    // console.log(data);
-    signUp(data);
+    if (email.length <= 0 || password.length <= 0 || name.length <= 0) {
+      window.alert("資料請勿空白");
+      return;
+    }
+    try {
+      await signUp(data);
+    } catch (error) {
+      window.alert(`${error}`);
+    }
+
     setName("");
     setEmail("");
     setPassword("");
@@ -137,7 +145,7 @@ function SignUp() {
       }),
       method: "POST",
     });
-    console.log(response);
+
     if (response.ok) {
       const resUser = await response.json();
       const userObj = {
@@ -148,11 +156,15 @@ function SignUp() {
         provider: resUser.data.user.provider,
         email: resUser.data.user.email,
         picture: resUser.data.user.picture,
+        name: resUser.data.user.name,
       };
+
       userCtx.addUser(userObj);
       navigate("/");
+    } else {
+      const error = await response.json();
+      throw new Error(error.error);
     }
-    throw new Error("error message");
   }
 
   return (

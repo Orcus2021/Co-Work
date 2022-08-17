@@ -115,7 +115,15 @@ function SignIn() {
       email: email,
       password: password,
     };
-    signIn(data);
+    if (email.length <= 0 || password.length <= 0) {
+      window.alert("請輸入正確帳號密碼");
+      return;
+    }
+    try {
+      await signIn(data);
+    } catch (error) {
+      window.alert(`${error}`);
+    }
   };
 
   async function signIn(data) {
@@ -141,7 +149,8 @@ function SignIn() {
       userCtx.addUser(userObj);
       navigate("/");
     } else {
-      throw new Error("Sing in wrong");
+      const error = await response.json();
+      throw new Error(error.error);
     }
   }
 

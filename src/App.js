@@ -6,8 +6,7 @@ import UserProvider from "./contexts/UserContext";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import CartContext from "./contexts/CartContext";
-import VideoBack from "./components/VideoBack/VideoBack";
-import Video from "./components/Video/Video";
+import LiveStream from "./pages/Livestream/client/LiveStream";
 import PingFangTCRegular from "./fonts/PingFang-TC-Regular-2.otf";
 import PingFangTCThin from "./fonts/PingFang-TC-Thin-2.otf";
 import NotoSansTCRegular from "./fonts/NotoSansTC-Regular.otf";
@@ -178,6 +177,7 @@ function App() {
         <Reset />
         <GlobalStyle />
         <Header />
+        <LiveStream />
         <Outlet />
         <Footer />
       </UserProvider>

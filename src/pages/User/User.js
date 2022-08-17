@@ -472,7 +472,6 @@ function User() {
       if (isFetching) return;
 
       const fetchProducts = () => {
-        console.log("test");
         if (newSearch && newCategory) {
           return api.getAnyProducts(
             newCategory,
@@ -524,7 +523,6 @@ function User() {
   // --------產生優惠券-------
   const couponDateHandler = (e) => {
     setCouponDate(e.target.value);
-    console.log(e.target.value);
   };
   const couponTypeHandler = (e) => {
     setCouponType(e.target.value);
@@ -613,7 +611,7 @@ function User() {
                 <UserProfileImg as="img" src={userCtx.user?.picture} />
               ) : (
                 <UserProfileImgP>
-                  {userCtx.user.name[0]}
+                  {userCtx.user.name[0].toUpperCase()}
 
                   <EditImg
                     onClick={showUploadImgHandler}
