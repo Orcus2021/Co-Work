@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import { Reset } from "styled-reset";
 import UserProvider from "./contexts/UserContext";
+import SaleProvider from "./contexts/SaleProduct";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import CartContext from "./contexts/CartContext";
@@ -169,12 +170,14 @@ function App() {
   return (
     <CartContext.Provider value={cart}>
       <UserProvider>
-        <Reset />
-        <GlobalStyle />
-        <Header />
-        <LiveStream />
-        <Outlet />
-        <Footer />
+        <SaleProvider>
+          <Reset />
+          <GlobalStyle />
+          <Header />
+          <LiveStream />
+          <Outlet />
+          <Footer />
+        </SaleProvider>
       </UserProvider>
     </CartContext.Provider>
   );

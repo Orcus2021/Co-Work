@@ -112,6 +112,15 @@ const api = {
     });
     return await response.json();
   },
+  async getOrderNumber(jwtToken) {
+    const response = await fetch(`${this.hostname}/orders`, {
+      headers: new Headers({
+        Authorization: `Bearer ${jwtToken}`,
+      }),
+      method: "GET",
+    });
+    return await response.json();
+  },
 };
 
 export default api;

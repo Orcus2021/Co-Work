@@ -1,57 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { SaleContext } from "../../contexts/SaleProduct";
 import styled from "styled-components";
 import StandbyProduct from "./StandbyProduct";
 
-const dummy = {
-  id: 201807242222,
-  category: "men",
-  title: "經典商務西裝",
-  description: "厚薄：薄\r\n彈性：無",
-  price: 3999,
-  texture: "棉 100%",
-  wash: "手洗，溫水",
-  place: "中國",
-  note: "實品顏色依單品照為主",
-  story:
-    "O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.",
-  main_image: "https://api.appworks-school.tw/assets/201807242222/main.jpg",
-  images: [
-    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
-  ],
-  variants: [
-    {
-      color_code: "334455",
-      size: "S",
-      stock: 9,
-    },
-    {
-      color_code: "334455",
-      size: "M",
-      stock: 5,
-    },
-    {
-      color_code: "334455",
-      size: "L",
-      stock: 1,
-    },
-    {
-      color_code: "334455",
-      size: "XL",
-      stock: 9,
-    },
-  ],
-  colors: [
-    {
-      code: "334455",
-      name: "深藍",
-    },
-  ],
-  sizes: ["S", "M", "L", "XL"],
-};
-const products = [dummy, dummy, dummy, dummy];
+// const dummy = {
+//   id: 201807242222,
+//   category: "men",
+//   title: "經典商務西裝",
+//   description: "厚薄：薄\r\n彈性：無",
+//   price: 3999,
+//   texture: "棉 100%",
+//   wash: "手洗，溫水",
+//   place: "中國",
+//   note: "實品顏色依單品照為主",
+//   story:
+//     "O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.",
+//   main_image: "https://api.appworks-school.tw/assets/201807242222/main.jpg",
+//   images: [
+//     "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+//   ],
+//   variants: [
+//     {
+//       color_code: "334455",
+//       size: "S",
+//       stock: 9,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "M",
+//       stock: 5,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "L",
+//       stock: 1,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "XL",
+//       stock: 9,
+//     },
+//   ],
+//   colors: [
+//     {
+//       code: "334455",
+//       name: "深藍",
+//     },
+//   ],
+//   sizes: ["S", "M", "L", "XL"],
+// };
+// const products = [dummy, dummy, dummy, dummy];
 
 const ProductContainer = styled.div`
   width: 100%;
@@ -258,11 +259,16 @@ const StreamProductEmpty = styled.div`
 
 const StreamerProduct = (props) => {
   const { onAdd, onRemove } = props;
-  const [allProduct, setAllProduct] = useState(products || []);
+  const saleCtx = useContext(SaleContext);
+  const [allProduct, setAllProduct] = useState([]);
   const [saleProduct, setSaleProduct] = useState(null);
   const [colorCode, setColorCode] = useState("");
   const [size, setSize] = useState("");
   const [qty, setQty] = useState(0);
+
+  useEffect(() => {
+    setAllProduct(saleCtx.products);
+  }, [saleCtx]);
 
   const saleProductHandler = (product) => {
     setSaleProduct(product);
@@ -272,7 +278,7 @@ const StreamerProduct = (props) => {
     setSaleProduct(null);
   };
   const deleteStandbyProduct = (id) => {
-    const newArr = products.filter((product) => {
+    const newArr = allProduct.filter((product) => {
       return product.id !== id;
     });
     setAllProduct(newArr);
@@ -299,7 +305,7 @@ const StreamerProduct = (props) => {
               <Details>
                 <ProductTitle>{saleProduct.title}</ProductTitle>
                 <InitPrice>原價:{saleProduct.price}</InitPrice>
-                <Price>特價:100</Price>
+                <Price>特價:{saleProduct.discount}</Price>
               </Details>
               <Variants>
                 <ColorBx>

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import CreateProduct from "./CreateProduct";
 import api from "../../utils/api";
 import { UserContext } from "../../contexts/UserContext";
+import { SaleContext } from "../../contexts/SaleProduct";
 
 const CreateProductBx = styled.div`
   margin: 0 auto;
@@ -211,6 +212,7 @@ const CloseButton = styled.button`
 
 export default function CreateList(props) {
   const userCtx = useContext(UserContext);
+  const saleCtx = useContext(SaleContext);
   const addProductArr = useRef([]);
   const imgFile = useRef();
   const [allSelect, setAllSelect] = useState(false);
@@ -318,15 +320,16 @@ export default function CreateList(props) {
   // };
 
   const submitProductHandler = async () => {
+    console.log(addProductArr.current);
     if (!userCtx.user?.accessToken) {
       console.log("請登入");
       return;
     }
-    console.log(addProductArr.current);
+
     const isCorrect = addProductArr.current
       .map((product) => {
         if (product.isCoupon) {
-          if (product.amount <= 0) {
+          if (product.discount <= 0) {
             return false;
           }
         }
@@ -349,10 +352,10 @@ export default function CreateList(props) {
       userCtx.user.accessToken
     );
     if (response.success) {
-      const data = addProductArr.current.map((data) => {
+      const dataArr = addProductArr.current.map((data) => {
         const obj = {
           type: "amount",
-          discount: data.amount,
+          discount: data.discount,
           available_times: 99,
           applied_range: "live",
           expired_time: "2022-08-19",
@@ -360,17 +363,26 @@ export default function CreateList(props) {
         };
         return obj;
       });
-      console.log(data);
-      const newCoupon = { data: data };
-      const response = await api.createCoupon(
+      const newCoupon = { data: dataArr };
+
+      const { data } = await api.createCoupon(
         newCoupon,
         userCtx.user.accessToken
       );
-      console.log(response);
+      const newArr = addProductArr.current.map((product, index) => {
+        delete product.isCoupon;
+        product.coupon_id = data[index].id;
+        product.discount = data[index].discount;
+        return product;
+      });
+
+      saleCtx.addProduct(newArr);
     } else {
       alert("商品上架失敗");
     }
   };
+  console.log(saleCtx.products[0]);
+
   return props.trigger ? (
     <>
       <CreateProductBx>

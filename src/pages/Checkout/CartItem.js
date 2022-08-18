@@ -290,18 +290,22 @@ const CartItem = (props) => {
   };
 
   const couponBxHandler = () => {
-    const couponArr = couponList.current.map((coupon) => {
+    const couponArr = couponList.current.filter((coupon) => {
       // if(coupon.applied_range==="other"||coupon.applied_range==="live"){
 
       // }
+
       if (coupon.applied_range === "all") {
-        return coupon;
+        return true;
       } else if (coupon.applied_range === item.category) {
-        return coupon;
+        return true;
       } else if (coupon.product_id === item.id) {
-        return coupon;
+        return true;
+      } else {
+        return false;
       }
     });
+
     setUserCoupon(couponArr);
     setShowCouponBx((pre) => !pre);
   };

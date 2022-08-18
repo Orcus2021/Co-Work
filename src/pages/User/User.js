@@ -446,6 +446,7 @@ function User() {
   const [couponID, setCouponID] = useState("");
   const [couponTimes, setCouponTimes] = useState("");
   const [couponAmount, setCouponAmount] = useState(0);
+  const [orderNum, setOrderNum] = useState("無");
 
   const nextPagingRef = useRef();
   const waypointRef = useRef();
@@ -457,6 +458,15 @@ function User() {
       navigate("/profile/signin");
       return;
     }
+  }, [userCtx]);
+  useEffect(() => {
+    const getOrderNumApi = async () => {
+      const { data } = await api.getOrderNumber(userCtx.user.accessToken);
+      if (data.id) {
+        setOrderNum(data.id);
+      }
+    };
+    getOrderNumApi();
   }, [userCtx]);
 
   const getCoupon = useCallback(async () => {
@@ -731,7 +741,7 @@ function User() {
                       </InputContainer>
                       <InputContainer>
                         <InputLabel>訂單編號</InputLabel>
-                        <InputControl>2131233234151</InputControl>
+                        <InputControl>{orderNum}</InputControl>
                       </InputContainer>
                       <InputContainer>
                         <InputLabel>邀請碼</InputLabel>

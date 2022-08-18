@@ -15,55 +15,55 @@ import loveIcon from "../../../assets/love.png";
 import videoBack from "../../../assets/videoBackground.jpg";
 import logoIcon from "../../../assets/logoIcon.png";
 
-const dummy = {
-  id: 201807242222,
-  category: "men",
-  title: "經典商務西裝",
-  description: "厚薄：薄\r\n彈性：無",
-  price: 3999,
-  texture: "棉 100%",
-  wash: "手洗，溫水",
-  place: "中國",
-  note: "實品顏色依單品照為主",
-  story:
-    "O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.",
-  main_image: "https://api.appworks-school.tw/assets/201807242222/main.jpg",
-  images: [
-    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
-  ],
-  variants: [
-    {
-      color_code: "334455",
-      size: "S",
-      stock: 9,
-    },
-    {
-      color_code: "334455",
-      size: "M",
-      stock: 5,
-    },
-    {
-      color_code: "334455",
-      size: "L",
-      stock: 1,
-    },
-    {
-      color_code: "334455",
-      size: "XL",
-      stock: 9,
-    },
-  ],
-  colors: [
-    {
-      code: "334455",
-      name: "深藍",
-    },
-  ],
-  sizes: ["S", "M", "L", "XL"],
-};
+// const dummy = {
+//   id: 201807242222,
+//   category: "men",
+//   title: "經典商務西裝",
+//   description: "厚薄：薄\r\n彈性：無",
+//   price: 3999,
+//   texture: "棉 100%",
+//   wash: "手洗，溫水",
+//   place: "中國",
+//   note: "實品顏色依單品照為主",
+//   story:
+//     "O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.",
+//   main_image: "https://api.appworks-school.tw/assets/201807242222/main.jpg",
+//   images: [
+//     "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+//   ],
+//   variants: [
+//     {
+//       color_code: "334455",
+//       size: "S",
+//       stock: 9,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "M",
+//       stock: 5,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "L",
+//       stock: 1,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "XL",
+//       stock: 9,
+//     },
+//   ],
+//   colors: [
+//     {
+//       code: "334455",
+//       name: "深藍",
+//     },
+//   ],
+//   sizes: ["S", "M", "L", "XL"],
+// };
 
 const Container = styled.div`
   ${(props) => {
@@ -286,7 +286,7 @@ const LiveStream = () => {
   const [input, setInput] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [loveAmount, setLoveAmount] = useState(0);
-  const [saleProduct, setSaleProduct] = useState(dummy);
+  const [saleProduct, setSaleProduct] = useState(null);
   const [showLove, setShowLove] = useState(false);
   const [viewStatue, setViewStatue] = useState("hide");
   const [isLoading, setIsLoading] = useState(false);

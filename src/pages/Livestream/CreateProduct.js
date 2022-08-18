@@ -1,55 +1,56 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { SaleContext } from "../../contexts/SaleProduct";
 import styled from "styled-components";
 
-const dummy = {
-  id: 201807242222,
-  category: "men",
-  title: "經典商務西裝",
-  description: "厚薄：薄\r\n彈性：無",
-  price: 3999,
-  texture: "棉 100%",
-  wash: "手洗，溫水",
-  place: "中國",
-  note: "實品顏色依單品照為主",
-  story:
-    "O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.",
-  main_image: "https://api.appworks-school.tw/assets/201807242222/main.jpg",
-  images: [
-    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/0.jpg",
-    "https://api.appworks-school.tw/assets/201807242222/1.jpg",
-  ],
-  variants: [
-    {
-      color_code: "334455",
-      size: "S",
-      stock: 9,
-    },
-    {
-      color_code: "334455",
-      size: "M",
-      stock: 5,
-    },
-    {
-      color_code: "334455",
-      size: "L",
-      stock: 1,
-    },
-    {
-      color_code: "334455",
-      size: "XL",
-      stock: 9,
-    },
-  ],
-  colors: [
-    {
-      code: "334455",
-      name: "深藍",
-    },
-  ],
-  sizes: ["S", "M", "L", "XL"],
-};
+// const dummy = {
+//   id: 201807242222,
+//   category: "men",
+//   title: "經典商務西裝",
+//   description: "厚薄：薄\r\n彈性：無",
+//   price: 3999,
+//   texture: "棉 100%",
+//   wash: "手洗，溫水",
+//   place: "中國",
+//   note: "實品顏色依單品照為主",
+//   story:
+//     "O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.",
+//   main_image: "https://api.appworks-school.tw/assets/201807242222/main.jpg",
+//   images: [
+//     "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/0.jpg",
+//     "https://api.appworks-school.tw/assets/201807242222/1.jpg",
+//   ],
+//   variants: [
+//     {
+//       color_code: "334455",
+//       size: "S",
+//       stock: 9,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "M",
+//       stock: 5,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "L",
+//       stock: 1,
+//     },
+//     {
+//       color_code: "334455",
+//       size: "XL",
+//       stock: 9,
+//     },
+//   ],
+//   colors: [
+//     {
+//       code: "334455",
+//       name: "深藍",
+//     },
+//   ],
+//   sizes: ["S", "M", "L", "XL"],
+// };
 
 const Product = styled.div`
   display: flex;
@@ -132,11 +133,8 @@ const CreateProduct = (props) => {
   const [isChecked, setIsChecked] = useState(false);
   const [isCheckCoupon, setIsCheckCoupon] = useState(false);
   const [amount, setAmount] = useState(0);
-  const productRef = useRef({
-    id: product.id,
-    isCoupon: isCheckCoupon,
-    amount: 0,
-  });
+  const saleCtx = useContext(SaleContext);
+  const productRef = useRef(product);
 
   useEffect(() => {
     if (isAll) {
@@ -150,11 +148,12 @@ const CreateProduct = (props) => {
   }, [isAll, isClear]);
   useEffect(() => {
     if (isChecked) {
+      // saleCtx.addProduct()
       onAdd(productRef.current);
     } else {
       onRemove(product.id);
     }
-  }, [isChecked, product, productRef]);
+  }, [isChecked, product, productRef, saleCtx]);
   const checkHandler = () => {
     setIsChecked((pre) => !pre);
   };
@@ -166,7 +165,7 @@ const CreateProduct = (props) => {
   };
   const amountHandler = (e) => {
     setAmount(e.target.value);
-    productRef.current.amount = e.target.value;
+    productRef.current.discount = e.target.value;
   };
 
   return (
