@@ -9,13 +9,20 @@ const Title = styled.div`
   font-size: 1.6rem;
 `;
 
-const Loading = ({ word }) => {
+const Loading = ({ word, isMode }) => {
+  let backClass = "back";
+  let heartClass = "heart ";
+  if (isMode === "hide") {
+    backClass = "back  hideLove";
+    heartClass = "heart hideLove";
+  }
+
   return (
     <>
-      <div className="back">
+      <div className={backClass}>
         <Title>{word}</Title>
       </div>
-      <div className="heart"></div>
+      <div className={heartClass}></div>
     </>
   );
 };

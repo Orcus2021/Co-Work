@@ -249,7 +249,6 @@ const SaleProduct = (props) => {
       }
     });
   }, [size, colorCode, product]);
-  console.log(product);
 
   function getStock(colorCode, size) {
     return product.variants.find(

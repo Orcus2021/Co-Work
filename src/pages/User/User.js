@@ -460,11 +460,9 @@ function User() {
     }
   }, [userCtx]);
   useEffect(() => {
-    console.log(userCtx.user.accessToken);
     const getOrderNumApi = async () => {
       const { data } = await api.getOrderNumber(userCtx.user.accessToken);
 
-      console.log(data);
       if (data.id) {
         setOrderNum(data.id);
       }
@@ -604,14 +602,6 @@ function User() {
       setCouponDate("");
       setCouponID("");
     }
-    console.log(response);
-    // if (response.ok) {
-    //   const coupon = await response;
-    //   alert(coupon.data[0].code);
-    // } else {
-    //   const error = await response;
-    //   throw new Error(error.error);
-    // }
   };
 
   const getIDHandler = (id) => {
@@ -763,18 +753,15 @@ function User() {
                   </Form>
                   <UserRight>
                     <SubTitle>現有優惠券</SubTitle>
-                    {/* <CouponCodeBx>
-                      <Input
-                        type="text"
-                        placeholder="請輸入優惠碼"
-                        onChange={couponCodeHandler}
-                        value={couponCode}
-                      />
-                      <UseCouponBtn onClick={useCodeHandler}>使用</UseCouponBtn>
-                    </CouponCodeBx> */}
                     <CouponList>
                       {userCouponList.map((coupon) => {
-                        return <Coupon type="list" coupon={coupon}></Coupon>;
+                        return (
+                          <Coupon
+                            key={coupon.coupon_id}
+                            type="list"
+                            coupon={coupon}
+                          ></Coupon>
+                        );
                       })}
                     </CouponList>
                   </UserRight>
@@ -875,8 +862,16 @@ function User() {
                 <SubTitle>領用優惠券</SubTitle>
                 <UseCouponList>
                   {couponList.map((coupon, index) => {
+                    const check = userCouponList.find((userCoupon) => {
+                      return userCoupon.coupon_id === coupon.coupon_id;
+                    });
                     return (
-                      <Coupon key={index} type="get" coupon={coupon}></Coupon>
+                      <Coupon
+                        key={index + coupon.code}
+                        type="get"
+                        coupon={coupon}
+                        isUse={check}
+                      ></Coupon>
                     );
                   })}
                 </UseCouponList>

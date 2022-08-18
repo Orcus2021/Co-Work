@@ -485,7 +485,6 @@ function Upload() {
     // console.log(index);
     if (options) {
       return options.map((option) => {
-        console.log(option);
         return (
           <FormCheck key={option.value}>
             <FormCheckInput
@@ -657,7 +656,7 @@ function Upload() {
                 <MultiUploadPreview>
                   {images.map((image, idx) => {
                     return (
-                      <ImgBx>
+                      <ImgBx key={idx}>
                         <MultiUploadPreviewImg key={idx} src={image} alt="" />
                       </ImgBx>
                     );
@@ -685,7 +684,7 @@ function Upload() {
               {addVariant.map((data, index) => {
                 {
                   return (
-                    <VariantsBx>
+                    <VariantsBx key={index}>
                       {variantsFormGroups.map(({ label, key, options }) => (
                         <FormGroup key={key}>
                           <FormLabel>{label}</FormLabel>

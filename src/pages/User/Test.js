@@ -45,8 +45,8 @@ const ImageUploader = () => {
         />
       </div>
       {previewUrl.length > 0 &&
-        previewUrl.map((img) => {
-          return <img src={img} alt="image" />;
+        previewUrl.map((img, index) => {
+          return <img src={img} alt="image" key={index} />;
         })}
       {/* {previewUrl && <img src={previewUrl} alt="image" />} */}
     </div>

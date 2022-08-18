@@ -301,30 +301,36 @@ const LiveStream = () => {
   const [viewStatue, setViewStatue] = useState("hide");
   const [isLoading, setIsLoading] = useState(true);
   const [videoBackground, setVideoBackground] = useState(videoBack);
-  console.log(videoBackground);
+
   useEffect(() => {
-    if (isLoading) {
-      return;
-    }
+    // if (isLoading) {
+    //   return;
+    // }
     if (location.pathname.includes("liveStream")) {
       setViewStatue("show");
-      remoteVideo.current.volume = 0.5;
+      if (remoteVideo.current) {
+        remoteVideo.current.volume = 0.5;
+      }
     } else if (viewStatue === "pop") {
       return;
     } else {
       setViewStatue("hide");
-      remoteVideo.current.volume = 0;
+
       closeLiveHandler();
       initSocket.current = false;
       setChatContent([]);
-      remoteVideo.current.pause();
+
+      if (remoteVideo.current) {
+        remoteVideo.current.volume = 0.5;
+        remoteVideo.current.pause();
+      }
     }
   }, [location, viewStatue, remoteVideo, initSocket, isLoading]);
 
   useEffect(() => {
     const live = async () => {
       const response = await api.getLiveStream();
-      console.log(response);
+
       if (response.response?.id) {
         setVideoBackground(response.response.image);
         if (response.response.is_live === 1) setIsLoading(false);
@@ -528,7 +534,10 @@ const LiveStream = () => {
     <>
       {isLoading ? (
         <div style={{ zIndex: "10000" }}>
-          <Loading word="Coming soon...直播即將開始，請耐心等候" />
+          <Loading
+            isMode={viewStatue}
+            word="Coming soon...直播即將開始，請耐心等候"
+          />
         </div>
       ) : (
         <Container $isMode={viewStatue}>

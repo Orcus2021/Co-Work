@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import styled from "styled-components";
@@ -85,7 +85,7 @@ const Coupon = (props) => {
   const [btnStyle, setBtnStyle] = useState(true);
   const navigate = useNavigate();
   const userCtx = useContext(UserContext);
-  const { type, coupon, onUseCoupon } = props;
+  const { type, coupon, onUseCoupon, isUse } = props;
 
   let btnName = "使用";
   if (type === "get") {
@@ -102,13 +102,20 @@ const Coupon = (props) => {
     accessories: "配件",
     other: "限定",
   };
+
+  useEffect(() => {
+    if (isUse) {
+      setBtnStyle(false);
+    }
+  }, [isUse]);
+
   const date = coupon.expired_time.split("T");
 
   const btnClickHandler = async () => {
     setBtnStyle(false);
     // 在使用者優惠箱 導引到購物畫面
     if (type === "list") {
-      navigate(`./?category=${coupon.applied_range}`);
+      navigate("/");
       return;
     }
     // 在使用者領優惠券
@@ -118,7 +125,7 @@ const Coupon = (props) => {
         couponID,
         userCtx.user?.accessToken
       );
-      console.log(response);
+
       return;
     }
     // 使用者使用優惠券
@@ -155,7 +162,7 @@ const Coupon = (props) => {
         {btnName}
       </CouponBtn>
       {[1, 3, 5, 7].map((index) => {
-        return <Circle $index={index}></Circle>;
+        return <Circle key={index + "coupon"} $index={index}></Circle>;
       })}
     </CouponBx>
   );

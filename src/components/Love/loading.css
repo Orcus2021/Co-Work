@@ -14,6 +14,9 @@
   animation-duration: 1s;
   animation-iteration-count: infinite;
 }
+.hideLove {
+  display: none;
+}
 
 .heart {
   position: absolute;

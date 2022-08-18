@@ -367,7 +367,7 @@ const CartItem = (props) => {
         </ItemUnitPrice>
         <ItemPrice>
           <ItemPriceName hideOnDesktop>小計</ItemPriceName>
-          <ItemPriceValue>NT.{item.qty * item.price}</ItemPriceValue>
+          <ItemPriceValue>NT.{item.qty * item.discount}</ItemPriceValue>
         </ItemPrice>
         <CouponBx>
           <CouponValue onClick={couponBxHandler}>

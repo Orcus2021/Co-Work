@@ -141,7 +141,6 @@ function Products() {
       intersectionObserver.unobserve(waypoint);
     };
   }, [keyword, category]);
-  console.log(products);
 
   return (
     <>

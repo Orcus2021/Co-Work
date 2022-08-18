@@ -351,15 +351,13 @@ function Checkout() {
   const [showOrderNumberBx, setShowOrderNumberBx] = useState(false);
 
   const [orderNum, setOrderNum] = useState("");
-  const [orderTimer, setOrderTimer] = useState(5);
+  const [orderTimer, setOrderTimer] = useState(3);
   let freight = 0;
   if (items.length > 0) {
     freight = 30;
   }
   useEffect(() => {
     if (initTapPay.current) {
-      console.log(initTapPay.current);
-
       tappay.setupSDK();
       tappay.setupCard(
         cardNumberRef.current,
@@ -432,7 +430,6 @@ function Checkout() {
       delete item.color;
       return item;
     });
-    console.log(newList);
 
     const { data } = await api.checkout(
       {
@@ -457,7 +454,7 @@ function Checkout() {
     setShowOrderNumberBx(true);
 
     // closeCouponBx();
-    setTimeout(() => {
+    setInterval(() => {
       setOrderTimer((pre) => {
         if (pre === 0) return 0;
         return pre - 1;
@@ -465,7 +462,7 @@ function Checkout() {
     }, 1000);
     setTimeout(() => {
       navigate("/user");
-    }, 4000);
+    }, 3000);
     // navigate("/thankyou", { state: { orderNumber: data.number } });
   }
 

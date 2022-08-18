@@ -321,7 +321,6 @@ export default function CreateList(props) {
   // };
 
   const submitProductHandler = async () => {
-    console.log(addProductArr.current);
     if (!userCtx.user?.accessToken) {
       alert("請先登入");
       return;

@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import Picker from "emoji-picker-react";
 import styled from "styled-components";
@@ -50,6 +51,7 @@ const VideoContainer = styled.div`
 const LeftWrap = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 const VideoBx = styled.div`
   position: relative;
@@ -190,7 +192,7 @@ const Message = styled.p`
 
   word-break: break-all;
 `;
-const UserName = styled.p`
+const UserName = styled.div`
   font-size: 1.5rem;
   letter-spacing: 5px;
   white-space: nowrap;
@@ -314,6 +316,7 @@ const Streamer = () => {
   const viewers = useRef({});
   const socketRef = useRef(null);
   const userCtx = useContext(UserContext);
+  const navigate = useNavigate();
   const [isStart, setIsStart] = useState(false);
   const [chatContent, setChatContent] = useState([]);
   const [input, setInput] = useState("");
@@ -338,6 +341,13 @@ const Streamer = () => {
   // const mediaRecorderRef = useRef();
   // const requestAnimationRef = useRef();
   // const nameRef = useRef();
+  useEffect(() => {
+    if (userCtx.user?.role === "admin") {
+      return;
+    } else {
+      navigate("/");
+    }
+  }, [userCtx]);
 
   useEffect(() => {
     socketRef.current = io("https://kelvin-wu.site/chatroom", {
@@ -352,6 +362,7 @@ const Streamer = () => {
       setShowLove(false);
     }, 1500);
   }, [loveAmount]);
+
   useEffect(() => {
     chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
   }, [chatBottom, chatContent]);
@@ -449,7 +460,7 @@ const Streamer = () => {
     //觀眾加入通知
     socketRef.current.on("join", (data) => {
       // viewers.current[id] = "id";
-      console.log(data);
+
       if (data === "notLogIn") return;
       setRemindMsg(data);
       audioRef.current.play();

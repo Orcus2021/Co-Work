@@ -7,12 +7,15 @@ export const UserContext = createContext({
 });
 
 const UserProvider = (props) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null
+  );
   const addUserHandler = (user) => {
-    console.log(user);
+    localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
   };
   const removeUserHandler = () => {
+    localStorage.removeItem("user");
     setUser(null);
   };
 

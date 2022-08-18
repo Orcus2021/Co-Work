@@ -132,7 +132,7 @@ function SignUp() {
     }
     try {
       setShowLoading(true);
-      console.log(data);
+
       await signUp(data);
     } catch (error) {
       window.alert(`${error}`);
