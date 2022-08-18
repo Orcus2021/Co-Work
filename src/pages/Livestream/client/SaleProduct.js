@@ -104,6 +104,7 @@ const Details = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   @media screen and (max-width: 1279px) {
     padding-bottom: 10px;
   }
@@ -122,8 +123,11 @@ const Price = styled.p`
     padding-bottom: 10px;
   }
 `;
+const InitPrice = styled(Price)`
+  text-decoration: line-through;
+`;
 const Variants = styled.div`
-  width: 300px;
+  width: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,8 +138,8 @@ const ColorBx = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 15px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
 `;
 const Label = styled.div`
   padding-right: 10px;
@@ -143,16 +147,16 @@ const Label = styled.div`
 const Color = styled.div`
   position: relative;
   border-radius: 3px;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   margin-right: 20px;
   background-color: ${(props) => props.$colorCode};
   cursor: pointer;
   &::after {
     content: "";
     border-radius: 3px;
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     position: absolute;
     top: -5px;
     left: -5px;
@@ -164,14 +168,14 @@ const SizeBx = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
 `;
 const Size = styled.div`
   position: relative;
   border-radius: 3px;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   background-color: #99262a;
   color: white;
   display: flex;
@@ -187,8 +191,8 @@ const Size = styled.div`
   &::after {
     content: "";
     border-radius: 3px;
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     position: absolute;
     top: -5px;
     left: -5px;
@@ -198,7 +202,7 @@ const Size = styled.div`
 const Qty = styled.p`
   width: 100%;
   font-size: 1rem;
-  text-align: center;
+
   @media screen and (max-width: 1279px) {
     padding-bottom: 10px;
   }
@@ -256,14 +260,12 @@ const SaleProduct = (props) => {
           </ImgBx>
           <Details>
             <ProductTitle>{product.title}</ProductTitle>
-            <Price>
-              原價:{product.price} <br />
-              特價:100
-            </Price>
+            <InitPrice>原價:{product.price}</InitPrice>
+            <Price>特價:100</Price>
           </Details>
           <Variants>
             <ColorBx>
-              <Label>顏色</Label>
+              <Label>顏色:</Label>
               {product.colors.map((colorObj, index) => {
                 return (
                   <Color
@@ -278,7 +280,7 @@ const SaleProduct = (props) => {
               })}
             </ColorBx>
             <SizeBx>
-              <Label>尺寸</Label>
+              <Label>尺寸:</Label>
               {product.sizes.map((sizeName, index) => {
                 return (
                   <Size
@@ -293,7 +295,7 @@ const SaleProduct = (props) => {
                 );
               })}
             </SizeBx>
-            <Qty>商品數量: {qty}件</Qty>
+            <Qty>數量: {qty}件</Qty>
           </Variants>
           <AddCartBtn onClick={addToCartHandler}>加入購物車</AddCartBtn>
         </Product>

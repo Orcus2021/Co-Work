@@ -71,10 +71,10 @@ const Container = styled.div`
     } else if (props.$isMode === "hide") {
       return "position:absolute; top:-100%;";
     } else if (props.$isMode === "pop") {
-      return "position:fixed; right:0;bottom:0; z-index:9999;overflow:hidden;background-color: transparent;";
+      return "position:fixed; right:0;bottom:0; z-index:9999;overflow:hidden;background-color: transparent;pointer-events: none;";
     }
   }}
-  pointer-events: none;
+
   max-width: 1160px;
 
   @media screen and (max-width: 1279px) {
@@ -298,8 +298,12 @@ const LiveStream = () => {
     } else {
       setViewStatue("hide");
       remoteVideo.current.volume = 0;
+      closeLiveHandler();
+      initSocket.current = false;
+      setChatContent([]);
+      remoteVideo.current.pause();
     }
-  }, [location, viewStatue]);
+  }, [location, viewStatue, remoteVideo, initSocket]);
 
   useEffect(() => {
     socketRef.current = io("https://kelvin-wu.site/chatroom", {
@@ -315,7 +319,6 @@ const LiveStream = () => {
     if (userCtx.user && socketRef) {
       // love socket
       socketRef.current.on("love", (data) => {
-        console.log("love amount", data);
         setLoveAmount(data);
       });
       // message socket
@@ -338,7 +341,7 @@ const LiveStream = () => {
   useEffect(() => {
     setShowLove(true);
 
-    const loveTimerId = setTimeout(() => {
+    setTimeout(() => {
       setShowLove(false);
     }, 1500);
   }, [loveAmount]);
@@ -378,9 +381,15 @@ const LiveStream = () => {
     });
 
     // join socket
-    socketRef.current.emit("join", userCtx.user?.name, (streamerID) => {
-      streamer.current = streamerID.streamerID;
-    });
+    if (userCtx.user) {
+      socketRef.current.emit("join", userCtx.user?.name, (streamerID) => {
+        streamer.current = streamerID.streamerID;
+      });
+    } else {
+      socketRef.current.emit("join", "notLogIn", (streamerID) => {
+        streamer.current = streamerID.streamerID;
+      });
+    }
   };
 
   const initPeerConnection = () => {
@@ -435,9 +444,11 @@ const LiveStream = () => {
 
   const sendLoveHandler = () => {
     // setLoveAmount((pre) => pre + 1);
-    socketRef.current.emit("love", (love) => {
-      setLoveAmount(love.love);
-    });
+    if (userCtx.user) {
+      socketRef.current.emit("love", (love) => {
+        setLoveAmount(love.love);
+      });
+    }
   };
 
   const transferChatHandler = () => {

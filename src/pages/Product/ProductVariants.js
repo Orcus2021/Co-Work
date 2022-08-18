@@ -125,7 +125,7 @@ function ProductVariants({ product }) {
   const [selectedSize, setSelectedSize] = useState();
   const [quantity, setQuantity] = useState(1);
   const cart = useContext(CartContext);
-  console.log(product);
+
   function getStock(colorCode, size) {
     return product.variants.find(
       (variant) => variant.color_code === colorCode && variant.size === size

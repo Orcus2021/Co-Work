@@ -207,6 +207,7 @@ function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
   const [mouseIn, setMouseIn] = useState(false);
+  const [scale, setScale] = useState(250);
 
   useEffect(() => {
     async function getProduct() {
@@ -235,6 +236,13 @@ function Product() {
   const mouseOutEvent = () => {
     setMouseIn(false);
   };
+  const scaleHandler = () => {
+    setScale((pre) => {
+      if (pre === 250) return 500;
+      if (pre === 500) return 750;
+      return 250;
+    });
+  };
 
   if (!product) return null;
 
@@ -245,13 +253,14 @@ function Product() {
         onMouseMove={handleMouseMove}
         onMouseEnter={mouseInEvent}
         onMouseLeave={mouseOutEvent}
+        onClick={scaleHandler}
       />
       {mouseIn && (
         <ShowImage
           style={{
             ...zoomIn,
             backgroundImage: `url(` + `${product.main_image}`,
-            backgroundSize: "250% 250%",
+            backgroundSize: `${scale}% ${scale}%`,
           }}
         />
       )}

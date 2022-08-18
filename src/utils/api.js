@@ -1,18 +1,12 @@
 const api = {
   hostname: "https://kelvin-wu.site/api/1.0",
   async getProducts(category, paging) {
-    console.log("category");
-
     const response = await fetch(
       `${this.hostname}/products/${category}?paging=${paging}`
     );
     return await response.json();
   },
   async getAnyProducts(category, keyword, paging) {
-    console.log("any");
-    console.log(
-      `${this.hostname}/products/${category}?paging=${paging}&keyword=${keyword}`
-    );
     const response = await fetch(
       `${this.hostname}/products/${category}?paging=${paging}&keyword=${keyword}`
     );
@@ -67,6 +61,42 @@ const api = {
       body: data,
       headers: new Headers({
         Authorization: `Bearer ${jwtToken}`,
+      }),
+      method: "POST",
+    });
+    return await response.json();
+  },
+  async createCoupon(data, jwtToken) {
+    const response = await fetch(`${this.hostname}/admin/coupon`, {
+      body: JSON.stringify(data),
+      headers: new Headers({
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      }),
+      method: "POST",
+    });
+    return await response.json();
+  },
+  async getAllCoupon() {
+    const response = await fetch(`${this.hostname}/coupons`);
+    return await response.json();
+  },
+  async getUserCoupon(jwtToken) {
+    const response = await fetch(`${this.hostname}/user/coupon`, {
+      headers: new Headers({
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      }),
+      method: "GET",
+    });
+    return await response.json();
+  },
+  async receiveCoupon(data, jwtToken) {
+    const response = await fetch(`${this.hostname}/coupon`, {
+      body: JSON.stringify(data),
+      headers: new Headers({
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
       }),
       method: "POST",
     });

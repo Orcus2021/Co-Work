@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import film from "../../assets/dance.mp4";
+// import film from "../../assets/dance.mp4";
 import "./video.css";
 import playIcon from "../../assets/play.png";
 import pauseIcon from "../../assets/pause.png";
@@ -8,7 +8,7 @@ import fullIcon from "../../assets/fullfill.png";
 import muteIcon from "../../assets/mute.png";
 import backIcon from "../../assets/back.png";
 import pupIcon from "../../assets/popup.png";
-import LiveStream from "../../pages/Livestream/client/LiveStream";
+// import LiveStream from "../../pages/Livestream/client/LiveStream";
 
 const Video = (props) => {
   const { onStart, videoRef, poster, onPopUp, viewStatue } = props;
@@ -100,7 +100,7 @@ const Video = (props) => {
   return (
     <div className="container">
       <div className="videoBx" ref={videoBx} onMouseMove={moveHandler}>
-        <video ref={videoRef} preload="true" poster={poster} src={film}></video>
+        <video ref={videoRef} preload="true" poster={poster}></video>
 
         <div
           className={controlClass}
@@ -114,13 +114,13 @@ const Video = (props) => {
           {isPlay ? (
             <div className="play" onClick={play}>
               <div className="imgBx">
-                <img src={playIcon} />
+                <img src={playIcon} alt="" />
               </div>
             </div>
           ) : (
             <div className="pause" onClick={pause}>
               <div className="imgBx">
-                <img src={pauseIcon} />
+                <img src={pauseIcon} alt="" />
               </div>
             </div>
           )}
@@ -135,7 +135,7 @@ const Video = (props) => {
                 }}
               >
                 <div className="imgBx">
-                  <img src={volumeIcon} />
+                  <img src={volumeIcon} alt="" />
                 </div>
               </div>
             ) : (
@@ -148,7 +148,7 @@ const Video = (props) => {
                 }}
               >
                 <div className="imgBx">
-                  <img src={muteIcon} />
+                  <img src={muteIcon} alt="" />
                 </div>
               </div>
             )}
@@ -163,19 +163,19 @@ const Video = (props) => {
           </div>
           <div className="popUpBx" onClick={onPopUp}>
             <div className="imgBx">
-              <img src={pupIcon} />
+              <img src={pupIcon} alt="" />
             </div>
           </div>
           {isFullScreen ? (
             <div className="screen" onClick={exitFullScreenHandler}>
               <div className="imgBx">
-                <img src={backIcon} />
+                <img src={backIcon} alt="" />
               </div>
             </div>
           ) : (
             <div className="screen" onClick={fullScreen}>
               <div className="imgBx">
-                <img src={fullIcon} />
+                <img src={fullIcon} alt="" />
               </div>
             </div>
           )}

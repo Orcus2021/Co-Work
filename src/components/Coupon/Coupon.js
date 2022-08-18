@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
 import styled from "styled-components";
+import api from "../../utils/api";
 import logoIcon from "../../assets/logoIcon.png";
 
 const CouponBx = styled.div`
@@ -34,6 +37,7 @@ const CouponTitle = styled.p`
   flex-grow: 1;
   font-size: 0.8rem;
   text-align: center;
+  margin-bottom: 3px;
 `;
 const CouponLeft = styled.div`
   width: 80px;
@@ -66,17 +70,55 @@ const Circle = styled.div`
   position: absolute;
 `;
 const CouponBtn = styled.button`
-  background-color: #99262a;
+
+  background-color:${(props) => (props.$isClick ? "#99262a;" : "#9f9f9f;")} 
   font-size: 0.8rem;
   padding: 3px 8px;
   color: #fff;
   border: none;
   border-radius: 4px;
   margin-right: 10px;
-  cursor: pointer;
+  cursor:${(props) => (props.$isClick ? "pointer;" : "not-allowed;")}  
 `;
 
-const Coupon = () => {
+const Coupon = (props) => {
+  const [btnStyle, setBtnStyle] = useState(true);
+  const navigate = useNavigate();
+  const userCtx = useContext(UserContext);
+  const { type, coupon } = props;
+  let btnName = "使用";
+  if (type === "get") {
+    btnName = "領取";
+  }
+  let title = "打折";
+  if (coupon.type === "amount") {
+    title = "折抵";
+  }
+  const range = {
+    all: "全部",
+    women: "女裝",
+    men: "男裝",
+    accessories: "配件",
+    other: "限定",
+  };
+  const date = coupon.expired_time.split("T");
+
+  const btnClickHandler = async () => {
+    setBtnStyle(false);
+    if (type === "list") {
+      navigate(`./?category=${coupon.applied_range}`);
+    }
+    if (btnStyle) {
+      const couponID = { coupon_id: coupon.coupon_id };
+      const response = await api.receiveCoupon(
+        couponID,
+        userCtx.user?.accessToken
+      );
+      console.log(response);
+      return;
+    }
+  };
+
   return (
     <CouponBx>
       <CouponLeft>
@@ -84,12 +126,21 @@ const Coupon = () => {
           <CouponImg src={logoIcon} />
         </ImgBx>
       </CouponLeft>
-      <Title>折抵100元</Title>
+      <Title>
+        {title}
+        {coupon.discount}元
+      </Title>
       <CouponDesc>
-        <CouponTitle>使用範圍:全部</CouponTitle>
-        <CouponTitle>有效期限:2002.8.15</CouponTitle>
+        <CouponTitle>使用範圍:{range[coupon.applied_range]}</CouponTitle>
+        {coupon.product_id && (
+          <CouponTitle>{`(ID:${coupon.product_id})`}</CouponTitle>
+        )}
+
+        <CouponTitle>有效期限:{date[0]}</CouponTitle>
       </CouponDesc>
-      <CouponBtn>使用</CouponBtn>
+      <CouponBtn $isClick={btnStyle} onClick={btnClickHandler}>
+        {btnName}
+      </CouponBtn>
       {[1, 3, 5, 7].map((index) => {
         return <Circle $index={index}></Circle>;
       })}

@@ -64,6 +64,7 @@ const LeftWrapper = styled.div`
   width: 30%;
   height: 500px;
   margin-right: 20px;
+  overflow: hidden;
   @media screen and (max-width: 1279px) {
     width: 100%;
     margin-right: 0;
@@ -77,6 +78,9 @@ const RightWrapper = styled.div`
   }
   width: 70%;
   height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   @media screen and (max-width: 1279px) {
     width: 100%;
   }
@@ -111,7 +115,6 @@ const UserProfileImg = styled.img`
 const UserProfileMenu = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
 `;
 const MenuLabel = styled(Link)`
   border: 0px;
@@ -282,8 +285,8 @@ const EditImg = styled.img`
   position: absolute;
   width: 40px;
   height: 40px;
-  right: 0;
-  bottom: 0;
+  right: 80px;
+  bottom: 40px;
   object-fit: cover;
   cursor: pointer;
 `;
@@ -416,14 +419,21 @@ const UploadBtn = styled(Btn)`
   margin: 0 auto;
   margin-bottom: 20px;
 `;
+const UseCouponList = styled(CouponList)`
+  height: 430px;
+  width: 80%;
+`;
 
 function User() {
   const userCtx = useContext(UserContext);
   const navigate = useNavigate();
   const [isCoupon, setIsCoupon] = useState(false);
+  const [isGetCoupon, setIsGetCoupon] = useState(false);
   const [searchCategory, setSearchCategory] = useState("all");
   const [searchInput, setSearchInput] = useState("");
   const [searchProduct, setSearchProduct] = useState([]);
+  const [couponList, setCouponList] = useState([]);
+  const [userCouponList, setUserCouponList] = useState([]);
   const [couponCode, setCouponCode] = useState("");
   const [showImgUpload, setShowImgUpload] = useState(false);
   const [modalCloseEffect, setModalCloseEffect] = useState(false);
@@ -434,7 +444,7 @@ function User() {
   const [couponScope, setCouponScope] = useState("all");
   const [couponID, setCouponID] = useState("");
   const [couponTimes, setCouponTimes] = useState("");
-  const [couponAmount, setCouponAmount] = useState("");
+  const [couponAmount, setCouponAmount] = useState(0);
 
   const nextPagingRef = useRef();
   const waypointRef = useRef();
@@ -446,6 +456,14 @@ function User() {
       navigate("/profile/signin");
       return;
     }
+  }, [userCtx]);
+  useEffect(() => {
+    const getCoupon = async () => {
+      const { data } = await api.getUserCoupon(userCtx.user.accessToken);
+
+      setUserCouponList(data);
+    };
+    getCoupon();
   }, [userCtx]);
   const logoutHandler = () => {
     userCtx.removeUser();
@@ -465,7 +483,6 @@ function User() {
     const newSearch = search;
 
     intersectionObserver.current = new IntersectionObserver(async (entries) => {
-      console.log("intersection");
       if (entries[0].intersectionRatio <= 0) return;
       if (nextPagingRef.current === undefined) return;
 
@@ -483,7 +500,6 @@ function User() {
           return api.searchProducts(newSearch, nextPagingRef.current);
         }
         if (newCategory) {
-          console.log(newCategory);
           return api.getProducts(newCategory, nextPagingRef.current);
         }
       };
@@ -492,7 +508,7 @@ function User() {
 
       const { data, next_paging } = await fetchProducts();
       setSearchProduct((prev) => [...prev, ...data]);
-      console.log(next_paging);
+
       nextPagingRef.current = next_paging;
       isFetching = false;
     });
@@ -540,12 +556,36 @@ function User() {
     setCouponAmount(e.target.value);
   };
 
-  const createCouponHandler = () => {
+  const createCouponHandler = async () => {
     // 打api coupon
+    const couponObj = {
+      data: [
+        {
+          type: couponType,
+          discount: couponAmount,
+          available_times: couponTimes,
+          applied_range: couponScope,
+          expired_time: couponDate,
+          product_id: couponID,
+        },
+      ],
+    };
+    const response = await api.createCoupon(
+      couponObj,
+      userCtx.user.accessToken
+    );
+    console.log(response);
+    // if (response.ok) {
+    //   const coupon = await response;
+    //   alert(coupon.data[0].code);
+    // } else {
+    //   const error = await response;
+    //   throw new Error(error.error);
+    // }
   };
 
   const getIDHandler = (id) => {
-    if (couponScope == "limit") {
+    if (couponScope == "other") {
       setCouponID(id);
     }
   };
@@ -563,7 +603,6 @@ function User() {
   };
 
   const uploadImgHandler = (e) => {
-    console.log("files", e.target.files);
     imgFile.current = e.target.files;
     const fileReader = new FileReader();
     fileReader.onload = fileLoad;
@@ -576,19 +615,31 @@ function User() {
 
   const submitImgHandler = async () => {
     const formData = new FormData();
-    console.log(imgFile.current[0]);
-
     formData.append("image", imgFile.current[0]);
-
-    console.log("form data", formData);
-    console.log("ref", imgFile.current);
-    console.log("token", userCtx.user.accessToken);
     // 打API
     const { data } = await api.uploadUserImg(
       formData,
       userCtx.user.accessToken
     );
-    // console.log("res data", data);
+    if (data?.picture) {
+      userCtx.user.picture = data.picture;
+      const updateUser = { ...userCtx.user };
+      userCtx.addUser(updateUser);
+      setShowImgUpload(false);
+      setFileSrc(null);
+    }
+  };
+
+  const getCouponHandler = async () => {
+    setIsGetCoupon(true);
+    setIsCoupon(false);
+    const { data } = await api.getAllCoupon();
+    setCouponList(data);
+  };
+
+  const profileHandler = () => {
+    setIsCoupon(false);
+    setIsGetCoupon(false);
   };
 
   if (!userCtx.user) return;
@@ -608,26 +659,32 @@ function User() {
           <LeftWrapper>
             <UserProfileImgWrapper>
               {userCtx.user.picture ? (
-                <UserProfileImg as="img" src={userCtx.user?.picture} />
+                <>
+                  <UserProfileImg as="img" src={userCtx.user?.picture} />
+                  <EditImg
+                    onClick={showUploadImgHandler}
+                    src={cameraIcon}
+                  ></EditImg>
+                </>
               ) : (
-                <UserProfileImgP>
-                  {userCtx.user.name[0].toUpperCase()}
+                <>
+                  <UserProfileImgP>
+                    {userCtx.user.name[0].toUpperCase()}
+                  </UserProfileImgP>
 
                   <EditImg
                     onClick={showUploadImgHandler}
                     src={cameraIcon}
                   ></EditImg>
-                </UserProfileImgP>
+                </>
               )}
             </UserProfileImgWrapper>
             <UserProfileMenu>
-              <MenuLabel
-                to="#"
-                onClick={() => {
-                  setIsCoupon(false);
-                }}
-              >
+              <MenuLabel to="#" onClick={profileHandler}>
                 基本資料
+              </MenuLabel>
+              <MenuLabel to="#" onClick={getCouponHandler}>
+                領取優惠券
               </MenuLabel>
               <MenuLabel to="/streamer">商品直播頁</MenuLabel>
               <MenuLabel to="/user/upload">商品管理系統</MenuLabel>
@@ -635,6 +692,7 @@ function User() {
                 to="#"
                 onClick={() => {
                   setIsCoupon(true);
+                  setIsGetCoupon(false);
                 }}
               >
                 優惠券管理系統
@@ -642,7 +700,57 @@ function User() {
             </UserProfileMenu>
           </LeftWrapper>
           <RightWrapper>
-            {isCoupon ? (
+            {!isCoupon && !isGetCoupon && (
+              <UserProfileContent>
+                <SubTitle>基本資料</SubTitle>
+                <UserBx>
+                  <Form>
+                    <InputGroup>
+                      <InputContainer>
+                        <InputLabel>姓名</InputLabel>
+                        <InputControl>{userCtx.user?.name}</InputControl>
+                      </InputContainer>
+                      <InputContainer>
+                        <InputLabel>信箱</InputLabel>
+                        <InputControl>{userCtx.user?.email}</InputControl>
+                      </InputContainer>
+                      <InputContainer>
+                        <InputLabel>密碼</InputLabel>
+                        <InputControl>
+                          &hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;
+                        </InputControl>
+                      </InputContainer>
+                      <InputContainer>
+                        <InputLabel>訂單編號</InputLabel>
+                        <InputControl>2131233234151</InputControl>
+                      </InputContainer>
+                      <InputContainer>
+                        <InputLabel>邀請碼</InputLabel>
+                        <InputControl>2131233234151</InputControl>
+                      </InputContainer>
+                    </InputGroup>
+                  </Form>
+                  <UserRight>
+                    <SubTitle>現有優惠券</SubTitle>
+                    {/* <CouponCodeBx>
+                      <Input
+                        type="text"
+                        placeholder="請輸入優惠碼"
+                        onChange={couponCodeHandler}
+                        value={couponCode}
+                      />
+                      <UseCouponBtn onClick={useCodeHandler}>使用</UseCouponBtn>
+                    </CouponCodeBx> */}
+                    <CouponList>
+                      {userCouponList.map((coupon) => {
+                        return <Coupon type="list" coupon={coupon}></Coupon>;
+                      })}
+                    </CouponList>
+                  </UserRight>
+                </UserBx>
+              </UserProfileContent>
+            )}
+            {isCoupon && (
               <UserProfileContent>
                 <SubTitle>優惠券管理系統</SubTitle>
                 <CouponBx>
@@ -658,12 +766,8 @@ function User() {
                     <InputBx>
                       <CouponLabel>折扣</CouponLabel>
                       <DiscountSelect onChange={couponTypeHandler}>
-                        <DiscountOption value="discountPercent">
-                          折數
-                        </DiscountOption>
-                        <DiscountOption value="discountTotal">
-                          抵扣
-                        </DiscountOption>
+                        <DiscountOption value="percent">折數</DiscountOption>
+                        <DiscountOption value="amount">抵扣</DiscountOption>
                       </DiscountSelect>
                       <CouponInput
                         type="number"
@@ -680,9 +784,9 @@ function User() {
                         <DiscountOption value="accessories">
                           配件
                         </DiscountOption>
-                        <DiscountOption value="limit">限定</DiscountOption>
+                        <DiscountOption value="other">限定</DiscountOption>
                       </DiscountSelect>
-                      {couponScope == "limit" && (
+                      {couponScope == "other" && (
                         <CouponInput
                           onChange={couponIDHandler}
                           value={couponID}
@@ -734,56 +838,18 @@ function User() {
                   </SearchCoupon>
                 </CouponBx>
               </UserProfileContent>
-            ) : (
-              <UserProfileContent>
-                <SubTitle>基本資料</SubTitle>
-                <UserBx>
-                  <Form>
-                    <InputGroup>
-                      <InputContainer>
-                        <InputLabel>姓名</InputLabel>
-                        <InputControl>{userCtx.user?.name}</InputControl>
-                      </InputContainer>
-                      <InputContainer>
-                        <InputLabel>信箱</InputLabel>
-                        <InputControl>{userCtx.user?.email}</InputControl>
-                      </InputContainer>
-                      <InputContainer>
-                        <InputLabel>密碼</InputLabel>
-                        <InputControl>
-                          &hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;&hearts;
-                        </InputControl>
-                      </InputContainer>
-                      <InputContainer>
-                        <InputLabel>訂單編號</InputLabel>
-                        <InputControl>2131233234151</InputControl>
-                      </InputContainer>
-                      <InputContainer>
-                        <InputLabel>邀請碼</InputLabel>
-                        <InputControl>2131233234151</InputControl>
-                      </InputContainer>
-                    </InputGroup>
-                  </Form>
-                  <UserRight>
-                    <SubTitle>現有優惠券</SubTitle>
-                    {/* <CouponCodeBx>
-                      <Input
-                        type="text"
-                        placeholder="請輸入優惠碼"
-                        onChange={couponCodeHandler}
-                        value={couponCode}
-                      />
-                      <UseCouponBtn onClick={useCodeHandler}>使用</UseCouponBtn>
-                    </CouponCodeBx> */}
-                    <CouponList>
-                      <Coupon></Coupon>
-                      <Coupon></Coupon>
-                      <Coupon></Coupon>
-                      <Coupon></Coupon>
-                    </CouponList>
-                  </UserRight>
-                </UserBx>
-              </UserProfileContent>
+            )}
+            {isGetCoupon && (
+              <>
+                <SubTitle>領用優惠券</SubTitle>
+                <UseCouponList>
+                  {couponList.map((coupon, index) => {
+                    return (
+                      <Coupon key={index} type="get" coupon={coupon}></Coupon>
+                    );
+                  })}
+                </UseCouponList>
+              </>
             )}
           </RightWrapper>
         </UserWrapper>

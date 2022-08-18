@@ -107,7 +107,6 @@ function Products() {
     let isFetching = false;
 
     const intersectionObserver = new IntersectionObserver(async (entries) => {
-      console.log(entries);
       if (entries[0].intersectionRatio <= 0) return;
       if (nextPagingRef.current === undefined) return;
 
@@ -124,7 +123,7 @@ function Products() {
       }
 
       isFetching = true;
-      console.log(isFetching);
+
       const { data, next_paging } = await fetchProducts();
       setProducts((prev) => [...prev, ...data]);
       nextPagingRef.current = next_paging;
@@ -138,7 +137,7 @@ function Products() {
       intersectionObserver.unobserve(waypoint);
     };
   }, [keyword, category]);
-  console.log(products);
+
   return (
     <>
       <Wrapper>

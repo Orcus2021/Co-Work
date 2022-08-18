@@ -350,8 +350,6 @@ function Checkout() {
   const [showOrderNumberBx, setShowOrderNumberBx] = useState(false);
   const [modalCloseEffect, setModalCloseEffect] = useState(false);
 
-  console.log(cardNumberRef.current);
-
   useEffect(() => {
     tappay.setupSDK();
     tappay.setupCard(

@@ -25,7 +25,6 @@ const ImageUploader = () => {
       const newArr = [...pre];
       return newArr;
     });
-    console.log(file);
   };
   return (
     <div className="wrapper">

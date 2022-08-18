@@ -222,7 +222,6 @@ export default function CreateList(props) {
   const waypointRef = useRef();
   const intersectionObserver = useRef(null);
 
-  console.log(category);
   const allSelectHandler = () => {
     setAllSelect(true);
   };
@@ -231,8 +230,6 @@ export default function CreateList(props) {
   };
   const addProductHandler = (id) => {
     addProductArr.current.push(id);
-
-    console.log(addProductArr.current);
   };
 
   const removeProductHandler = (id) => {
@@ -272,7 +269,6 @@ export default function CreateList(props) {
           return api.searchProducts(newSearch, nextPagingRef.current);
         }
         if (newCategory) {
-          console.log(newCategory);
           return api.getProducts(newCategory, nextPagingRef.current);
         }
       };

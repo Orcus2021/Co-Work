@@ -5,7 +5,7 @@ async function getJwtToken() {
   await fb.loadScript();
   fb.init();
   const response = await fb.getLoginStatus();
-  console.log(fb.getLoginStatus());
+
   let accessToken;
   if (response.status === "connected") {
     accessToken = response.authResponse.accessToken;

@@ -170,7 +170,6 @@ const Test = () => {
     });
 
     mediaRecorderRef.current.addEventListener("dataavailable", (e) => {
-      console.log(e.data);
       socket.emit("message", e.data);
     });
 

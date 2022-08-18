@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import useInputValidate from "../../utils/useInputValidate";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -347,7 +346,6 @@ const VariantsBx = styled.div`
 `;
 
 function Upload() {
-  const navigate = useNavigate();
   const [fileSrc, setFileSrc] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
   const [images, setImages] = useState([]);
@@ -542,17 +540,17 @@ function Upload() {
       createProduct();
       alert("已上架新商品");
     } else if (
-      images.length == 0 ||
-      recipient.category == "" ||
-      recipient.title == "" ||
-      recipient.description == "" ||
-      recipient.price == "" ||
-      recipient.texture == "" ||
-      recipient.wash == "" ||
-      recipient.place == "" ||
-      recipient.story == "" ||
-      recipientVariants[0].color_code == "" ||
-      recipientVariants[0].size == ""
+      images.length === 0 ||
+      recipient.category === "" ||
+      recipient.title === "" ||
+      recipient.description === "" ||
+      recipient.price === "" ||
+      recipient.texture === "" ||
+      recipient.wash === "" ||
+      recipient.place === "" ||
+      recipient.story === "" ||
+      recipientVariants[0].color_code === "" ||
+      recipientVariants[0].size === ""
     ) {
       alert("請完整填寫商品資訊");
     }
@@ -593,21 +591,14 @@ function Upload() {
       formData.append("other_images", file);
       // console.log(file);
     }
-    console.log(recipientVariants);
-    for (const value of formData.values()) {
-      console.log(value);
-    }
+
     const response = await fetch(
       `https://kelvin-wu.site/api/1.0/admin/product`,
       {
         body: formData,
-        // headers: new Headers({
-        //   "Content-Type": "multipart/form-data",
-        // }),
         method: "POST",
       }
     );
-    console.log(response);
   }
 
   // const UploadFile = (e) => {

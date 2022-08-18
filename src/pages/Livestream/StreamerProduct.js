@@ -126,9 +126,13 @@ const Price = styled.p`
   width: 100%;
   font-size: 1.2rem;
   text-align: center;
+  margin-bottom: 5px;
   @media screen and (max-width: 1279px) {
     padding-bottom: 10px;
   }
+`;
+const InitPrice = styled(Price)`
+  text-decoration: line-through;
 `;
 const Variants = styled.div`
   width: 400px;
@@ -142,8 +146,8 @@ const ColorBx = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 15px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
 `;
 const Label = styled.div`
   padding-right: 10px;
@@ -151,16 +155,16 @@ const Label = styled.div`
 const Color = styled.div`
   position: relative;
   border-radius: 3px;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   margin-right: 20px;
   background-color: ${(props) => props.$colorCode};
   cursor: pointer;
   &::after {
     content: "";
     border-radius: 3px;
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     position: absolute;
     top: -5px;
     left: -5px;
@@ -172,14 +176,14 @@ const SizeBx = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
 `;
 const Size = styled.div`
   position: relative;
   border-radius: 3px;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   background-color: #99262a;
   color: white;
   display: flex;
@@ -190,8 +194,8 @@ const Size = styled.div`
   &::after {
     content: "";
     border-radius: 3px;
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     position: absolute;
     top: -5px;
     left: -5px;
@@ -201,7 +205,7 @@ const Size = styled.div`
 const Qty = styled.p`
   width: 100%;
   font-size: 1rem;
-  text-align: center;
+
   @media screen and (max-width: 1279px) {
     padding-bottom: 10px;
   }
@@ -294,14 +298,12 @@ const StreamerProduct = (props) => {
               </ImgBx>
               <Details>
                 <ProductTitle>{saleProduct.title}</ProductTitle>
-                <Price>
-                  原價:{saleProduct.price} <br />
-                  特價:100
-                </Price>
+                <InitPrice>原價:{saleProduct.price}</InitPrice>
+                <Price>特價:100</Price>
               </Details>
               <Variants>
                 <ColorBx>
-                  <Label>顏色</Label>
+                  <Label>顏色:</Label>
                   {saleProduct.colors.map((colorObj, index) => {
                     return (
                       <Color
@@ -316,7 +318,7 @@ const StreamerProduct = (props) => {
                   })}
                 </ColorBx>
                 <SizeBx>
-                  <Label>尺寸</Label>
+                  <Label>尺寸:</Label>
                   {saleProduct.sizes.map((sizeName, index) => {
                     return (
                       <Size
@@ -331,7 +333,7 @@ const StreamerProduct = (props) => {
                     );
                   })}
                 </SizeBx>
-                <Qty>商品數量: {qty}件</Qty>
+                <Qty>數量: {qty}件</Qty>
               </Variants>
               <RemoveBtn onClick={removeSaleHandler}>下架</RemoveBtn>
             </Product>
