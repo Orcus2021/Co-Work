@@ -185,7 +185,7 @@ function SignIn() {
 
   return (
     <Wrapper>
-      {showLoading ? <Loading /> : ""}
+      {showLoading ? <Loading word="已成功登入，歡迎來到STYLiSH" /> : ""}
       <Title>會員登入</Title>
       <form>
         <Form>

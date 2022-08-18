@@ -175,7 +175,7 @@ function SignUp() {
 
   return (
     <Wrapper>
-      {showLoading ? <Loading /> : ""}
+      {showLoading ? <Loading word="&hearts;歡迎來到STYLiSH&hearts;" /> : ""}
       <Title>會員註冊</Title>
       <form>
         <Form>

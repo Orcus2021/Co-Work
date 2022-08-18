@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Picker from "emoji-picker-react";
 import { UserContext } from "../../../contexts/UserContext";
 import LoveAnimation from "../../../components/Love/Love";
+import Loading from "../../../components/Love/Loading";
 
 import icon from "../../../assets/icons8-happy.gif";
 import SaleProduct from "./SaleProduct";
@@ -288,8 +289,12 @@ const LiveStream = () => {
   const [saleProduct, setSaleProduct] = useState(dummy);
   const [showLove, setShowLove] = useState(false);
   const [viewStatue, setViewStatue] = useState("hide");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
     if (location.pathname.includes("liveStream")) {
       setViewStatue("show");
       remoteVideo.current.volume = 0.5;
@@ -303,7 +308,7 @@ const LiveStream = () => {
       setChatContent([]);
       remoteVideo.current.pause();
     }
-  }, [location, viewStatue, remoteVideo, initSocket]);
+  }, [location, viewStatue, remoteVideo, initSocket, isLoading]);
 
   useEffect(() => {
     socketRef.current = io("https://kelvin-wu.site/chatroom", {
@@ -312,8 +317,9 @@ const LiveStream = () => {
   }, [socketRef]);
 
   useEffect(() => {
+    if (isLoading) return;
     chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
-  }, [chatBottom, chatContent]);
+  }, [chatBottom, chatContent, isLoading]);
 
   useEffect(() => {
     if (userCtx.user && socketRef) {
@@ -496,76 +502,86 @@ const LiveStream = () => {
   };
 
   return (
-    <Container $isMode={viewStatue}>
-      <CardStyle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          className="bi bi-mic-fill"
-          viewBox="0 0 16 16"
-        >
-          <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z" />
-          <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" />
-        </svg>
-        直播中
-      </CardStyle>
-      <VideoContainer>
-        <VideoBx $isMode={viewStatue} VideoBx={viewStatue}>
-          <Video
-            onStart={init}
-            videoRef={remoteVideo}
-            // onFlvStart={flvStart}
-            poster={videoBack}
-            onPopUp={popUp}
-            viewStatue={viewStatue}
-          ></Video>
-          <SaleProductBx $isMode={viewStatue}>
-            {saleProduct && <SaleProduct product={saleProduct}></SaleProduct>}
-          </SaleProductBx>
-        </VideoBx>
-        <ChatBx $isMode={viewStatue}>
-          <ChatContent ref={chatBottom}>
-            {chatContent.map((content, index) => {
-              return (
-                <MessageBx $isSelf={content.isSelf} key={index}>
-                  <UserName>
-                    <ImgBx>
-                      <Img src={content.img ? content.img : logoIcon}></Img>
-                    </ImgBx>
-                  </UserName>
-                  <Message>{content.content}</Message>
-                </MessageBx>
-              );
-            })}
-          </ChatContent>
-          <InputBx>
-            <Input
-              type="text"
-              value={input}
-              onChange={inputHandler}
-              placeholder={chatPlaceholder}
-              disabled={!userCtx.user}
-              onKeyPress={(e) => handleKeyPress(e)}
-            />
-            <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
-          </InputBx>
-          <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>
-          <LoveBx>
-            <LoveIcon src={loveIcon} onClick={sendLoveHandler}></LoveIcon>
-            <LoveTotal>{loveAmount}</LoveTotal>
-            {showLove && <LoveAnimation></LoveAnimation>}
-          </LoveBx>
+    <>
+      {isLoading ? (
+        <div style={{ zIndex: "10000" }}>
+          <Loading word="Coming soon...直播即將開始，請耐心等候" />
+        </div>
+      ) : (
+        <Container $isMode={viewStatue}>
+          <CardStyle>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-mic-fill"
+              viewBox="0 0 16 16"
+            >
+              <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z" />
+              <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" />
+            </svg>
+            直播中
+          </CardStyle>
+          <VideoContainer>
+            <VideoBx $isMode={viewStatue} VideoBx={viewStatue}>
+              <Video
+                onStart={init}
+                videoRef={remoteVideo}
+                // onFlvStart={flvStart}
+                poster={videoBack}
+                onPopUp={popUp}
+                viewStatue={viewStatue}
+              ></Video>
+              <SaleProductBx $isMode={viewStatue}>
+                {saleProduct && (
+                  <SaleProduct product={saleProduct}></SaleProduct>
+                )}
+              </SaleProductBx>
+            </VideoBx>
+            <ChatBx $isMode={viewStatue}>
+              <ChatContent ref={chatBottom}>
+                {chatContent.map((content, index) => {
+                  return (
+                    <MessageBx $isSelf={content.isSelf} key={index}>
+                      <UserName>
+                        <ImgBx>
+                          <Img src={content.img ? content.img : logoIcon}></Img>
+                        </ImgBx>
+                      </UserName>
+                      <Message>{content.content}</Message>
+                    </MessageBx>
+                  );
+                })}
+              </ChatContent>
+              <InputBx>
+                <Input
+                  type="text"
+                  value={input}
+                  onChange={inputHandler}
+                  placeholder={chatPlaceholder}
+                  disabled={!userCtx.user}
+                  onKeyPress={(e) => handleKeyPress(e)}
+                />
+                <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
+              </InputBx>
+              <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>
+              <LoveBx>
+                <LoveIcon src={loveIcon} onClick={sendLoveHandler}></LoveIcon>
+                <LoveTotal>{loveAmount}</LoveTotal>
+                {showLove && <LoveAnimation></LoveAnimation>}
+              </LoveBx>
 
-          {chosenEmoji && (
-            <EmojiBx>
-              <Picker onEmojiClick={onEmojiClick} preload={true} />
-            </EmojiBx>
-          )}
-        </ChatBx>
-      </VideoContainer>
-    </Container>
+              {chosenEmoji && (
+                <EmojiBx>
+                  <Picker onEmojiClick={onEmojiClick} preload={true} />
+                </EmojiBx>
+              )}
+            </ChatBx>
+          </VideoContainer>
+        </Container>
+      )}
+    </>
   );
 };
 
