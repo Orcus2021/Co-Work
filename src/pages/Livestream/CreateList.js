@@ -211,6 +211,7 @@ const CloseButton = styled.button`
 `;
 
 export default function CreateList(props) {
+  const { trigger, setButtonPop } = props;
   const userCtx = useContext(UserContext);
   const saleCtx = useContext(SaleContext);
   const addProductArr = useRef([]);
@@ -322,7 +323,7 @@ export default function CreateList(props) {
   const submitProductHandler = async () => {
     console.log(addProductArr.current);
     if (!userCtx.user?.accessToken) {
-      console.log("請登入");
+      alert("請先登入");
       return;
     }
 
@@ -377,13 +378,13 @@ export default function CreateList(props) {
       });
 
       saleCtx.addProduct(newArr);
+      setButtonPop(false);
     } else {
       alert("商品上架失敗");
     }
   };
-  console.log(saleCtx.products[0]);
 
-  return props.trigger ? (
+  return trigger ? (
     <>
       <CreateProductBx>
         <CreateRightBx>

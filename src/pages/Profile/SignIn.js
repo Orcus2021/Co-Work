@@ -159,6 +159,8 @@ function SignIn() {
     } else {
       const error = await response.json();
       throw new Error(error.error);
+      navigate("/");
+      setShowLoading(false);
     }
   }
 

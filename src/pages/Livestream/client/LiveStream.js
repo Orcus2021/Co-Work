@@ -14,6 +14,7 @@ import SaleProduct from "./SaleProduct";
 import loveIcon from "../../../assets/love.png";
 import videoBack from "../../../assets/videoBackground.jpg";
 import logoIcon from "../../../assets/logoIcon.png";
+import api from "../../../utils/api";
 
 // const dummy = {
 //   id: 201807242222,
@@ -309,6 +310,14 @@ const LiveStream = () => {
       remoteVideo.current.pause();
     }
   }, [location, viewStatue, remoteVideo, initSocket, isLoading]);
+
+  useEffect(() => {
+    const live = async () => {
+      const response = await api.getLiveStream();
+      console.log(response);
+    };
+    live();
+  }, []);
 
   useEffect(() => {
     socketRef.current = io("https://kelvin-wu.site/chatroom", {

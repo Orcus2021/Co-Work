@@ -86,7 +86,7 @@ const Coupon = (props) => {
   const navigate = useNavigate();
   const userCtx = useContext(UserContext);
   const { type, coupon, onUseCoupon } = props;
-  console.log(coupon);
+
   let btnName = "使用";
   if (type === "get") {
     btnName = "領取";

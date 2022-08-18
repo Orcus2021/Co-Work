@@ -121,6 +121,10 @@ const api = {
     });
     return await response.json();
   },
+  async getLiveStream() {
+    const response = await fetch(`${this.hostname}/stream`);
+    return await response.json();
+  },
 };
 
 export default api;

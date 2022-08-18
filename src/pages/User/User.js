@@ -460,8 +460,11 @@ function User() {
     }
   }, [userCtx]);
   useEffect(() => {
+    console.log(userCtx.user.accessToken);
     const getOrderNumApi = async () => {
       const { data } = await api.getOrderNumber(userCtx.user.accessToken);
+
+      console.log(data);
       if (data.id) {
         setOrderNum(data.id);
       }
@@ -592,6 +595,15 @@ function User() {
       couponObj,
       userCtx.user.accessToken
     );
+    if (response.data.length > 0) {
+      alert("優惠券已產生");
+      setCouponType("");
+      setCouponAmount("");
+      setCouponTimes("");
+      setCouponScope("");
+      setCouponDate("");
+      setCouponID("");
+    }
     console.log(response);
     // if (response.ok) {
     //   const coupon = await response;

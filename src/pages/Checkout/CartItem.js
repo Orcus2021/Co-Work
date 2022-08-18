@@ -271,12 +271,11 @@ const CartItem = (props) => {
   const [userCoupon, setUserCoupon] = useState([]);
   const userCtx = useContext(UserContext);
   const cart = useContext(CartContext);
-  console.log(item);
+
   useEffect(() => {
     const getCoupon = async () => {
       const { data } = await api.getUserCoupon(userCtx.user.accessToken);
       couponList.current = data;
-      console.log(data);
     };
     getCoupon();
   }, []);
@@ -290,6 +289,10 @@ const CartItem = (props) => {
   };
 
   const couponBxHandler = () => {
+    if (!userCtx.user) {
+      alert("請先登入會員");
+      return;
+    }
     const couponArr = couponList.current.filter((coupon) => {
       // if(coupon.applied_range==="other"||coupon.applied_range==="live"){
 
@@ -330,6 +333,10 @@ const CartItem = (props) => {
 
     cart.changeItemDiscount(cartIndex, newDiscount);
   };
+  let couponName = "優惠券";
+  if (item.coupon_id) {
+    couponName = `已折抵${item.price - item.discount}`;
+  }
 
   return (
     <>
@@ -367,7 +374,7 @@ const CartItem = (props) => {
             <ImgBx>
               <Img src={couponIcon}></Img>
             </ImgBx>
-            優惠券&gt;&gt;
+            {couponName}&gt;&gt;
           </CouponValue>
         </CouponBx>
         <DeleteButton onClick={() => cart.deleteItem(cartIndex)} />
@@ -387,10 +394,10 @@ const CartItem = (props) => {
               <UseCouponBtn onClick={useCodeHandler}>使用</UseCouponBtn>
             </CouponCodeBx>
             <CouponList>
-              {userCoupon.map((coupon, index) => {
+              {userCoupon.map((coupon) => {
                 return (
                   <Coupon
-                    key={index}
+                    key={coupon.code}
                     coupon={coupon}
                     type="use"
                     onUseCoupon={useCouponHandler}
