@@ -237,7 +237,16 @@ const EmojiBx = styled.div`
 const SaleProductBx = styled.div`
   margin-top: 40px;
   width: 100%;
-  ${(props) => (props.$isMode === "pop" ? "display:none;" : "")}
+  background-color: #f6dbdb;
+  ${(props) => (props.$isMode === "pop" ? "display:none;" : "")};
+`;
+const StreamProductEmpty = styled.div`
+  border: 1px dashed #99262a;
+  height: 200px;
+  font-size: 20px;
+  text-align: center;
+  padding: 90px;
+  background-color: #f6dbdb;
 `;
 const LoveBx = styled.div`
   position: absolute;
@@ -546,6 +555,7 @@ const LiveStream = () => {
                 {saleProduct && (
                   <SaleProduct product={saleProduct}></SaleProduct>
                 )}
+                <StreamProductEmpty>預計上架商品</StreamProductEmpty>
               </SaleProductBx>
             </VideoBx>
             <ChatBx $isMode={viewStatue}>

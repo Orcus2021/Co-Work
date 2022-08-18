@@ -12,7 +12,7 @@ const CreateProductBx = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  height: 48vh;
+  height: 60vh;
   position: fixed;
   background-color: #f6dbdb;
   z-index: 999;
