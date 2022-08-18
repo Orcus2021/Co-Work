@@ -81,6 +81,7 @@ const Product = styled.div`
   align-items: center;
   width: 100%;
   height: 210px;
+  padding: 20px;
   @media screen and (max-width: 1279px) {
     flex-direction: column;
     height: 400px;

@@ -555,7 +555,9 @@ const LiveStream = () => {
                 {saleProduct && (
                   <SaleProduct product={saleProduct}></SaleProduct>
                 )}
-                <StreamProductEmpty>預計上架商品</StreamProductEmpty>
+                {!saleProduct && (
+                  <StreamProductEmpty>預計上架商品</StreamProductEmpty>
+                )}
               </SaleProductBx>
             </VideoBx>
             <ChatBx $isMode={viewStatue}>
