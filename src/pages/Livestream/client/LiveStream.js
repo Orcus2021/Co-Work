@@ -69,7 +69,7 @@ const Container = styled.div`
     if (props.$isMode === "show") {
       return "position:relative;margin: 0 auto;padding: 50px 0 50px;";
     } else if (props.$isMode === "hide") {
-      return "position:absolute; top:-100%;";
+      return "position:absolute; top:-200%;";
     } else if (props.$isMode === "pop") {
       return "position:fixed; right:0;bottom:0; z-index:9999;overflow:hidden;background-color: transparent;pointer-events: none;";
     }

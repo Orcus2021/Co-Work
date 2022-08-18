@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import styled from "styled-components";
 import CreateProduct from "./CreateProduct";
 import api from "../../utils/api";
+import { UserContext } from "../../contexts/UserContext";
 
 const CreateProductBx = styled.div`
   margin: 0 auto;
@@ -209,7 +210,9 @@ const CloseButton = styled.button`
 `;
 
 export default function CreateList(props) {
+  const userCtx = useContext(UserContext);
   const addProductArr = useRef([]);
+  const imgFile = useRef();
   const [allSelect, setAllSelect] = useState(false);
   const [clearAll, setClearAll] = useState(false);
   const [category, setCategory] = useState("all");
@@ -228,13 +231,13 @@ export default function CreateList(props) {
   const clearAllHandler = () => {
     setClearAll(true);
   };
-  const addProductHandler = (id) => {
-    addProductArr.current.push(id);
+  const addProductHandler = (product) => {
+    addProductArr.current.push(product);
   };
 
   const removeProductHandler = (id) => {
-    const newArr = addProductArr.current.filter((productId) => {
-      return productId !== id;
+    const newArr = addProductArr.current.filter((product) => {
+      return product.id !== id;
     });
     addProductArr.current = newArr;
   };
@@ -300,18 +303,74 @@ export default function CreateList(props) {
     setFileSrc(e.target.result);
   };
   const uploadImgHandler = (e) => {
+    imgFile.current = e.target.files;
     const file = e.target.files.item(0);
     const fileReader = new FileReader();
     fileReader.onload = fileLoad;
     fileReader.readAsDataURL(file);
   };
 
-  const submitImgHandler = () => {
-    // 打API
-  };
+  // const submitImgHandler = () => {
+  //   // 打上傳照片的API
+  // };
   // const clearImgHandler = (event) => {
   //   setUploadImg("");
   // };
+
+  const submitProductHandler = async () => {
+    if (!userCtx.user?.accessToken) {
+      console.log("請登入");
+      return;
+    }
+    console.log(addProductArr.current);
+    const isCorrect = addProductArr.current
+      .map((product) => {
+        if (product.isCoupon) {
+          if (product.amount <= 0) {
+            return false;
+          }
+        }
+      })
+      .find((data) => data === false);
+
+    if (isCorrect === false) {
+      alert("優惠券請填寫正確資料");
+      return;
+    }
+    const formData = new FormData();
+    const ids = addProductArr.current.map((product) => {
+      return product.id;
+    });
+    formData.append("title", "Penny Show");
+    formData.append("product_ids", JSON.stringify(ids));
+    formData.append("image", imgFile.current[0]);
+    const response = await api.addStreamerProduct(
+      formData,
+      userCtx.user.accessToken
+    );
+    if (response.success) {
+      const data = addProductArr.current.map((data) => {
+        const obj = {
+          type: "amount",
+          discount: data.amount,
+          available_times: 99,
+          applied_range: "live",
+          expired_time: "2022-08-19",
+          product_id: data.id,
+        };
+        return obj;
+      });
+      console.log(data);
+      const newCoupon = { data: data };
+      const response = await api.createCoupon(
+        newCoupon,
+        userCtx.user.accessToken
+      );
+      console.log(response);
+    } else {
+      alert("商品上架失敗");
+    }
+  };
   return props.trigger ? (
     <>
       <CreateProductBx>
@@ -331,7 +390,7 @@ export default function CreateList(props) {
             <UploadCardInput onChange={uploadImgHandler} />
           </UploadCardStyled>
           <BtnWrapper>
-            <UploadBtn onClick={submitImgHandler}>上傳照片</UploadBtn>
+            {/* <UploadBtn onClick={submitImgHandler}>上傳照片</UploadBtn> */}
             {/* <UploadBtn onClick={clearImgHandler}>清除照片</UploadBtn> */}
           </BtnWrapper>
           {/* <UploadLiveForm>
@@ -362,7 +421,7 @@ export default function CreateList(props) {
           <BtnWrapper>
             <SelectAll onClick={allSelectHandler}>全選</SelectAll>
             <ClearAll onClick={clearAllHandler}>清除</ClearAll>
-            <AddProduct>上架</AddProduct>
+            <AddProduct onClick={submitProductHandler}>上架</AddProduct>
           </BtnWrapper>
         </CreateRightBx>
         <ProductList>

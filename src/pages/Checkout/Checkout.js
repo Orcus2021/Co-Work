@@ -342,44 +342,51 @@ function Checkout() {
   });
   const cart = useContext(CartContext);
   const userCtx = useContext(UserContext);
+  const initTapPay = useRef(true);
   const items = cart.getItems();
   const navigate = useNavigate();
   const cardNumberRef = useRef();
   const cardExpirationDateRef = useRef();
   const cardCCVRef = useRef();
   const [showOrderNumberBx, setShowOrderNumberBx] = useState(false);
-  const [modalCloseEffect, setModalCloseEffect] = useState(false);
 
+  const [orderNum, setOrderNum] = useState("");
+  const [orderTimer, setOrderTimer] = useState(5);
+  let freight = 0;
+  if (items.length > 0) {
+    freight = 30;
+  }
   useEffect(() => {
-    tappay.setupSDK();
-    tappay.setupCard(
-      cardNumberRef.current,
-      cardExpirationDateRef.current,
-      cardCCVRef.current
-    );
-  }, []);
+    if (initTapPay.current) {
+      console.log(initTapPay.current);
+
+      tappay.setupSDK();
+      tappay.setupCard(
+        cardNumberRef.current,
+        cardExpirationDateRef.current,
+        cardCCVRef.current
+      );
+      initTapPay.current = false;
+    }
+  }, [initTapPay]);
 
   const subtotal = items.reduce(
     (prev, item) => prev + item.discount * item.qty,
     0
   );
 
-  const freight = 30;
-
-  const closeCouponBx = () => {
-    setModalCloseEffect(true);
-    setTimeout(() => {
-      setShowOrderNumberBx(false);
-      setModalCloseEffect(false);
-    }, 600);
-    navigate("/");
-  };
-  const couponBxHandler = () => {
-    setShowOrderNumberBx((pre) => !pre);
-  };
+  // const closeCouponBx = () => {
+  //   setModalCloseEffect(true);
+  //   setTimeout(() => {
+  //     setShowOrderNumberBx(false);
+  //     setModalCloseEffect(false);
+  //   }, 600);
+  // };
+  // const couponBxHandler = () => {
+  //   setShowOrderNumberBx((pre) => !pre);
+  // };
 
   async function checkout() {
-    // couponBxHandler();
     // let jwtToken = window.localStorage.getItem("jwtToken");
 
     if (!userCtx.user) {
@@ -445,8 +452,21 @@ function Checkout() {
 
     window.alert("付款成功");
     cart.clearItems();
-    console.log(data);
-    navigate("/thankyou", { state: { orderNumber: data.number } });
+    // couponBxHandler();
+    setOrderNum(data.number);
+    setShowOrderNumberBx(true);
+
+    // closeCouponBx();
+    setTimeout(() => {
+      setOrderTimer((pre) => {
+        if (pre === 0) return 0;
+        return pre - 1;
+      });
+    }, 1000);
+    setTimeout(() => {
+      navigate("/user");
+    }, 4000);
+    // navigate("/thankyou", { state: { orderNumber: data.number } });
   }
 
   return (
@@ -533,16 +553,18 @@ function Checkout() {
       </TotalPrice>
       <CheckoutButton onClick={checkout}>確認付款</CheckoutButton>
       {showOrderNumberBx && (
-        <Modal onClose={closeCouponBx} closeEffect={modalCloseEffect}>
+        <Modal>
           <OrderNumberBox>
             訂購成功！
             <br />
             <br />
-            您的訂單編號為：XXXXXX
+            您的訂單編號為：{orderNum}
             <br />
             <BackImg>
               <img src={back} style={{ width: "100%", height: "100%" }} />
             </BackImg>
+            <br />
+            {orderTimer}秒後跳轉
             <br />
             Thank you for shopping with us!
           </OrderNumberBox>

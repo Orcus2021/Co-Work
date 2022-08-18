@@ -9,6 +9,7 @@ export const UserContext = createContext({
 const UserProvider = (props) => {
   const [user, setUser] = useState(null);
   const addUserHandler = (user) => {
+    console.log(user);
     setUser(user);
   };
   const removeUserHandler = () => {

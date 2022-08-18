@@ -317,7 +317,7 @@ const CartItem = (props) => {
     if (discount.type === "amount") {
       newPrice = item.price - discount.discount;
     } else {
-      newPrice = (item.price * discount.discount) / 100;
+      newPrice = Math.ceil((item.price * discount.discount) / 100);
     }
     const newDiscount = {
       discount: newPrice,

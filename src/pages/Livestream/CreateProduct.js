@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const dummy = {
@@ -131,6 +131,12 @@ const CreateProduct = (props) => {
   const { isAll, onAll, isClear, onClear, product, onAdd, onRemove } = props;
   const [isChecked, setIsChecked] = useState(false);
   const [isCheckCoupon, setIsCheckCoupon] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const productRef = useRef({
+    id: product.id,
+    isCoupon: isCheckCoupon,
+    amount: 0,
+  });
 
   useEffect(() => {
     if (isAll) {
@@ -144,16 +150,23 @@ const CreateProduct = (props) => {
   }, [isAll, isClear]);
   useEffect(() => {
     if (isChecked) {
-      onAdd(product.id);
+      onAdd(productRef.current);
     } else {
       onRemove(product.id);
     }
-  }, [isChecked]);
+  }, [isChecked, product, productRef]);
   const checkHandler = () => {
     setIsChecked((pre) => !pre);
   };
   const checkCouponHandler = () => {
-    setIsCheckCoupon((pre) => !pre);
+    setIsCheckCoupon((pre) => {
+      productRef.current.isCoupon = !pre;
+      return !pre;
+    });
+  };
+  const amountHandler = (e) => {
+    setAmount(e.target.value);
+    productRef.current.amount = e.target.value;
   };
 
   return (
@@ -176,7 +189,12 @@ const CreateProduct = (props) => {
             onChange={checkCouponHandler}
           />
           <CouponLabel>優惠券折抵價:</CouponLabel>
-          <CouponInput type="text" disabled={!isCheckCoupon} />
+          <CouponInput
+            type="text"
+            disabled={!isCheckCoupon}
+            onChange={amountHandler}
+            value={amount}
+          />
         </CouponBx>
       </RightBx>
     </Product>

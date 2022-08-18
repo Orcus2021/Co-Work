@@ -458,6 +458,7 @@ const Streamer = () => {
     //直播主加入
     socketRef.current.emit("streamerJoin", userCtx.user.id);
   };
+  console.log(userCtx.user);
   // init live stream
   const initLiveStream = () => {
     if (localStream.current) {
