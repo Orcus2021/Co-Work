@@ -352,6 +352,9 @@ const Streamer = () => {
       setShowLove(false);
     }, 1500);
   }, [loveAmount]);
+  useEffect(() => {
+    chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
+  }, [chatBottom, chatContent]);
 
   const onEmojiClick = (event, emojiObject) => {
     setInput((pre) => pre + emojiObject.emoji);
@@ -458,7 +461,7 @@ const Streamer = () => {
     //直播主加入
     socketRef.current.emit("streamerJoin", userCtx.user.id);
   };
-  console.log(userCtx.user);
+
   // init live stream
   const initLiveStream = () => {
     if (localStream.current) {
@@ -470,10 +473,12 @@ const Streamer = () => {
 
   const closeLiveHandler = () => {
     if (peerConnect.current) {
-      setIsStart(false);
       peerConnect.current.close();
       peerConnect.current = null;
+      localVideo.current.srcObject = null;
     }
+    setIsStart(false);
+    socketRef.current.disconnect();
     localStream.current.getTracks().forEach((track) => track.stop());
   };
 
@@ -482,8 +487,6 @@ const Streamer = () => {
   };
 
   const transferChatHandler = () => {
-    chatBottom.current.scrollTop = chatBottom.current.scrollHeight;
-
     const obj = { img: userCtx.user?.picture, content: input, isSelf: true };
     if (input.trim().length > 0) {
       setChatContent((pre) => {

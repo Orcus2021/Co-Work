@@ -299,8 +299,9 @@ const LiveStream = () => {
   const [saleProduct, setSaleProduct] = useState(null);
   const [showLove, setShowLove] = useState(false);
   const [viewStatue, setViewStatue] = useState("hide");
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [videoBackground, setVideoBackground] = useState(videoBack);
+  console.log(videoBackground);
   useEffect(() => {
     if (isLoading) {
       return;
@@ -324,6 +325,10 @@ const LiveStream = () => {
     const live = async () => {
       const response = await api.getLiveStream();
       console.log(response);
+      if (response.response?.id) {
+        setVideoBackground(response.response.image);
+        if (response.response.is_live === 1) setIsLoading(false);
+      }
     };
     live();
   }, []);
@@ -547,7 +552,7 @@ const LiveStream = () => {
                 onStart={init}
                 videoRef={remoteVideo}
                 // onFlvStart={flvStart}
-                poster={videoBack}
+                poster={videoBackground}
                 onPopUp={popUp}
                 viewStatue={viewStatue}
               ></Video>

@@ -124,6 +124,7 @@ function SignUp() {
       name: name,
       email: email,
       password: password,
+      promo_code: invitationCode,
     };
     if (email.length <= 0 || password.length <= 0 || name.length <= 0) {
       window.alert("資料請勿空白");
