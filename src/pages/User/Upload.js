@@ -484,23 +484,26 @@ function Upload() {
   ) => {
     // console.log(index);
     if (options) {
-      return options.map((option) => (
-        <FormCheck key={option.value}>
-          <FormCheckInput
-            type="radio"
-            name="size"
-            onChange={(e) => {
-              if (e.target.checked)
-                setRecipientVariants((pre) => {
-                  pre[index].size = option.value;
-                  const newArr = [...pre];
-                  return newArr;
-                });
-            }}
-          />
-          <FormCheckLabel>{option.label}</FormCheckLabel>
-        </FormCheck>
-      ));
+      return options.map((option) => {
+        console.log(option);
+        return (
+          <FormCheck key={option.value}>
+            <FormCheckInput
+              type="radio"
+              name={`size${index}`}
+              onChange={(e) => {
+                if (e.target.checked)
+                  setRecipientVariants((pre) => {
+                    pre[index].size = option.value;
+                    const newArr = [...pre];
+                    return newArr;
+                  });
+              }}
+            />
+            <FormCheckLabel>{option.label}</FormCheckLabel>
+          </FormCheck>
+        );
+      });
     } else {
       if (key === "color_code") {
         return (
