@@ -85,7 +85,7 @@ const Coupon = (props) => {
   const [btnStyle, setBtnStyle] = useState(true);
   const navigate = useNavigate();
   const userCtx = useContext(UserContext);
-  const { type, coupon } = props;
+  const { type, coupon, onUseCoupon } = props;
   let btnName = "使用";
   if (type === "get") {
     btnName = "領取";
@@ -105,16 +105,28 @@ const Coupon = (props) => {
 
   const btnClickHandler = async () => {
     setBtnStyle(false);
+    // 在使用者優惠箱 導引到購物畫面
     if (type === "list") {
       navigate(`./?category=${coupon.applied_range}`);
+      return;
     }
-    if (btnStyle) {
+    // 在使用者領優惠券
+    if (btnStyle && type === "get") {
       const couponID = { coupon_id: coupon.coupon_id };
       const response = await api.receiveCoupon(
         couponID,
         userCtx.user?.accessToken
       );
       console.log(response);
+      return;
+    }
+    // 使用者使用優惠券
+    if (btnStyle && type === "use") {
+      onUseCoupon({
+        type: coupon.type,
+        discount: coupon.discount,
+        id: coupon.coupon_id,
+      });
       return;
     }
   };

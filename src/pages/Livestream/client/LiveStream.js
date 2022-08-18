@@ -489,6 +489,12 @@ const LiveStream = () => {
 
   const chatPlaceholder = userCtx.user ? "與主播聊聊" : "請先登入會員";
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" || e.which === 13) {
+      transferChatHandler();
+    }
+  };
+
   return (
     <Container $isMode={viewStatue}>
       <CardStyle>
@@ -541,6 +547,7 @@ const LiveStream = () => {
               onChange={inputHandler}
               placeholder={chatPlaceholder}
               disabled={!userCtx.user}
+              onKeyPress={(e) => handleKeyPress(e)}
             />
             <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
           </InputBx>

@@ -360,7 +360,7 @@ function Checkout() {
   }, []);
 
   const subtotal = items.reduce(
-    (prev, item) => prev + item.price * item.qty,
+    (prev, item) => prev + item.discount * item.qty,
     0
   );
 
@@ -379,9 +379,8 @@ function Checkout() {
   };
 
   async function checkout() {
-    couponBxHandler();
+    // couponBxHandler();
     // let jwtToken = window.localStorage.getItem("jwtToken");
-    const token = userCtx.user?.accessToken;
 
     if (!userCtx.user) {
       // try {
@@ -396,7 +395,7 @@ function Checkout() {
       return;
     }
     // window.localStorage.setItem("jwtToken", jwtToken);
-
+    const jwtToken = userCtx.user?.accessToken;
     if (items.length === 0) {
       window.alert("尚未選購商品");
       return;
@@ -417,25 +416,37 @@ function Checkout() {
       window.alert("付款資料輸入有誤");
       return;
     }
+    const newList = cart.getItems().map((item) => {
+      delete item.category;
+      delete item.image;
+      delete item.stock;
 
-    //   const { data } = await api.checkout(
-    //     {
-    //       prime: result.card.prime,
-    //       order: {
-    //         shipping: "delivery",
-    //         payment: "credit_card",
-    //         subtotal,
-    //         freight,
-    //         total: subtotal + freight,
-    //         recipient,
-    //         list: cart.getItems(),
-    //       },
-    //     },
-    //     jwtToken
-    //   );
-    //   window.alert("付款成功");
-    //   cart.clearItems();
-    //   navigate("/thankyou", { state: { orderNumber: data.number } });
+      item.color_id = item.color.color_id;
+      delete item.color;
+      return item;
+    });
+    console.log(newList);
+
+    const { data } = await api.checkout(
+      {
+        prime: result.card.prime,
+        order: {
+          shipping: "delivery",
+          payment: "credit_card",
+          subtotal,
+          freight,
+          total: subtotal + freight,
+          recipient,
+          list: newList,
+        },
+      },
+      jwtToken
+    );
+
+    window.alert("付款成功");
+    cart.clearItems();
+    console.log(data);
+    navigate("/thankyou", { state: { orderNumber: data.number } });
   }
 
   return (

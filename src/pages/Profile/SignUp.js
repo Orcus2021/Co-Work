@@ -2,6 +2,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { UserContext } from "../../contexts/UserContext";
+import Loading from "../../components/Love/Loading";
 
 const Wrapper = styled.div`
   padding: 60px 20px;
@@ -102,6 +103,7 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [invitationCode, setInvitationCode] = useState("");
   const userCtx = useContext(UserContext);
+  const [showLoading, setShowLoading] = useState(false);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "name") {
@@ -128,11 +130,11 @@ function SignUp() {
       return;
     }
     try {
+      setShowLoading(true);
       await signUp(data);
     } catch (error) {
       window.alert(`${error}`);
     }
-
     setName("");
     setEmail("");
     setPassword("");
@@ -157,10 +159,14 @@ function SignUp() {
         email: resUser.data.user.email,
         picture: resUser.data.user.picture,
         name: resUser.data.user.name,
+        promoCode: resUser.data.user.promo_code,
+        role: resUser.data.user.role,
       };
-
       userCtx.addUser(userObj);
-      navigate("/");
+      setTimeout(() => {
+        setShowLoading(false);
+        navigate("/");
+      }, 1500);
     } else {
       const error = await response.json();
       throw new Error(error.error);
@@ -169,6 +175,7 @@ function SignUp() {
 
   return (
     <Wrapper>
+      {showLoading ? <Loading /> : ""}
       <Title>會員註冊</Title>
       <form>
         <Form>

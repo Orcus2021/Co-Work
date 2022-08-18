@@ -456,7 +456,7 @@ const Streamer = () => {
     });
 
     //直播主加入
-    socketRef.current.emit("streamerJoin");
+    socketRef.current.emit("streamerJoin", userCtx.user.id);
   };
   // init live stream
   const initLiveStream = () => {
@@ -506,6 +506,12 @@ const Streamer = () => {
 
   const removeSaleProductSocket = () => {
     socketRef.current.emit("product", null);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" || e.which === 13) {
+      transferChatHandler();
+    }
   };
 
   return (
@@ -614,7 +620,12 @@ const Streamer = () => {
             )}
             <audio src={remindSound} ref={audioRef}></audio>
             <InputBx>
-              <Input type="text" value={input} onChange={inputHandler} />
+              <Input
+                type="text"
+                value={input}
+                onChange={inputHandler}
+                onKeyPress={(e) => handleKeyPress(e)}
+              />
               <EnterBtn onClick={transferChatHandler}>傳送</EnterBtn>
             </InputBx>
             <EmojiIcon src={icon} onClick={showEmoji}></EmojiIcon>

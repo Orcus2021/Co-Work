@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, useCallback } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import Product from "./CouponProduct/Product";
@@ -457,14 +457,17 @@ function User() {
       return;
     }
   }, [userCtx]);
-  useEffect(() => {
-    const getCoupon = async () => {
-      const { data } = await api.getUserCoupon(userCtx.user.accessToken);
 
-      setUserCouponList(data);
-    };
-    getCoupon();
+  const getCoupon = useCallback(async () => {
+    const { data } = await api.getUserCoupon(userCtx.user.accessToken);
+
+    setUserCouponList(data);
   }, [userCtx]);
+
+  useEffect(() => {
+    getCoupon();
+  }, [userCtx, getCoupon]);
+
   const logoutHandler = () => {
     userCtx.removeUser();
     navigate("/profile/signin");
@@ -640,6 +643,7 @@ function User() {
   const profileHandler = () => {
     setIsCoupon(false);
     setIsGetCoupon(false);
+    getCoupon();
   };
 
   if (!userCtx.user) return;

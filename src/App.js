@@ -98,27 +98,6 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 `;
-// document.addEventListener("mousemove", (e) => {
-//   let body = document.querySelector("body");
-//   let heart = document.createElement("span");
-//   heart.classList.add("love");
-
-//   let x = e.offsetX;
-//   let y = e.offsetY;
-//   heart.style.left = x + "px";
-//   heart.style.top = y + "px";
-
-//   let size = Math.random() * 40;
-//   heart.style.width = 20 + size + "px";
-//   heart.style.height = 20 + size + "px";
-//   let transformValue = Math.random() * 360;
-//   heart.style.transform = "rotate(" + transformValue + "deg)";
-
-//   body.appendChild(heart);
-//   setTimeout(() => {
-//     heart.remove();
-//   }, 200);
-// });
 
 function App() {
   const [cartItems, setCartItems] = useState(
@@ -150,6 +129,21 @@ function App() {
     window.alert("已修改數量");
   }
 
+  function changeItemDiscount(itemIndex, itemDiscount) {
+    const newCartItems = cartItems.map((item, index) =>
+      index === itemIndex
+        ? {
+            ...item,
+            discount: itemDiscount.discount,
+            coupon_id: itemDiscount.coupon_id,
+          }
+        : item
+    );
+    setCartItems(newCartItems);
+    window.localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+    window.alert("已折價");
+  }
+
   function deleteItem(itemIndex) {
     const newCartItems = cartItems.filter((_, index) => index !== itemIndex);
     setCartItems(newCartItems);
@@ -169,6 +163,7 @@ function App() {
     changeItemQuantity,
     deleteItem,
     clearItems,
+    changeItemDiscount,
   };
 
   return (

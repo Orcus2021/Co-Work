@@ -10,11 +10,10 @@ import cartMobile from "./cart-mobile.png";
 import profile from "./profile.png";
 import profileMobile from "./profile-mobile.png";
 import CartContext from "../../contexts/CartContext";
+import "./Header.css";
 
 const Wrapper = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
   height: 100px;
   width: 100%;
   padding: 0 54px 0 60px;
@@ -68,7 +67,7 @@ const CategoryLink = styled(Link)`
   padding-right: 3px;
   position: relative;
   text-decoration: none;
-  color: ${(props) => (props.$isActive ? "#99262a" : "#3f3a3a")};
+  color: ${(props) => (props.$isActive ? "#8b572a" : "#3f3a3a")};
 
   @media screen and (max-width: 1279px) {
     font-size: 16px;
@@ -81,7 +80,7 @@ const CategoryLink = styled(Link)`
   }
 
   &:hover {
-    color: #99262a;
+    color: #8b572a;
 
     @media screen and (max-width: 1279px) {
       color: white;
@@ -116,7 +115,7 @@ const SearchInput = styled.input`
   background-repeat: no-repeat;
   font-size: 20px;
   line-height: 24px;
-  color: #99262a;
+  color: #8b572a;
 
   @media screen and (max-width: 1279px) {
     width: 0;
@@ -211,7 +210,7 @@ const PageLinkIconNumber = styled.div`
   right: 0;
   width: 24px;
   height: 24px;
-  background-color: #99262a;
+  background-color: #8b572a;
   color: white;
   border-radius: 50%;
   text-align: center;
@@ -243,12 +242,40 @@ const categories = [
 ];
 
 function Header() {
+  const [show, setShow] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const userCtx = useContext(UserContext);
   const category = searchParams.get("category");
   const { getItems } = useContext(CartContext);
+
+  const controlNavbar = () => {
+    if (typeof window !== "undefined") {
+      if (window.scrollY > lastScrollY) {
+        // if scroll down hide the navbar
+        setShow(false);
+      } else {
+        // if scroll up show the navbar
+        setShow(true);
+      }
+
+      // remember current page location to use in the next move
+      setLastScrollY(window.scrollY);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", controlNavbar);
+
+      // cleanup function
+      return () => {
+        window.removeEventListener("scroll", controlNavbar);
+      };
+    }
+  }, [lastScrollY]);
 
   useEffect(() => {
     if (category) setInputValue("");
@@ -263,44 +290,46 @@ function Header() {
   };
 
   return (
-    <Wrapper>
-      <Logo to="/" />
-      <CategoryLinks>
-        {categories.map(({ name, displayText }, index) => (
-          <CategoryLink
-            to={`/?category=${name}`}
-            $isActive={category === name}
-            key={index}
-          >
-            {displayText}
+    <nav className={show ? "active" : "hidden"}>
+      <Wrapper>
+        <Logo to="/" />
+        <CategoryLinks>
+          {categories.map(({ name, displayText }, index) => (
+            <CategoryLink
+              to={`/?category=${name}`}
+              $isActive={category === name}
+              key={index}
+            >
+              {displayText}
+            </CategoryLink>
+          ))}
+          <CategoryLink key="liveStream" to={"liveStream"}>
+            直播
           </CategoryLink>
-        ))}
-        <CategoryLink key="liveStream" to={"liveStream"}>
-          直播
-        </CategoryLink>
-      </CategoryLinks>
-      <SearchInput
-        onKeyPress={(e) => {
-          if (e.key === "Enter") {
-            navigate(`/?keyword=${inputValue}`);
-          }
-        }}
-        onChange={(e) => setInputValue(e.target.value)}
-        value={inputValue}
-      />
-      <PageLinks>
-        <PageLink to="/checkout">
-          <PageLinkCartIcon icon={cart}>
-            <PageLinkIconNumber>{getItems().length}</PageLinkIconNumber>
-          </PageLinkCartIcon>
-          <PageLinkText>購物車</PageLinkText>
-        </PageLink>
-        <PageLink as="div" onClick={profileHandler}>
-          <PageLinkProfileIcon icon={profile} />
-          <PageLinkText>會員</PageLinkText>
-        </PageLink>
-      </PageLinks>
-    </Wrapper>
+        </CategoryLinks>
+        <SearchInput
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              navigate(`/?keyword=${inputValue}`);
+            }
+          }}
+          onChange={(e) => setInputValue(e.target.value)}
+          value={inputValue}
+        />
+        <PageLinks>
+          <PageLink to="/checkout">
+            <PageLinkCartIcon icon={cart}>
+              <PageLinkIconNumber>{getItems().length}</PageLinkIconNumber>
+            </PageLinkCartIcon>
+            <PageLinkText>購物車</PageLinkText>
+          </PageLink>
+          <PageLink as="div" onClick={profileHandler}>
+            <PageLinkProfileIcon icon={profile} />
+            <PageLinkText>會員</PageLinkText>
+          </PageLink>
+        </PageLinks>
+      </Wrapper>
+    </nav>
   );
 }
 
