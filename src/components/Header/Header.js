@@ -67,20 +67,20 @@ const CategoryLink = styled(Link)`
   padding-right: 3px;
   position: relative;
   text-decoration: none;
-  color: ${(props) => (props.$isActive ? "#8b572a" : "#3f3a3a")};
+  color: ${(props) => (props.$isActive ? "#8b572a" : "#99262a")};
 
   @media screen and (max-width: 1279px) {
     font-size: 16px;
     letter-spacing: normal;
     padding: 0;
     text-align: center;
-    color: ${(props) => (props.$isActive ? "white" : "#828282")};
+    color: ${(props) => (props.$isActive ? "white" : "#99262a")};
     line-height: 50px;
     flex-grow: 1;
   }
 
   &:hover {
-    color: #8b572a;
+    color: white;
 
     @media screen and (max-width: 1279px) {
       color: white;

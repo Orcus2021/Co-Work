@@ -291,6 +291,7 @@ const EditImg = styled.img`
   cursor: pointer;
 `;
 const CouponList = styled(SearchResultBx)`
+  width: 400px;
   margin-top: 10px;
   height: 324px;
   overflow-y: overlay;
@@ -460,7 +461,11 @@ function User() {
 
   const getCoupon = useCallback(async () => {
     const { data } = await api.getUserCoupon(userCtx.user.accessToken);
-
+    // console.log(data);
+    if (data?.error) {
+      console.log(data.error);
+      return;
+    }
     setUserCouponList(data);
   }, [userCtx]);
 

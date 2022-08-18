@@ -57,7 +57,7 @@ const CouponDesc = styled.div`
   padding-left: 10px;
 `;
 const Title = styled(CouponTitle)`
-  font-size: 1.6rem;
+  font-size: 1.2rem;
 `;
 const Circle = styled.div`
   width: 8px;
@@ -86,6 +86,7 @@ const Coupon = (props) => {
   const navigate = useNavigate();
   const userCtx = useContext(UserContext);
   const { type, coupon, onUseCoupon } = props;
+
   let btnName = "使用";
   if (type === "get") {
     btnName = "領取";
