@@ -707,17 +707,21 @@ function User() {
               <MenuLabel to="#" onClick={getCouponHandler}>
                 領取優惠券
               </MenuLabel>
-              <MenuLabel to="/streamer">商品直播頁</MenuLabel>
-              <MenuLabel to="/user/upload">商品管理系統</MenuLabel>
-              <MenuLabel
-                to="#"
-                onClick={() => {
-                  setIsCoupon(true);
-                  setIsGetCoupon(false);
-                }}
-              >
-                優惠券管理系統
-              </MenuLabel>
+              {userCtx.user.role === "admin" && (
+                <>
+                  <MenuLabel to="/streamer">商品直播頁</MenuLabel>
+                  <MenuLabel to="/user/upload">商品管理系統</MenuLabel>
+                  <MenuLabel
+                    to="#"
+                    onClick={() => {
+                      setIsCoupon(true);
+                      setIsGetCoupon(false);
+                    }}
+                  >
+                    優惠券管理系統
+                  </MenuLabel>
+                </>
+              )}
             </UserProfileMenu>
           </LeftWrapper>
           <RightWrapper>
