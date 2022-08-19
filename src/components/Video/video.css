@@ -30,7 +30,7 @@
 .videoBx {
   position: relative;
   width: 90%;
-  height: fit-content;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -38,6 +38,7 @@
 
 .videoBx video {
   width: 100%;
+
   object-fit: contain;
 }
 .control {

@@ -89,6 +89,7 @@ const Video = (props) => {
   };
   useEffect(() => {
     if (viewStatue === "hide") {
+      setIsPlay(true);
       setIsVolume(false);
     } else {
       setIsVolume(true);

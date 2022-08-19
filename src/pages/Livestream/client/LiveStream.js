@@ -319,13 +319,17 @@ const LiveStream = () => {
       closeLiveHandler();
       initSocket.current = false;
       setChatContent([]);
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
 
       if (remoteVideo.current) {
-        remoteVideo.current.volume = 0.5;
+        remoteVideo.current.volume = 0;
         remoteVideo.current.pause();
+        remoteVideo.current.srcObject = null;
       }
     }
-  }, [location, viewStatue, remoteVideo, initSocket, isLoading]);
+  }, [location, viewStatue, remoteVideo, initSocket, isLoading, socketRef]);
 
   useEffect(() => {
     const live = async () => {

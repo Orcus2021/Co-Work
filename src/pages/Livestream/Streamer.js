@@ -326,21 +326,6 @@ const Streamer = () => {
   const [showLove, setShowLove] = useState(false);
   const [remindMsg, setRemindMsg] = useState("");
 
-  // -------------------第二方案--------------------
-  // const [connected, setConnected] = useState(false);
-  // const [cameraEnabled, setCameraEnabled] = useState(false);
-  // const [streaming, setStreaming] = useState(false);
-  // const [streamKey, setStreamKey] = useState("test");
-  // const [streamUrl, setStreamUrl] = useState("");
-  // const [textOverlay, setTextOverlay] = useState("");
-
-  // const inputStreamRef = useRef();
-  // const videoRef = useRef();
-  // const canvasRef = useRef();
-  // const wsRef = useRef();
-  // const mediaRecorderRef = useRef();
-  // const requestAnimationRef = useRef();
-  // const nameRef = useRef();
   useEffect(() => {
     if (userCtx.user?.role === "admin") {
       return;
