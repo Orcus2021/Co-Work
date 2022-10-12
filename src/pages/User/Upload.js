@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -128,16 +127,6 @@ const MultiUploadPreviewImg = styled.img`
   object-fit: cover;
   top: 0;
   left: 0;
-`;
-const ClearBtn = styled.button`
-  border: 1px solid white;
-  position: absolute;
-  border-radius: 30px;
-  top: 92%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 5px;
-  cursor: pointer;
 `;
 const ImageReminder = styled.div`
   margin-top: 10px;
@@ -369,10 +358,7 @@ function Upload() {
     main_image: "",
     other_images: "",
   });
-  const isNotEmpty = (value) => value.trim() !== "";
-  // const {} = useInputValidate(isNotEmpty);
 
-  // console.log(recipientVariants);
   const handleUploadFile = (e) => {
     if (!e.target.files[0]) return;
     var reader = new FileReader();

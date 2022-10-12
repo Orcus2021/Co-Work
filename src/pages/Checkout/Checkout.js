@@ -1,10 +1,9 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import CartContext from "../../contexts/CartContext";
 import api from "../../utils/api";
-import getJwtToken from "../../utils/getJwtToken";
 import tappay from "../../utils/tappay";
 import Cart from "./Cart";
 import { UserContext } from "../../contexts/UserContext";

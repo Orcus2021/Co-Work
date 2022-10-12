@@ -1,5 +1,5 @@
-import { Navigate, useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import React, { useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
 import styled from "styled-components";
 import { UserContext } from "../../contexts/UserContext";
 import Loading from "../../components/Love/Loading";

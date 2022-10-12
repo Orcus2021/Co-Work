@@ -1,4 +1,5 @@
 import ReactDOM from "react-dom/client";
+import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import App from "./App";
 import Checkout from "./pages/Checkout/Checkout";
@@ -6,6 +7,7 @@ import Home from "./pages/Home/Home";
 import ThankYou from "./pages/ThankYou/ThankYou";
 import Product from "./pages/Product/Product";
 import SignIn from "./pages/Profile/SignIn";
+import Test from "./components/Test.tsx";
 import SignUp from "./pages/Profile/SignUp";
 import User from "./pages/User/User";
 import Upload from "./pages/User/Upload";
@@ -29,6 +31,7 @@ root.render(
         <Route path="streamer" element={<Streamer />} />
         <Route path="liveStream" element={<div />} />
         <Route path="loading" element={<Loading />} />
+        <Route path="test" element={<Test />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

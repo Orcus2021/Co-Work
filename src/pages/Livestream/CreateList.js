@@ -8,7 +8,6 @@ import { SaleContext } from "../../contexts/SaleProduct";
 const CreateProductBx = styled.div`
   margin: 0 auto;
   padding: 20px 0 20px;
-  ${"" /* max-width: 1160px; */}
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -109,12 +108,7 @@ const AddProduct = styled(Btn)`
   background-color: black;
   color: white;
 `;
-const UploadBtn = styled(Btn)`
-  background-color: black;
-  color: white;
-  margin: 0 auto;
-  margin-bottom: 20px;
-`;
+
 const ProductList = styled.div`
   flex-grow: 1;
   overflow-y: scroll;
@@ -127,26 +121,7 @@ const ProductList = styled.div`
     height: 40vh;
   }
 `;
-const UploadLiveForm = styled.form`
-  width: 100%;
-  height: auto;
-`;
-const InputImg = styled.input`
-  border: none;
-`;
-const ImgBx = styled.div`
-  width: 80%;
-  height: 200px;
-  position: relative;
-`;
-const Img = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-`;
+
 const BtnWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;

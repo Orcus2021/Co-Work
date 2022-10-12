@@ -343,7 +343,7 @@ const Streamer = () => {
   useEffect(() => {
     setShowLove(true);
 
-    const loveTimerId = setTimeout(() => {
+    setTimeout(() => {
       setShowLove(false);
     }, 1500);
   }, [loveAmount]);

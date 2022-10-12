@@ -1,4 +1,10 @@
-import { useEffect, useState, useRef, useContext, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useContext,
+  useCallback,
+} from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import Product from "./CouponProduct/Product";
@@ -296,34 +302,7 @@ const CouponList = styled(SearchResultBx)`
   height: 324px;
   overflow-y: overlay;
 `;
-const Input = styled.input`
-  flex-grow: 1;
-  height: 30px;
-  border-radius: 8px 0 0 8px;
-  border: solid 1px #979797;
 
-  @media screen and (max-width: 1279px) {
-    margin-top: 10px;
-    width: 100%;
-  }
-`;
-const CouponCodeBx = styled.div`
-  display: flex;
-  align-self: center;
-  width: 100%;
-  flex-direction: row;
-  margin-top: 5px;
-`;
-const UseCouponBtn = styled.button`
-  background-color: #99262a;
-  font-size: 0.8rem;
-  padding: 3px 8px;
-  color: #fff;
-  border: none;
-  border-radius: 0 8px 8px 0;
-
-  cursor: pointer;
-`;
 const UserBx = styled(CouponBx)`
   @media screen and (max-width: 1279px) {
     height: fit-content;
@@ -435,7 +414,6 @@ function User() {
   const [searchProduct, setSearchProduct] = useState([]);
   const [couponList, setCouponList] = useState([]);
   const [userCouponList, setUserCouponList] = useState([]);
-  const [couponCode, setCouponCode] = useState("");
   const [showImgUpload, setShowImgUpload] = useState(false);
   const [modalCloseEffect, setModalCloseEffect] = useState(false);
   const [fileSrc, setFileSrc] = useState(null);
@@ -546,13 +524,6 @@ function User() {
     setTimeout(() => {
       bottomToFetch(searchCategory, searchInput);
     }, 500);
-  };
-  const couponCodeHandler = (e) => {
-    setCouponCode(e.target.value);
-  };
-
-  const useCodeHandler = () => {
-    // 打API
   };
 
   // --------產生優惠券-------

@@ -212,7 +212,7 @@ const UserRight = styled.div`
   background-color: #f2f2f2;
 `;
 const SubTitle = styled.div`
-display:
+  display: block;
   margin-bottom: 10px;
 `;
 const CouponCodeBx = styled.div`
@@ -294,10 +294,6 @@ const CartItem = (props) => {
       return;
     }
     const couponArr = couponList.current.filter((coupon) => {
-      // if(coupon.applied_range==="other"||coupon.applied_range==="live"){
-
-      // }
-
       if (coupon.applied_range === "all") {
         return true;
       } else if (coupon.applied_range === item.category) {
